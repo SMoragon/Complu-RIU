@@ -1,8 +1,20 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+#header_cont{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: hsl(0, 0%, 0%);
 }
+
+#header_title{
+
+}
+
+#login_cont{
+
+  float: right;
+}
+

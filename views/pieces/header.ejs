@@ -1,0 +1,27 @@
+<div class="top-page" id="cabecera">
+
+    <div id="header_cont" class="col-12">
+
+        <div class="col-md-5 col-sm-6 col-10" id="header_title">
+            <!-- Company's logo. -->
+            <img class="col-md-5 col-sm-10 col-12" src="/Images/logo.png"
+                alt="Logo de COMPLU-RIU" />
+        </div>
+
+        <div class="col-md-5 col-5">
+            <div id="login_cont">
+                     <!-- JS code to show the login button only if user is logged. Otherwise, a login button will appear.. -->
+            <% if (typeof session !== 'undefined' && session.isLogged) { %>
+                <span class="login-text" id="hello-user"> ¡Bienvenido
+                    de nuevo, <%= session.user%>!</span><br>
+                <a class="login-text" href="/logout">Logout</a>
+
+                <% } else { %>
+
+                <a href="/login">Login</a>
+                <% } %>
+            </div>
+        </div>
+        
+    </div>
+</div>
