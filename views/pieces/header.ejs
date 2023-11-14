@@ -1,14 +1,18 @@
 <div class="top-page" id="cabecera">
 
-    <div id="header_cont" class="col-12">
+    <div id="header_cont" class="container-fluid col-12">
 
-        <div class="col-md-5 col-sm-6 col-10" id="header_title">
+        <div class="col-md-4 col-sm-4 col-6">
             <!-- Company's logo. -->
-            <img class="col-md-5 col-sm-10 col-12" src="/Images/logo.png"
+            <img class="col-md-6 col-sm-9 col-12" src="/Images/logo.png"
                 alt="Logo de COMPLU-RIU" />
         </div>
 
-        <div class="col-md-5 col-5">
+        <div class="col-md-3 col-sm-4 col-6" >
+            <h1 id="header_title">COMPLU-RIU</h1>
+        </div>
+
+        <div class=" col-md-4 col-sm-3 offset-lg-0 offset-sm-1">
             <div id="login_cont">
                      <!-- JS code to show the login button only if user is logged. Otherwise, a login button will appear.. -->
             <% if (typeof session !== 'undefined' && session.isLogged) { %>
@@ -18,7 +22,11 @@
 
                 <% } else { %>
 
-                <a href="/login">Login</a>
+        
+                <a class="account_but" id="log_but" href="/login">Login</a> 
+                <a class="account_but" href="/register">Registrarse</a>
+          
+                
                 <% } %>
             </div>
         </div>

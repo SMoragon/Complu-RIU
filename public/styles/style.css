@@ -1,20 +1,95 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: rgb(246, 227, 251);
 }
 
-#header_cont{
+main {
+  margin: 1em;
+  margin-bottom: 2em;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+#header_cont {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  background-color: hsl(0, 0%, 0%);
+  background-color: hsl(180, 54%, 48%);
+  justify-content: space-between;
 }
 
-#header_title{
-
+#header_title {
+  font-size: calc(1.5em + 1.8vw);
+  font-family: "Comic Sans";
+  color: hsl(202, 73%, 31%);
+  text-align: center;
 }
 
-#login_cont{
-
-  float: right;
+.account_but {
+  color: rgb(117, 40, 120);
+  font-size: calc(0.9em + 0.4vw);
 }
 
+#log_but {
+  padding-bottom: 0.5em;
+}
+
+#login_cont {
+  display: flex;
+  flex-direction: column;
+}
+
+#footer_cont {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: hsl(180, 54%, 48%);
+  padding: 2em 0em;
+}
+
+#footer_ul {
+  list-style-type: none;
+}
+
+#afafa{
+  display: flex;
+  align-items: center;
+}
+
+.footer_icon {
+  width: 2em;
+  margin: 0.13em 1em;
+}
+
+img > footer {
+  margin-top: -1.5em;
+  max-width: 100%;
+}
+
+#footer_mail {
+  word-wrap: break-word;
+}
+
+@media (min-width: 576px) {
+  #login_cont {
+    float: right;
+    margin-right: 3rem;
+  }
+}
+
+@media (max-width: 575.9px) {
+  #login_cont {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+  }
+}
+
+@media (max-width: 250px) {
+  #header_title {
+    font-size: calc(1.1em + 1.8vw);
+    word-wrap: break-word;
+  }
+}
