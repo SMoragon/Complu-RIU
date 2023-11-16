@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Import BootStrap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Import our css Style -->
+    <link rel="stylesheet" type="text/css" href="/styles/style.css" />
+    <!-- Import BootStrap javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <title>Viajes La Ciénaga - Nosotros</title>
+    <link rel="icon" type="image/jpg" href="Images/favicon-shrek.jpg">
+</head>
+
+<body>
+    <header>
+        <!-- Include pieces of header -->
+        <%- include ('pieces/header')%>
+    </header>
+
+    <main id="main">
+        <!-- Login Form -->
+        <div class="container">
+            <form id="login-form" method="POST" action="/login">
+                <!-- Email field -->
+                <div class="form-group row">
+
+                    <label for="user-email"
+                        class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label concrete-dest-res-form-field">
+                        Correo electrónico: </label>
+
+                    <div class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                        <input type="text" class="form-control form-control-sm concrete-dest-res-form-input"
+                            name="user-email" id="user-email">
+
+                        <span class="popup-form-error text-danger" id="mail-error">El
+                            email introducido no es correcto. El formato
+                            debe
+                            ser "abcde@fghi.jkl".</span>
+
+                    </div>
+                </div>
+                <!-- Password Field -->
+                <div class="form-group row">
+                    <label for="user-password"
+                        class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label concrete-dest-res-form-field">
+                        Contraseña: </label>
+                    <div class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                        <input type="password" class="form-control form-control-sm concrete-dest-res-form-input"
+                            name="user-password" id="user-password">
+
+                        <span class="popup-form-error text-danger" id="empty-error">Todos
+                            los campos deben estar rellenos.</span>
+
+                    </div>
+                </div>
+                <!-- After check the Email and Password it´s exist on our databases 
+                    and if it doesn´t exist it shows an error message -->
+                <% if (locals.errors) { %>
+                    <span class="text-danger">
+                        <%= errors %>
+                    </span>
+                    <% } %>
+                
+                <div class="send-buttons">
+                    <!-- Submit form button -->
+                    <input id="send-but" type="submit" value="ENVIAR"
+                        class="concrete-dest-res-form-but"></input>
+                    <!-- Close form button and redirect to the main page -->
+                    <button type="button" class="concrete-dest-res-form-but" onclick="closeAndRedirect('/')">
+                        CERRAR</button>
+                </div>
+                <!-- Link that´s take you into a register page -->
+                <a href="/register">¿Aún no tienes una cuenta? Regístrate aquí</a>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Include pieces of footer -->
+        <%- include ('pieces/footer')%>
+    </footer>
+
+</body>
+<!-- Our JavaScripts validation -->
+<script src="/scripts/loginValidation.js"></script>
+<!-- A little JavaScripts that catch an submit event and validate on client, if the validation fails, then stop the submit -->
+<script>
+    document.getElementById('login-form').addEventListener('submit', function (event) {
+
+        if (!validate()) {
+            event.preventDefault();
+        }
+    });
+
+</script>
+
+</html>

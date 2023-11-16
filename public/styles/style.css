@@ -54,7 +54,7 @@ a {
   list-style-type: none;
 }
 
-#afafa{
+#afafa {
   display: flex;
   align-items: center;
 }
@@ -64,13 +64,41 @@ a {
   margin: 0.13em 1em;
 }
 
-img > footer {
+img>footer {
   margin-top: -1.5em;
   max-width: 100%;
 }
 
 #footer_mail {
   word-wrap: break-word;
+}
+
+.reg_field {
+  color: hsl(209, 50%, 32%);
+  font-weight: bold;
+}
+
+
+.reg_input {
+  color: rgb(125, 80, 151) !important;
+  background-color: rgb(188, 180, 231) !important;
+  font-weight: bold !important;
+}
+
+.send_buttons_cont {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+#send_but{
+  margin-right: 5vw;
+}
+
+.send_buttons {
+  color: rgb(12, 31, 56);
+  background-color: rgba(133, 154, 224, 0.679);
+  font-weight: bold;
 }
 
 @media (min-width: 576px) {
