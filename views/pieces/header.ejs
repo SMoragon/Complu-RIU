@@ -16,7 +16,9 @@
             <div id="login_cont">
                      <!-- JS code to show the login button only if user is logged. Otherwise, a login button will appear.. -->
             <% if (typeof session !== 'undefined' && session.isLogged) { %>
-                <span class="login-text" id="hello-user"> ¡Bienvenido
+
+                <!-- <img src="<%= session.profile %>;base64" alt=""> -->
+                <span class="login-text" id="hello-user"> ¡Bienvenid@
                     de nuevo, <%= session.user%>!</span><br>
                 <a class="login-text" href="/logout">Logout</a>
 

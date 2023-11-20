@@ -42,6 +42,12 @@ a {
   flex-direction: column;
 }
 
+.login_buttons {
+  color: rgb(232, 184, 122);
+  background-color: rgba(97, 80, 35, 0.679);
+  font-weight: bold;
+}
+
 #footer_cont {
   display: flex;
   flex-wrap: wrap;
@@ -64,7 +70,7 @@ a {
   margin: 0.13em 1em;
 }
 
-img>footer {
+img > footer {
   margin-top: -1.5em;
   max-width: 100%;
 }
@@ -78,11 +84,16 @@ img>footer {
   font-weight: bold;
 }
 
-
-.reg_input {
+.reg_log_input {
   color: rgb(125, 80, 151) !important;
   background-color: rgb(188, 180, 231) !important;
   font-weight: bold !important;
+}
+
+.popup_form_error {
+  display: none;
+  font-weight: bold;
+  margin: 0.5em 0em;
 }
 
 .send_buttons_cont {
@@ -91,7 +102,7 @@ img>footer {
   margin-top: 1em;
 }
 
-#send_but{
+.send_but {
   margin-right: 5vw;
 }
 
