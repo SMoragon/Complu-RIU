@@ -96,22 +96,17 @@ app.post(
     } else {
       instDao.buscarUsuario(request.body["user_email"], (err, res) => {
         if (err) {
-          console.log("No entro");
-          console.log(err);
           response.status(403).render("register.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
             body: request.body,
           });
         } else {
-          console.log("Entro 1");
           if (res.length != 0) {
-            console.log("No entro 2");
             response.status(403).render("register.ejs", {
               errors: "El correo introducido ya está registrado.",
               body: request.body,
             });
           } else {
-            console.log("Entro 2");
             var req = request.body;
             var mimetype = request.file ? request.file.mimetype : undefined;
             if (mimetype && !allowedFormats.includes(`image/${mimetype}`)) {
@@ -120,7 +115,6 @@ app.post(
                 body: request.body,
               });
             } else {
-              console.log(req["user_profile"]);
               var datos = [
                 req["user_name"],
                 req["user_surname"],
@@ -134,14 +128,12 @@ app.post(
               ];
               instDao.registrarUsuario(datos, (err, res) => {
                 if (err) {
-                  console.log("No entro 3", err);
                   response.status(403).render("register.ejs", {
                     errors:
                       "Ha ocurrido un error interno en el acceso a la BD.",
                     body: request.body,
                   });
                 } else {
-                  console.log("Entro 3");
                   response.status(200).render("registroCompletado.ejs");
                 }
               });
@@ -181,7 +173,6 @@ app.post(
     } else {
       instDao.buscarUsuario(request.body["user_email"], (err, res) => {
         if (err) {
-          console.log(err);
           response.status(403).render("login.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
           });

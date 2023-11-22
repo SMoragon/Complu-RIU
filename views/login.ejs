@@ -54,7 +54,8 @@
                             <% if (locals.errors && locals.errors["user_email"])
                             { %>
                             <span
-                                class="text-danger popup_form_error" style="display: inline-block;">
+                                class="text-danger popup_form_error"
+                                style="display: inline-block;">
                                 <%= errors["user_email"] %>
                             </span>
                             <% } %>
@@ -76,6 +77,14 @@
                             <div class="popup_form_error text-danger"
                                 id="empty_error">Todos
                                 los campos deben estar rellenos.</div>
+                            <% if (locals.errors)
+                            { %>
+                            <span
+                                class="text-danger popup_form_error d-inline-block"
+                                >
+                                <%= errors %>
+                            </span>
+                            <% } %>
 
                         </div>
                     </div>
