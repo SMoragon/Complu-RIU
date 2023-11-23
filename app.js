@@ -55,6 +55,11 @@ app.get("/", (request, response) => {
 app.get("/index.html", (request, response) => {
   response.status(200).render("index.ejs");
 });
+
+app.get("/gestion_instalacion.ejs", (request, response) => {
+  var iter=[1,2,3,4,5,6,7,8]
+  response.status(200).render("gestion_instalaciones.ejs",{dato:iter});
+});
 // catch 404 and forward to error handler
 
 app.get("/register", (request, response, next) => {

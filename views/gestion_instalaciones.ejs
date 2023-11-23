@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <title>Complu-RIU</title>
+    <link rel="icon" type="image/jpg" href="Images/favicon.jpg">
+</head>
+
+<body>
+    <!-- Use of ejs to avoid copy-pasting the whole header. -->
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <h2 class="text-primary">Gestion de instalaciones</h2>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <form class="p-0 d-inline-block" action="#">
+                        <input class="search_text rounded-3" type="text" placeholder="Search.." name="search">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                    </form>
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                        data-bs-target="#add_instalaciones">
+                        Añadir
+                    </button>
+                    <div class="modal top fade" id="add_instalaciones" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content modal-destiny-container">
+                                <div class="modal-header">
+                                    Añadir Instalacion
+                                </div>
+                                <form id="instalacion_form">
+                                    <div class="modal-body container">
+
+                                        <!-- Nombre instalacion -->
+                                        <div class="form-group row justify-content-center">
+                                            <label for="instalacion_nombre"
+                                                class="col-md-3 col-10 col-form-label text-truncate">
+                                                Nombre instalacion: </label>
+                                            <div class="col-md-7 col-10">
+                                                <input type="text"
+                                                    class="form-control form-control-sm rounded-4 text-truncate"
+                                                    placeholder="Nombre de la instalacion" name="instalacion_nombre"
+                                                    id="instalacion_nombre">
+                                            </div>
+                                        </div>
+                                        <!-- Horario de apertura -->
+                                        <div class="form-group row justify-content-center">
+                                            <label for="horario_apertura"
+                                                class="col-md-3 col-10 col-form-label text-truncate">
+                                                Horario apertura: </label>
+                                            <div class="col-md-7 col-10">
+                                                <input type="time" class="form-control form-control-sm rounded-4"
+                                                    name="horario_apertura" id="horario_apertura">
+                                            </div>
+                                        </div>
+                                        <!-- Horario de cierre. -->
+                                        <div class="form-group row justify-content-center">
+                                            <label for="horario_cierre"
+                                                class="col-md-3 col-10 col-form-label text-truncate">
+                                                Horario cierre: </label>
+                                            <div class="col-md-7 col-10">
+                                                <input type="time" class="form-control form-control-sm rounded-4"
+                                                    name="horario_cierre" id="horario_cierre">
+                                            </div>
+                                        </div>
+                                        <!-- Tipo de reserva. -->
+                                        <div class="form-group row justify-content-center">
+                                            <label for="tipo_reserva"
+                                                class="col-md-3 col-10 col-form-label text-truncate">
+                                                Tipo de reserva: </label>
+                                            <div class="col-md-7 col-10">
+                                                <Select name="tipo_reserva" id="tipo_reserva"
+                                                    class="form-select form-select-sm rounded-4 text-center text-truncate">
+                                                    <option value="None">Seleccione el tipo de reserva</option>
+                                                    <option value="individual">Individual</option>
+                                                    <option value="colectivo">Colectivo</option>
+                                                </Select>
+                                            </div>
+                                        </div>
+                                        <!-- Aforo. -->
+                                        <div class="form-group row justify-content-center">
+                                            <label for="aforo" class="col-md-3 col-10 col-form-label text-truncate">
+                                                Aforo: </label>
+                                            <div class="col-md-7 col-10">
+                                                <input type="number"
+                                                    class="form-control form-control-sm rounded-4 text-truncate"
+                                                    value="1" min="1" max="36" placeholder="Numero de aforo permitido"
+                                                    name="aforo" id="aforo">
+                                            </div>
+                                        </div>
+                                        <!-- Imagen. -->
+                                        <div class="form-group row justify-content-center">
+                                            <div class="col-10">
+                                                <input type="file" accept="image/*" name="instalacion_imagen"
+                                                    id="instalacion_imagen"
+                                                    class="form-control form-control-sm border border-3 rounded-end-4">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Submit/cancel buttons. -->
+                                    <div class="modal-footer">
+                                        <button type="button" data-bs-dismiss="modal" onclick="add_instalacion()"
+                                            class="btn btn-lg btn-outline-success">Añadir</button>
+                                        <button type="button" data-bs-dismiss="modal"
+                                            class="btn btn-lg btn-outline-info">Cerrar</button>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        <% if (locals.dato) { %>
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <% dato.forEach(element=> { %>
+                        <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0">
+                            <div class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4">
+                                <div class="row justify-content-center">
+                                    <div class="col-sm-7 col-12 p-0">
+                                        <div
+                                            class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
+                                            <img src="/images/Biblioteca.jpeg" alt="" class="img-fluid rounded-4">
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                        <button type="button"
+                                            class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                                            data-bs-toggle="modal" data-bs-target="#detalles_instalaciones"><i
+                                                class="fa fa-eye"></i> Detalles</button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate"
+                                            data-bs-toggle="modal" data-bs-target="#modificar_instalaciones"
+                                            onclick="hola()"><i class="fa fa-gear"></i> Modificar</button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-danger mb-sm-auto mb-2 text-truncate"><i
+                                                class="fa fa-trash"></i> Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal top fade" id="detalles_instalaciones" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content modal-destiny-container">
+                                    <div class="modal-header">
+                                        Nombre Instalacion
+                                    </div>
+                                    <div class="modal-body container">
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-7 col-12 p-0">
+                                                <div class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4">
+                                                    <img src="/images/perfil.png" alt="" class="img-fluid rounded-4">
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Placeat
+                                                nesciunt distinctio enim quas repudiandae dicta, repellat eaque odio
+                                                unde dolores modi ipsa nihil quia sapiente esse nobis sunt sed voluptas.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-lg btn-outline-success"
+                                            data-bs-dismiss="modal" onclick="hola()">Modificar</button>
+                                        <button type="button" class="btn btn-lg btn-outline-info"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal top fade" id="modificar_instalaciones" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content modal-destiny-container">
+                                    <div class="modal-header">
+                                        Modificar Instalacion
+                                    </div>
+                                    <div class="modal-body container">
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-7 col-12 p-0">
+                                                <div class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4">
+                                                    <img src="/images/perfil.png" alt="" class="img-fluid rounded-4">
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Placeat
+                                                nesciunt distinctio enim quas repudiandae dicta, repellat eaque odio
+                                                unde dolores modi ipsa nihil quia sapiente esse nobis sunt sed voluptas.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-lg btn-outline-success"
+                                            data-bs-dismiss="modal" onclick="hola()">Modificar</button>
+                                        <button type="button" class="btn btn-lg btn-outline-info"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <%});%>
+                </div>
+            </div>
+            <% } %>
+
+
+    </main>
+    <!-- Dynamically footer's inclusion. -->
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+<script>
+    function add_instalacion() {
+        console.log($("#instalacion_nombre").prop("value"))
+        console.log($("#horario_apertura").prop("value"))
+        console.log($("#horario_cierre").prop("value"))
+        console.log($("#tipo_reserva").prop("value"))
+        console.log($("#aforo").prop("value"))
+        console.log($("#instalacion_imagen"))
+    }
+    function hola() {
+        console.log("holi")
+    }
+</script>
+
+</html>

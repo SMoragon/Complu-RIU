@@ -75,6 +75,7 @@ img > footer {
   word-wrap: break-word;
 }
 
+
 .reg_field {
   color: hsl(209, 50%, 32%);
   font-weight: bold;
@@ -131,6 +132,12 @@ img > footer {
   font-weight: bold;
   color: rgb(51, 51, 176) !important;
 }
+
+.search_text{
+  height: 2.5em;
+  width: 20vw;
+}
+
 
 @media (max-width: 575.9px) {
   #login_cont {
