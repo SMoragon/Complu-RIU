@@ -73,6 +73,10 @@ img > footer {
   word-wrap: break-word;
 }
 
+.search_text{
+  height: 2.5em;
+  width: 20vw;
+}
 @media (min-width: 576px) {
   #login_cont {
     float: right;
