@@ -26,7 +26,7 @@ const middlewareSession = session({
   store: sessionStore,
 });
 
-const allowedFormats = ["jpg", "jpeg", "png"];
+const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
 var instPool = new pool("localhost", "root", "", "ucm_riu");
 var instDao = new dao(instPool.get_pool());
@@ -43,84 +43,37 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(middlewareSession);
 
 app.use((req, res, next) => {
+  console.log("Entro3", req.session.profile);
+  if (req.session.isLogged ) {
+    if (!req.session.profile) {
+      console.log("No padre");
+      req.session.profile = "/images/default_picture.jpg";
+      req.session.defaultProfile = true;
+    } else if (req.session.profile !== "/images/default_picture.jpg") {
+      console.log("Entro4", req.session.profile);
+      req.session.defaultProfile = false;
+    }
+  }
+
   res.locals.session = req.session;
+  console.log(req.session.profile);
   next();
 });
 
 // Enrutamiento de las páginas principales de nuestra aplicación.
 app.get("/", (request, response) => {
+  console.log("Entro6");
   response.status(200).render("index.ejs");
 });
 
 app.get("/index.html", (request, response) => {
+  console.log("Entro5", request.session);
   response.status(200).render("index.ejs");
 });
 
-app.get("/gestion_instalacion.ejs", (request, response, next) => {
-  var busqueda = "";
-  if (request.query['search'] !== undefined) {
-    busqueda = request.query['search'];
-  }
-  instDao.buscarInstalacion(busqueda, (err, res) => {
-    if (err) {
-      next();
-    }
-    else {
-      response.status(200).render("gestion_instalaciones.ejs", { dato: res });
-    }
-  })
-});
-
-app.post("/add_instalacion", multerFactory.single("instalacion_imagen"), (request, response) => {
-  var body = request.body
-  var datos = [
-    body["instalacion_nombre"],
-    body["horario_apertura"],
-    body["horario_cierre"],
-    body["tipo_reserva"],
-    body["aforo"],
-    request.file ? request.file.buffer : null,
-    request.file['mimetype']
-  ];
-  instDao.insertar_instalacion(datos, (err) => {
-    if (err) {
-      response.status(400)
-    } else {
-      response.status(201).json({ msg: 'Instalacion añadido con exito, para que se haga efecto, reflesca la pagina' })
-    }
-    response.end()
-  });
-});
-
-app.post("/modificar_instalacion/:imagen", multerFactory.single("instalacion_imagen"), (request, response) => {
-  var imagen = request.params.imagen == "true"? true:false;
-  var body = request.body
-  var id = body["instalacion_id"]
-  var dato = [body["m_instalacion_nombre"], body["m_horario_apertura"], body["m_horario_cierre"], body["m_tipo_reserva"], body["m_aforo"]]
-  if(imagen){
-    dato.push(request.file.buffer)
-    dato.push(request.file['mimetype'])
-  }
-  instDao.modificarInstalacion(id, imagen, dato,(err)=>{
-    if (err) {
-      response.status(400)
-    } else {
-      response.status(201).json({ msg: 'Instalacion modificado con exito, para que se haga efecto, reflesca la pagina'})
-    }
-    response.end()
-  })
-});
-
-app.delete("/delete_instalacion/:id", (request, response) => {
-  var id = request.params.id
-  instDao.eliminarInstalacion(id, (err) => {
-    if (err) {
-      response.status(404).json({ msg: 'Instalacion no existente' })
-    } else {
-      response.status(201).json({ msg: 'Instalacion eliminado con exito' })
-    }
-    response.end()
-  });
+app.get("/gestion_instalacion.ejs", (request, response) => {
+  var iter = [1, 2, 3, 4, 5, 6, 7, 8];
+  response.status(200).render("gestion_instalaciones.ejs", { dato: iter });
 });
 // catch 404 and forward to error handler
 
@@ -176,7 +129,8 @@ app.post(
           } else {
             var req = request.body;
             var mimetype = request.file ? request.file.mimetype : undefined;
-            if (mimetype && !allowedFormats.includes(`image/${mimetype}`)) {
+            console.log("MIMEEEEE", mimetype);
+            if (mimetype && !allowedFormats.includes(mimetype)) {
               response.status(403).render("register.ejs", {
                 errors: `El formato ${mimetype} no está permitido.`,
                 body: request.body,
@@ -195,6 +149,7 @@ app.post(
               ];
               instDao.registrarUsuario(datos, (err, res) => {
                 if (err) {
+                  console.log(err);
                   response.status(403).render("register.ejs", {
                     errors:
                       "Ha ocurrido un error interno en el acceso a la BD.",
@@ -236,10 +191,12 @@ app.post(
 
       response.status(403).render("login.ejs", {
         errors: errs,
+        body:request.body
       });
     } else {
       instDao.buscarUsuario(request.body["user_email"], (err, res) => {
         if (err) {
+          console.log("Login buscar usuario error: ",err);
           response.status(403).render("login.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
           });
@@ -253,16 +210,24 @@ app.post(
             res.map((obj) => {
               context = obj;
             });
+            console.log(context);
 
             if (request.body["user_password"] != context.contraseña) {
               response.status(403).render("login.ejs", {
                 errors: "La contraseña introducida no es correcta.",
               });
             } else {
+              if (context.imagen_perfil) {
+                console.log(context.imagen_perfil, "Entro 1");
+                request.session.profile = context.imagen_perfil;
+                request.session.defaultProfile = false;
+              }
+              console.log(context.imagen_perfil, "Entro 2");
               request.session.isLogged = true;
+              console.log("Entro 2.1");
               request.session.user = context.nombre;
-              //request.session.profile = context.imagen_perfil ? context.imagen_perfil : "images/default_picture.jpeg";
-              response.status(200).redirect("index.html"); // De momento index, ya cogeremos la ruta en la que estaba
+              console.log("Entro 2.2", request.session);
+              response.status(200).redirect("index.html"); // The error occurs after here (with try-catch, it does not detect anything, but i dont know where it is)
             }
           }
         }
@@ -274,7 +239,10 @@ app.post(
 app.get("/logout", (request, response, next) => {
   request.session.isLogged = false;
   request.session.user = undefined;
-  //request.session.profile = undefined;
+  request.session.profile = undefined;
+  request.session.defaultProfile=undefined;
+  console.log("sergio ashadhksajhdkj");
+  console.log(response.session);
   response.render("index.ejs");
 });
 

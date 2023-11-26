@@ -8,66 +8,6 @@ class DAO {
     this.pool = pool;
   }
 
-  /* Funcion que, dado los datos de una instalación, lo inserte en la bases de datos*/
-  insertar_instalacion(instalacion, callback){
-    this.pool.getConnection((err,connection)=>{
-      if(err){
-        callback(err);
-      }else {
-        const sql =
-          "Insert Into Instalaciones (nombre, horario_apertura, horario_cierre, tipo_reserva, aforo, imagen, imagen_tipo) VALUES (?,?,?,?,?,?,?)";
-        connection.query(sql, instalacion, callback);
-        connection.release();
-      }
-    })
-  }
-
-  buscarInstalacion(dato, callback){
-    this.pool.getConnection((err,connection)=>{
-      if(err){
-        callback(err);
-      }else {
-        var sql;
-        if(dato == ""){
-          sql = "SELECT * FROM Instalaciones ORDER BY nombre";
-        }else{
-          sql= "SELECT * FROM Instalaciones WHERE nombre LIKE '%"+dato+"%' OR tipo_reserva LIKE '%"+dato+"%' OR aforo LIKE '%"+dato+"%' ORDER BY nombre;";
-        }
-        connection.query(sql, callback);
-        connection.release();
-      }
-    });
-  }
-
-  modificarInstalacion(id,imagen,dato,callback){
-    this.pool.getConnection((err,connection)=>{
-      if(err){
-        callback(err);
-      }else {
-        var sql;
-        if(imagen){
-          sql = "UPDATE Instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=?, imagen=?, imagen_tipo=? WHERE id="+id+";"
-        } else{
-          sql = "UPDATE Instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=? WHERE id="+id+";"
-        }
-        connection.query(sql,dato, callback);
-        connection.release();
-      }
-    });
-  }
-
-  eliminarInstalacion(id, callback){
-    this.pool.getConnection((err,connection)=>{
-      if(err){
-        callback(err);
-      }else {
-        const sql = "DELETE FROM Instalaciones WHERE id=?"
-        connection.query(sql, [id], callback);
-        connection.release();
-      }
-    });
-  }
-
   /* Función que, dado un nombre, descripción, una ruta de imagen local y un precio, lo inserta en la BD.
    Si no existe el path de la imagen, manda el error al callback. */
   insertarDestino(destino, callback) {
@@ -184,6 +124,7 @@ class DAO {
   buscarUsuario(correo, callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
+        console.log("Buscar usuario DAOOOOOOOOOO")
         callback(err);
       } else {
         const sql = "Select * From usuarios Where correo=?";

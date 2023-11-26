@@ -15,17 +15,21 @@
         </div>
 
         <div class=" col-md-4 col-sm-4 ">
-            <div id="login_cont">
+            <div id="login_cont" class="mx-md-5">
                 <!-- JS code to show the login button only if user is logged. Otherwise, a login button will appear.. -->
                 <% if (typeof session !== 'undefined' && session.isLogged) { %>
                    
                     <div class="d-flex flex-row mx-2 my-1">
 
-                        <div>
-                            <img class="user_img rounded-circle"
-                                src="/images/default_picture.jpg" alt>
+                        <div class="my-auto">
+                    
+                            <% if (session.defaultProfile) { %>
+                                <img class="user_img rounded-circle" src="<%= session.profile%>" alt=""> 
+                            <%} else{ %>
+                                <img class="user_img rounded-circle" src="data:image/png;base64, <%= new Buffer(session.profile).toString('base64'); %>" alt=""> 
+                            <%} %>
                         </div>
-                        <!-- <img src="<%= session.profile %>;base64" alt=""> -->
+                     
                         <div class="d-flex flex-column align-middle">
                             <p class="login_text" id="hello_user">
                                 ¡Bienvenid@
@@ -33,7 +37,6 @@
                             </p>
                             <a class="login_text" href="/logout">Logout</a>
                         </div>
-
                     </div>
 
 

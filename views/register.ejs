@@ -2,23 +2,7 @@
 <html lang="en">
 
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- Import BootStrap css -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-            crossorigin="anonymous">
-        <!-- Import our css Style -->
-        <link rel="stylesheet" type="text/css" href="/styles/style.css" />
-        <!-- Import BootStrap javascript -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-            crossorigin="anonymous"></script>
-        <title>Viajes La Ciénaga - Nosotros</title>
-        <link rel="icon" type="image/jpg" href="Images/favicon-shrek.jpg">
+        <%- include ('pieces/head')%>
     </head>
 
     <body>
@@ -111,7 +95,7 @@
                             <input type="password"
                                 class="form-control form-control-sm reg_log_input"
                                 name="user_password" id="user_password"
-                                value= <%= locals.body? body["user_password"]:""%>>
+                                value= <%=locals.body? body["user_password"]:""%>>
 
                             <% if (locals.errors && locals.errors["user_password"])
                             { %>
@@ -136,7 +120,8 @@
                                 class="form-control form-control-sm reg_log_input"
                                 name="user_password_again"
                                 id="user_password_again"
-                                value= <%= locals.body? body["user_password_again"]:""%>>
+                                value= <%=locals.body?
+                                body["user_password_again"]:""%>>
 
                             <span class="popup_form_error text-danger"
                                 id="password_error">Las contraseñas no
@@ -158,7 +143,7 @@
                             <input type="text"
                                 class="form-control form-control-sm reg_log_input"
                                 name="user_faculty" id="user_faculty"
-                                value= <%= locals.body? body["user_faculty"]:""%>>
+                                value= <%=locals.body? body["user_faculty"]:""%>>
                         </div>
                     </div>
 
@@ -176,7 +161,7 @@
                                 min="1" max="6"
                                 class="form-control form-control-sm reg_log_input"
                                 name="user_course" id="user_course"
-                                value= <%= locals.body? body["user_course"]:""%>>
+                                value= <%=locals.body? body["user_course"]:""%>>
                         </div>
                     </div>
 
@@ -193,7 +178,7 @@
                             <input type="text"
                                 class="form-control form-control-sm reg_log_input"
                                 name="user_group" id="user_group"
-                                value= <%= locals.body? body["user_group"]:""%>>
+                                value= <%=locals.body? body["user_group"]:""%>>
                         </div>
                     </div>
 
@@ -214,6 +199,8 @@
                                 id="empty_error">Todos
                                 los campos salvo la foto de perfil deben estar
                                 rellenos.</span>
+                            <span class="popup_form_error text-danger"
+                                id="profile_error">Erroorr</span>
 
                             <% if (locals.errors) { %>
                             <span
@@ -246,7 +233,7 @@
     <script src="/scripts/registerValidation.js"></script>
     <!-- A little JavaScripts that catch an submit event and validate on client, if the validation fails, then stop the submit -->
     <script>
-    document.getElementById('register-form').addEventListener('submit', function (event) {
+    $("#register-form").on('submit', function (event) {
 
         if (!validate()) {
             event.preventDefault();
