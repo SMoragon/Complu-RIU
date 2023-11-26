@@ -75,8 +75,7 @@ img > footer {
   word-wrap: break-word;
 }
 
-
-.reg_field {
+.reg_field, .login_field {
   color: hsl(209, 50%, 32%);
   font-weight: bold;
 }
@@ -85,6 +84,13 @@ img > footer {
   color: rgb(125, 80, 151) !important;
   background-color: rgb(188, 180, 231) !important;
   font-weight: bold !important;
+}
+
+#register_hint{
+  color: hsl(209, 50%, 32%);
+  font-weight: bold;
+  font-size: 1.2em;
+  align-items: center;
 }
 
 .popup_form_error {
@@ -137,6 +143,16 @@ img > footer {
 .search_text{
   height: 2.5em;
   width: 20vw;
+}
+
+.register_ok_but{
+  font-weight: bold;
+  color: rgb(122, 61, 179);
+  font-size: calc(1em + 0.5vw);
+  border: solid 0.2rem;
+  border-color: blueviolet;
+  background-color: rgb(232, 213, 241);
+  padding:0.5rem;
 }
 
 

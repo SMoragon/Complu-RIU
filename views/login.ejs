@@ -13,17 +13,17 @@
 
         <main id="main">
             <!-- Login Form -->
-            <div class="container">
+            <div class="container my-5">
                 <form id="login_form" method="POST" action="/login">
                     <!-- Email field -->
-                    <div class="form-group row">
+                    <div class="form-group row my-2">
 
                         <label for="user_email"
-                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label login_field">
+                            class="text-center col-md-4 col-10 col-form-label login_field">
                             Correo electrónico: </label>
 
                         <div
-                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+                            class="offset-md-0 col-md-6 offset-sm-2 col-sm-7 offset-1 col-10">
 
                             <input type="text"
                                 class="form-control form-control-sm reg_log_input"
@@ -48,12 +48,12 @@
                         </div>
                     </div>
                     <!-- Password Field -->
-                    <div class="form-group row">
+                    <div class="form-group row my-2">
                         <label for="user_password"
-                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label login_field">
+                            class="text-center col-md-4 col-10 col-form-label login_field">
                             Contraseña: </label>
                         <div
-                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+                            class="offset-md-0 col-md-6 offset-sm-2 col-sm-7 offset-1 col-10">
 
                             <input type="password"
                                 class="form-control form-control-sm reg_log_input"
@@ -65,7 +65,7 @@
                             <% if (locals.errors)
                             { %>
                             <span
-                                class="text-danger popup_form_error d-inline-block"
+                                class="text-danger popup_form_error" style="display: inline-block;"
                                 >
                                 <%= errors %>
                             </span>
@@ -76,7 +76,7 @@
                     <!-- After check the Email and Password it´s exist on our databases 
                     and if it doesn´t exist it shows an error message -->
 
-                    <div class="send_buttons_cont">
+                    <div class="send_buttons_cont my-4">
                         <!-- Submit form button -->
                         <input type="submit" value="ENVIAR"
                             class="send_buttons send_but"></input>
@@ -86,7 +86,10 @@
                         CERRAR</button>
                 </div>
                 <!-- Link that´s take you into a register page -->
-                <a href="/register">¿Aún no tienes una cuenta? Regístrate aquí</a>
+                <div class="my-3">
+                    <a href="/register" id="register_hint">¿Aún no tienes una cuenta? <br> Regístrate aquí</a>
+                </div>
+              
             </div>
         </main>
 

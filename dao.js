@@ -108,9 +108,8 @@ class DAO {
         callback(err);
       } else {
         const sql =
-          "Insert Into usuarios (nombre, apellidos, correo, contraseña, facultad, curso, grupo, imagen_perfil, es_admin) VALUES (?,?,?,?,?,?,?,?,?)";
+          "Insert Into usuarios (nombre, apellidos, correo, contrasenia, facultad, curso, grupo, imagen_perfil, es_admin) VALUES (?,?,?,?,?,?,?,?,?)";
 
-        console.log(datos);
         connection.query(sql, datos, callback);
         connection.release();
       }
@@ -124,7 +123,6 @@ class DAO {
   buscarUsuario(correo, callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
-        console.log("Buscar usuario DAOOOOOOOOOO")
         callback(err);
       } else {
         const sql = "Select * From usuarios Where correo=?";

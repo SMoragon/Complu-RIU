@@ -4,7 +4,7 @@ function validate() {
   // Function to validate the booking form.
   const MAX_KB_FILE_SIZE = 2048;
   const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
-console.log("usssususs")
+
   var user_name = $("#user_name");
   var user_surname =$("#user_surname");
   var user_email = $("#user_email");
@@ -33,11 +33,9 @@ console.log("usssususs")
   var file = user_profile[0] ?
    user_profile[0].files[0] :
     undefined;
-  console.log("fileeee ",file.name, file.size, file.type)
   var file_size_ok = file ? file.size / 1024 < MAX_KB_FILE_SIZE : true;
   var file_type_ok = file ? allowedFormats.includes(file.type) : true;
 
-  //console.log("type: ",file.type, " size: ",file.size)
   // Before showing anything, we close the popups just in case there were any visible.
   closePopups();
 
@@ -52,8 +50,7 @@ console.log("usssususs")
     } else if (!passwords_ok) {
       $("#password_error").show();
     } else if (!file_size_ok || !file_type_ok) {
-      console.log("aaaaa")
-      $("#profile_error").text( file_size_ok ? `El formato ${file.type} noa está permitido.`:
+      $("#profile_error").text( file_size_ok ? `El formato ${file.type} no está permitido.`:
       `El tamaño máximo de archivo es de ${MAX_KB_FILE_SIZE / 1024}MB.`).show() 
     }
   }
@@ -66,7 +63,6 @@ function checkEmptyFields(vars) {
   vars.forEach((v) => {
     if (v.prop("value") === "") empty = true;
   });
-  console.log("Empty fields:", empty);
   return empty;
 }
 

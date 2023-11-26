@@ -2,8 +2,7 @@ var express = require("express");
 var path = require("path");
 const express_validator = require("express-validator");
 const body = express_validator.body;
-const matchedData = express_validator.matchedData;
-const valResult = express_validator.validationResult;
+
 const pool = require("./pool.js");
 const dao = require("./dao.js");
 const multer = require("multer");
@@ -26,6 +25,15 @@ const middlewareSession = session({
   store: sessionStore,
 });
 
+const bcrypt = require("bcrypt");
+
+const hashPassword = async (password) => {
+  // Generate a salt
+  const salt = await bcrypt.genSalt((saltRounds = 10));
+  // Hash password
+  return await bcrypt.hash(password, salt);
+};
+
 const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
 var instPool = new pool("localhost", "root", "", "ucm_riu");
@@ -43,31 +51,24 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(middlewareSession);
 
 app.use((req, res, next) => {
-  console.log("Entro3", req.session.profile);
-  if (req.session.isLogged ) {
+  if (req.session.isLogged) {
     if (!req.session.profile) {
-      console.log("No padre");
       req.session.profile = "/images/default_picture.jpg";
       req.session.defaultProfile = true;
     } else if (req.session.profile !== "/images/default_picture.jpg") {
-      console.log("Entro4", req.session.profile);
       req.session.defaultProfile = false;
     }
   }
-
   res.locals.session = req.session;
-  console.log(req.session.profile);
   next();
 });
 
 // Enrutamiento de las páginas principales de nuestra aplicación.
 app.get("/", (request, response) => {
-  console.log("Entro6");
   response.status(200).render("index.ejs");
 });
 
 app.get("/index.html", (request, response) => {
-  console.log("Entro5", request.session);
   response.status(200).render("index.ejs");
 });
 
@@ -114,7 +115,7 @@ app.post(
         body: request.body,
       });
     } else {
-      instDao.buscarUsuario(request.body["user_email"], (err, res) => {
+      instDao.buscarUsuario(request.body["user_email"], async (err, res) => {
         if (err) {
           response.status(403).render("register.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
@@ -129,13 +130,14 @@ app.post(
           } else {
             var req = request.body;
             var mimetype = request.file ? request.file.mimetype : undefined;
-            console.log("MIMEEEEE", mimetype);
             if (mimetype && !allowedFormats.includes(mimetype)) {
               response.status(403).render("register.ejs", {
                 errors: `El formato ${mimetype} no está permitido.`,
                 body: request.body,
               });
             } else {
+              req["user_password"];
+              req["user_password"] = await hashPassword(req["user_password"]);
               var datos = [
                 req["user_name"],
                 req["user_surname"],
@@ -149,7 +151,6 @@ app.post(
               ];
               instDao.registrarUsuario(datos, (err, res) => {
                 if (err) {
-                  console.log(err);
                   response.status(403).render("register.ejs", {
                     errors:
                       "Ha ocurrido un error interno en el acceso a la BD.",
@@ -191,42 +192,42 @@ app.post(
 
       response.status(403).render("login.ejs", {
         errors: errs,
-        body:request.body
+        body: request.body,
       });
     } else {
-      instDao.buscarUsuario(request.body["user_email"], (err, res) => {
+      instDao.buscarUsuario(request.body["user_email"], async (err, res) => {
         if (err) {
-          console.log("Login buscar usuario error: ",err);
           response.status(403).render("login.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
+            body: request.body,
           });
         } else {
           if (res.length == 0) {
             response.status(403).render("login.ejs", {
               errors: "El usuario introducido no está registrado.",
+              body: request.body,
             });
           } else {
             var context;
             res.map((obj) => {
               context = obj;
             });
-            console.log(context);
-
-            if (request.body["user_password"] != context.contraseña) {
+            const passwordMatch = await bcrypt.compare(
+              request.body["user_password"],
+              String(context.contrasenia)
+            );
+            if (!passwordMatch) {
               response.status(403).render("login.ejs", {
                 errors: "La contraseña introducida no es correcta.",
+                body: request.body,
               });
             } else {
               if (context.imagen_perfil) {
-                console.log(context.imagen_perfil, "Entro 1");
                 request.session.profile = context.imagen_perfil;
                 request.session.defaultProfile = false;
               }
-              console.log(context.imagen_perfil, "Entro 2");
               request.session.isLogged = true;
-              console.log("Entro 2.1");
               request.session.user = context.nombre;
-              console.log("Entro 2.2", request.session);
               response.status(200).redirect("index.html"); // The error occurs after here (with try-catch, it does not detect anything, but i dont know where it is)
             }
           }
@@ -240,9 +241,7 @@ app.get("/logout", (request, response, next) => {
   request.session.isLogged = false;
   request.session.user = undefined;
   request.session.profile = undefined;
-  request.session.defaultProfile=undefined;
-  console.log("sergio ashadhksajhdkj");
-  console.log(response.session);
+  request.session.defaultProfile = undefined;
   response.render("index.ejs");
 });
 
