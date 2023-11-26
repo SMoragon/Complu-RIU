@@ -87,6 +87,10 @@ img > footer {
   font-weight: bold !important;
 }
 
+.instalacion_bgc{
+  background-color:  rgb(188, 180, 231) !important;
+}
+
 .popup_form_error {
   display: none;
   font-weight: bold;
@@ -138,6 +142,10 @@ img > footer {
   width: 20vw;
 }
 
+.instalacion_img{
+  max-height: 163px;
+  min-height: 163px;
+}
 
 @media (max-width: 575.9px) {
   #login_cont {
