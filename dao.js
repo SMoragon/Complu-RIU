@@ -108,7 +108,7 @@ class DAO {
         callback(err);
       } else {
         const sql =
-          "Insert Into usuarios (nombre, apellidos, correo, contrasenia, facultad, curso, grupo, imagen_perfil, es_admin) VALUES (?,?,?,?,?,?,?,?,?)";
+          "Insert Into usuarios (nombre, apellidos, correo, contrasenia, facultad, curso, grupo, imagen_perfil, es_admin, validado) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
         connection.query(sql, datos, callback);
         connection.release();

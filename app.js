@@ -148,6 +148,7 @@ app.post(
                 req["user_group"],
                 request.file ? request.file.buffer : null,
                 false,
+                false,
               ];
               instDao.registrarUsuario(datos, (err, res) => {
                 if (err) {
