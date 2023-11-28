@@ -79,7 +79,18 @@ app.get("/gestion_instalacion.ejs", (request, response) => {
 // catch 404 and forward to error handler
 
 app.get("/register", (request, response, next) => {
-  response.status(200).render("register.ejs");
+  instDao.obtenerFacultades((err, res) => {
+    if (err) {
+      response.status(403).render("register.ejs", {
+        errors: `No se han podido obtener las facultades`,
+        body: request.body,
+      });
+    } else {
+      response.status(200).render("register.ejs", {
+        facultades: res,
+      });
+    }
+  });
 });
 
 app.post(
@@ -101,71 +112,96 @@ app.post(
   body("user_course").escape(),
   body("user_group").escape(),
   (request, response, next) => {
-    var result = validationResult(request).array();
+    instDao.obtenerFacultades((err, res) => {
+      if (err) {
+        response.status(403).render("register.ejs", {
+          errors: `No se han podido obtener las facultades`,
+          body: request.body,
+        });
+      } else {
+        facultades = res;
 
-    if (result.length != 0) {
-      var errs = [];
+        var result = validationResult(request).array();
 
-      result.forEach((element) => {
-        errs[element.path] = element.msg;
-      });
+        if (result.length != 0) {
+          var errs = [];
 
-      response.status(403).render("register.ejs", {
-        errors: errs,
-        body: request.body,
-      });
-    } else {
-      instDao.buscarUsuario(request.body["user_email"], async (err, res) => {
-        if (err) {
+          result.forEach((element) => {
+            errs[element.path] = element.msg;
+          });
+
           response.status(403).render("register.ejs", {
-            errors: "Ha ocurrido un error interno en el acceso a la BD.",
+            errors: errs,
             body: request.body,
+            facultades: facultades,
           });
         } else {
-          if (res.length != 0) {
-            response.status(403).render("register.ejs", {
-              errors: "El correo introducido ya está registrado.",
-              body: request.body,
-            });
-          } else {
-            var req = request.body;
-            var mimetype = request.file ? request.file.mimetype : undefined;
-            if (mimetype && !allowedFormats.includes(mimetype)) {
-              response.status(403).render("register.ejs", {
-                errors: `El formato ${mimetype} no está permitido.`,
-                body: request.body,
-              });
-            } else {
-              req["user_password"];
-              req["user_password"] = await hashPassword(req["user_password"]);
-              var datos = [
-                req["user_name"],
-                req["user_surname"],
-                req["user_email"],
-                req["user_password"],
-                req["user_faculty"],
-                req["user_course"],
-                req["user_group"],
-                request.file ? request.file.buffer : null,
-                false,
-                false,
-              ];
-              instDao.registrarUsuario(datos, (err, res) => {
-                if (err) {
+          instDao.buscarUsuario(
+            request.body["user_email"],
+            async (err, res) => {
+              if (err) {
+                response.status(403).render("register.ejs", {
+                  errors: "Ha ocurrido un error interno en el acceso a la BD.",
+                  body: request.body,
+                  facultades: facultades,
+                });
+              } else {
+                if (res.length != 0) {
                   response.status(403).render("register.ejs", {
-                    errors:
-                      "Ha ocurrido un error interno en el acceso a la BD.",
+                    errors: "El correo introducido ya está registrado.",
                     body: request.body,
+                    facultades: facultades,
                   });
                 } else {
-                  response.status(200).render("registroCompletado.ejs");
+                  var req = request.body;
+                  var mimetype = request.file
+                    ? request.file.mimetype
+                    : undefined;
+                  if (mimetype && !allowedFormats.includes(mimetype)) {
+                    response.status(403).render("register.ejs", {
+                      errors: `El formato ${mimetype} no está permitido.`,
+                      body: request.body,
+                      facultades: facultades,
+                    });
+                  } else {
+                    var hashedPassword = await hashPassword(
+                      req["user_password"]
+                    );
+                    var datos = [
+                      req["user_name"],
+                      req["user_surname"],
+                      req["user_email"],
+                      hashedPassword,
+                      Number(req["user_faculty"]),
+                      req["user_course"],
+                      req["user_group"],
+                      request.file ? request.file.buffer : null,
+                      false,
+                      false,
+                    ];
+                    console.log(datos)
+                    instDao.registrarUsuario(datos, (err, res) => {
+                      if (err) {
+                        datos[3] = req["user_password"];
+                        console.log(err);
+                        response.status(403).render("register.ejs", {
+                          errors:
+                            "Ha ocurrido un error interno en el acceso a la BD.",
+                          body: request.body,
+                          facultades: facultades,
+                        });
+                      } else {
+                        response.status(200).render("registroCompletado.ejs");
+                      }
+                    });
+                  }
                 }
-              });
+              }
             }
-          }
+          );
         }
-      });
-    }
+      }
+    });
   }
 );
 

@@ -6,15 +6,14 @@ function validate() {
   const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
   var user_name = $("#user_name");
-  var user_surname =$("#user_surname");
+  var user_surname = $("#user_surname");
   var user_email = $("#user_email");
-  var user_password =$("#user_password");
-  var user_password_again =$("#user_password_again");
-  var user_faculty =$("#user_faculty");
+  var user_password = $("#user_password");
+  var user_password_again = $("#user_password_again");
+  var user_faculty = $("#user_faculty");
   var user_course = $("#user_course");
   var user_group = $("#user_group");
   var user_profile = $("#user_profile");
-
 
   var variables = [
     user_name,
@@ -28,11 +27,11 @@ function validate() {
   ];
 
   var any_empty = checkEmptyFields(variables);
-  var passwords_ok = user_password.prop("value") === user_password_again.prop("value");
+  var passwords_ok =
+    user_password.val() === user_password_again.val();
+  var faculty_ok = user_faculty.val()>0;
 
-  var file = user_profile[0] ?
-   user_profile[0].files[0] :
-    undefined;
+  var file = user_profile[0] ? user_profile[0].files[0] : undefined;
   var file_size_ok = file ? file.size / 1024 < MAX_KB_FILE_SIZE : true;
   var file_type_ok = file ? allowedFormats.includes(file.type) : true;
 
@@ -49,19 +48,33 @@ function validate() {
       $("#mail_error").show();
     } else if (!passwords_ok) {
       $("#password_error").show();
+    } else if (!faculty_ok) {
+      $("#faculty_error").show();
     } else if (!file_size_ok || !file_type_ok) {
-      $("#profile_error").text( file_size_ok ? `El formato ${file.type} no está permitido.`:
-      `El tamaño máximo de archivo es de ${MAX_KB_FILE_SIZE / 1024}MB.`).show() 
+      $("#profile_error")
+        .text(
+          file_size_ok
+            ? `El formato ${file.type} no está permitido.`
+            : `El tamaño máximo de archivo es de ${MAX_KB_FILE_SIZE / 1024}MB.`
+        )
+        .show();
     }
   }
-  return file_size_ok && file_type_ok && !any_empty && email_ok && passwords_ok;
+  return (
+    file_size_ok &&
+    file_type_ok &&
+    !any_empty &&
+    email_ok &&
+    passwords_ok &&
+    faculty_ok
+  );
 }
 
 // Returns true if there is any empty field, or false otherwise.
 function checkEmptyFields(vars) {
   var empty = false;
   vars.forEach((v) => {
-    if (v.prop("value") === "") empty = true;
+    if (v.val() === "") empty = true;
   });
   return empty;
 }
@@ -69,20 +82,24 @@ function checkEmptyFields(vars) {
 // Returns true if mail matches the regex expression for an email, or false otherwise.
 function validateEmail(client_email) {
   var email_regex = new RegExp(/\w+@\w+\.\w+/);
-  return client_email.prop("value") && client_email.prop("value").toLocaleLowerCase().match(email_regex) !== null;
+  return (
+    client_email.val() &&
+    client_email.val().toLocaleLowerCase().match(email_regex) !== null &&
+    String(client_email.val()).endsWith("@ucm.es")
+  );
 }
 
 // Changes the popups to not be visible.
 function closePopups() {
-  $(".popup_form_error").each(function() {
-    $(this).hide() ;
+  $(".popup_form_error").each(function () {
+    $(this).hide();
   });
 }
 
 // Hids all popups and redirect the user to the given page.
 function closeAndRedirect(newSite) {
-  $(".popup_form_error").each(function() {
-    $(this).hide() ;
+  $(".popup_form_error").each(function () {
+    $(this).hide();
   });
   window.location.href = newSite;
 }

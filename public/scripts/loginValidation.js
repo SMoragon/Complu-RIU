@@ -26,13 +26,13 @@ function validate() { // Function to validate the booking form.
 
 // Returns true if there is any empty field, or false otherwise.
 function checkEmptyFields(user_email, user_password) {
-  return user_email.prop("value") === "" || user_password.prop("value") === "";
+  return user_email.val() === "" || user_password.val() === "";
 }
 
 // Returns true if mail matches the regex expression for an email, or false otherwise.
 function validateEmail(user_email) {
   var email_regex = new RegExp(/\w+@\w+\.\w+/);
-  return user_email.prop("value") && user_email.prop("value").toLocaleLowerCase().match(email_regex) !== null;
+  return user_email.val() && user_email.val().toLocaleLowerCase().match(email_regex) !== null;
 }
 
 // Changes the popups to not be visible.

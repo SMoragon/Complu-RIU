@@ -71,7 +71,7 @@
                                 id="mail_error">El
                                 email introducido no es correcto. El formato
                                 debe
-                                ser "abcde@fghi.jkl".</span>
+                                ser "abcde@ucm.es".</span>
 
                             <% if (locals.errors && locals.errors["user_email"])
                             { %>
@@ -140,10 +140,19 @@
                         <div
                             class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
 
-                            <input type="text"
-                                class="form-control form-control-sm reg_log_input"
-                                name="user_faculty" id="user_faculty"
-                                value= <%=locals.body? body["user_faculty"]:""%>>
+                            <select name="user_faculty" id="user_faculty"
+                                class="form-control form-control-sm reg_field reg_log_input text-center text-truncate">
+                                <option value="0">Seleccione una facultad</option>
+                                
+                                <%if (locals.facultades){ %>
+                                    <% facultades.forEach((facultad)=>{ %>
+                                    <option value=<%=facultad.id%> ><%=facultad.nombre%></option>
+                                    <% });}  %>
+                                
+                               
+                            </select>
+                            <span class="popup_form_error text-danger"
+                            id="faculty_error">Por favor, selecciona una facultad.</span>
                         </div>
                     </div>
 
@@ -204,7 +213,8 @@
 
                             <% if (locals.errors) { %>
                             <span
-                                class="text-danger popup_form_error" style="display: inline-block;">
+                                class="text-danger popup_form_error"
+                                style="display: inline-block;">
                                 <%= errors %>
                             </span>
                             <% } %>

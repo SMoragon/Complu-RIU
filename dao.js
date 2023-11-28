@@ -132,6 +132,19 @@ class DAO {
     });
   }
 
+  obtenerFacultades(callback){
+    this.pool.getConnection((err, connection)=>{
+      if(err){
+        callback(err)
+      }
+      else{
+        const sql = "Select * From facultades";
+        connection.query(sql, callback);
+        connection.release();
+      }
+    })
+  }
+
   // Función que cierra el pool de conexiones una vez se hyaa terminado de hacer consultas.
   terminarConexion(callback) {
     this.pool.end(callback);
