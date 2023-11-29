@@ -175,9 +175,10 @@ app.delete("/eliminar_registro/:id", (request, response, next) => {
   })
 
 });
-// catch 404 and forward to error handler
 
-// catch 404 and forward to error handler
+app.get("/inbox",(request, response, next)=>{
+  response.status(200).render("inbox.ejs")
+})
 
 app.get("/register", (request, response, next) => {
   instDao.obtenerFacultades((err, res) => {

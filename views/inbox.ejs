@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
+<head>
+    <%- include ('pieces/head')%>
+</head>
+
+<body>
+    <!-- Use of ejs to avoid copy-pasting the whole header. -->
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+
+        <div id="inbox_container" class="d-flex flex-row">
+
+            <div class="last_messages_container container col-3 mx-5">
+
+                <div class="mail_card d-flex flex-column border-round-3 m-2">
+
+                    <div class="user_info d-flex flex-row">
+
+                        <img src="/images/default_picture.jpg" class="col-3" alt="">
+                        <span class="my-4 mx-3"> Zhipeng Gao </span>
+                    </div>
+
+                    <div class="email_subject mt-4">
+                        Asunto: Me he cargado el repositorio...
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="d-flex flex-column offset-1 col-8">
+
+                <div class="d-flex flex-row container email_search_container">
+
+                    <button id="delete_mail_filters" type="button" class="rounded-3 mx-4 p-2">Restablecer filtros</button>
+
+                    <form class="p-0 d-inline-block" method="get" action="/get_filtered_mail" id="mail_search_bar">
+                        <input class="search_text rounded-3" type="text"
+                            placeholder="Buscar correo por nombre, contenido..." name="search">
+                        <button type="submit" class="btn btn-primary mx-3"><i class="fa fa-search"></i></button>
+                    </form>
+
+                    <button id="write_mail" type="button" class="rounded-3 mx-2 p-2">Redactar</button>
+
+                </div>
+
+                <div id="message_body_container">
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+    <!-- Dynamically footer's inclusion. -->
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+
+</html>

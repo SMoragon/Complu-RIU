@@ -180,6 +180,15 @@ img > footer {
   padding:0.5rem;
 }
 
+.last_messages_container{
+  border:solid 0.5em blueviolet;
+  border-radius: 5%;
+}
+
+.email_search_container{
+  border:solid 0.5em blueviolet;
+  border-radius: 5%;
+}
 
 @media (max-width: 575.9px) {
   #login_cont {
