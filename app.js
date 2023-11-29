@@ -87,7 +87,7 @@ app.get("/gestion_instalacion.ejs", (request, response, next) => {
   })
 });
 
-app.post("/add_instalacion", multerFactory.single("instalacion_imagen"), (request, response) => {
+app.post("/add_instalacion", multerFactory.single("instalacion_imagen"), body("instalacion_nombre").escape(), (request, response) => {
   var body = request.body
   var datos = [
     body["instalacion_nombre"],
@@ -108,7 +108,7 @@ app.post("/add_instalacion", multerFactory.single("instalacion_imagen"), (reques
   });
 });
 
-app.put("/modificar_instalacion/:imagen", multerFactory.single("instalacion_imagen"), (request, response) => {
+app.put("/modificar_instalacion/:imagen", multerFactory.single("instalacion_imagen"), body("m_instalacion_nombre").escape(), (request, response) => {
   var imagen = request.params.imagen == "true" ? true : false;
   var body = request.body
   var id = body["instalacion_id"]
@@ -139,9 +139,41 @@ app.delete("/delete_instalacion/:id", (request, response) => {
   });
 });
 
-app.get("/validar_registro.ejs", (request, response) => {
-  var iter = [1, 2, 3, 4, 5, 6, 7, 8]
-  response.status(200).render("validarRegistro.ejs", { dato: iter });
+app.get("/validar_registro.ejs", (request, response, next) => {
+  instDao.obtenerUsuariosNoValidatos((err, res) => {
+    if (err) {
+      next();
+    } else {
+      response.status(200).render("validarRegistro.ejs", { datos: res });
+    }
+  })
+});
+
+app.patch("/validar_registro/:id", (request, response, next) => {
+  var id = request.params.id
+  console.log(id)
+  instDao.validarUsuario(id, (err, res) => {
+    if (err) {
+      next();
+    } else {
+      response.status(200).json({ msg: 'Usuario validado con exito' });
+    }
+  })
+
+
+});
+
+app.delete("/eliminar_registro/:id", (request, response, next) => {
+  var id = request.params.id
+  console.log(id)
+  instDao.eliminarUsuario(id, (err, res) => {
+    if (err) {
+      next();
+    } else {
+      response.status(200).json({ msg: 'Usuario eliminado con exito' });
+    }
+  })
+
 });
 // catch 404 and forward to error handler
 
@@ -248,11 +280,9 @@ app.post(
                       false,
                       false,
                     ];
-                    console.log(datos)
                     instDao.registrarUsuario(datos, (err, res) => {
                       if (err) {
                         datos[3] = req["user_password"];
-                        console.log(err);
                         response.status(403).render("register.ejs", {
                           errors:
                             "Ha ocurrido un error interno en el acceso a la BD.",

@@ -73,11 +73,22 @@ a {
 
 .instalacion_img{
   height: 10em;
-  min-height: 12em;
+  min-height: 10em;
+  max-height: 10em;
 }
 
 .instalacion_bgc{
   background-color:  rgb(188, 180, 231) !important;
+}
+
+.validar_usuario_bgc{
+  background-color:  rgb(188, 180, 231) !important;
+}
+
+.validar_registro_img{
+  height: 10em;
+  min-height: 10em;
+  max-height: 10em;
 }
 
 img > footer {
