@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <title>Complu-RIU</title>
+    <link rel="icon" type="image/jpg" href="Images/favicon.jpg">
+</head>
+
+<body>
+    <!-- Use of ejs to avoid copy-pasting the whole header. -->
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <h2 class="text-primary">Validación de usuarios</h2>
+                </div>
+            </div>
+        </div>
+        <% if (locals.dato) { %>
+            <div class="container-fluid">
+                <div class="row justify-content-center" id="instalacion_list">
+                    <% dato.forEach(element=> { %>
+                        <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0"
+                            id="validar_registro_<%=element%>">
+                            <div
+                                class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4  instalacion_bgc">
+                                <div class="row justify-content-center">
+                                    <div class="col-sm-7 col-12 p-0">
+                                        <div
+                                            class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
+                                            <span class="row justify-content-center mb-2 mt-1">Nombre_<%=element%>
+                                                    </span>
+                                            <img src="/images/PingPong.webp" alt=""
+                                                class="img-fluid rounded-4 validar_registro_img">
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                        <button type="button"
+                                            class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                                            data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element%>"><i
+                                                class="fa fa-eye"></i> Detalles</button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate"><i
+                                                class="fa fa-gear"></i> Aceptar</button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-danger mb-sm-auto mb-2 text-truncate"
+                                            id="eliminar_usuario_<%=element%>">
+                                            <i class="fa fa-trash"></i> Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal top fade" id="usuario_detalles_<%=element%>" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content modal-destiny-container">
+                                    <div class="modal-header">
+                                        Detalles
+                                    </div>
+                                    <div class="modal-body container">
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-7 col-12 p-0">
+                                                <div
+                                                    class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
+                                                    <img src="/images/Natacion.jpg" alt="<%=element%>"
+                                                        class="img-fluid rounded-4">
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                                <p><i class="fa fa-building"></i> Nombre Instalación:
+                                                    <%=element%>
+                                                </p>
+                                                <p><i class="fa fa-hourglass-1"></i> Apertura:
+                                                    <%=element%>
+                                                </p>
+                                                <p><i class="fa fa-hourglass-3"></i> Cierre: <%=element%>
+                                                </p>
+                                                <p><i class="fa fa-map-pin"></i> Tipo reserva: <%=element%>
+                                                </p>
+                                                <p><i class="fa fa-group"></i> Aforo: <%=element%>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-lg btn-outline-success"
+                                            data-bs-dismiss="modal">Aceptar</button>
+                                        <button type="button" class="btn btn-lg btn-outline-info"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <%});%>
+                </div>
+            </div>
+            <% } %>
+
+
+    </main>
+    <!-- Dynamically footer's inclusion. -->
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+<script src="/scripts/instalacionValidation.js"></script>
+<script src="/scripts/instalaciones.js"></script>
+
+
+</html>

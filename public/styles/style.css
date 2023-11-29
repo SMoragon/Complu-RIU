@@ -66,6 +66,20 @@ a {
   margin: 0.13em 1em;
 }
 
+.user_img {
+  max-width: 3em;
+  margin-right: 2em;
+}
+
+.instalacion_img{
+  height: 10em;
+  min-height: 12em;
+}
+
+.instalacion_bgc{
+  background-color:  rgb(188, 180, 231) !important;
+}
+
 img > footer {
   margin-top: -1.5em;
   max-width: 100%;

@@ -72,10 +72,79 @@ app.get("/index.html", (request, response) => {
   response.status(200).render("index.ejs");
 });
 
-app.get("/gestion_instalacion.ejs", (request, response) => {
-  var iter = [1, 2, 3, 4, 5, 6, 7, 8];
-  response.status(200).render("gestion_instalaciones.ejs", { dato: iter });
+app.get("/gestion_instalacion.ejs", (request, response, next) => {
+  var busqueda = "";
+  if (request.query['search'] !== undefined) {
+    busqueda = request.query['search'];
+  }
+  instDao.buscarInstalacion(busqueda, (err, res) => {
+    if (err) {
+      next();
+    }
+    else {
+      response.status(200).render("gestion_instalaciones.ejs", { dato: res });
+    }
+  })
 });
+
+app.post("/add_instalacion", multerFactory.single("instalacion_imagen"), (request, response) => {
+  var body = request.body
+  var datos = [
+    body["instalacion_nombre"],
+    body["horario_apertura"],
+    body["horario_cierre"],
+    body["tipo_reserva"],
+    body["aforo"],
+    request.file ? request.file.buffer : null,
+    request.file['mimetype']
+  ];
+  instDao.insertar_instalacion(datos, (err) => {
+    if (err) {
+      response.status(400)
+    } else {
+      response.status(201).json({ msg: 'Instalacion añadido con exito, para que se haga efecto, reflesca la pagina' })
+    }
+    response.end()
+  });
+});
+
+app.put("/modificar_instalacion/:imagen", multerFactory.single("instalacion_imagen"), (request, response) => {
+  var imagen = request.params.imagen == "true" ? true : false;
+  var body = request.body
+  var id = body["instalacion_id"]
+  var dato = [body["m_instalacion_nombre"], body["m_horario_apertura"], body["m_horario_cierre"], body["m_tipo_reserva"], body["m_aforo"]]
+  if (imagen) {
+    dato.push(request.file.buffer)
+    dato.push(request.file['mimetype'])
+  }
+  instDao.modificarInstalacion(id, imagen, dato, (err) => {
+    if (err) {
+      response.status(400)
+    } else {
+      response.status(201).json({ msg: 'Instalacion modificado con exito, para que se haga efecto, reflesca la pagina' })
+    }
+    response.end()
+  })
+});
+
+app.delete("/delete_instalacion/:id", (request, response) => {
+  var id = request.params.id
+  instDao.eliminarInstalacion(id, (err) => {
+    if (err) {
+      response.status(404).json({ msg: 'Instalacion no existente' })
+    } else {
+      response.status(201).json({ msg: 'Instalacion eliminado con exito' })
+    }
+    response.end()
+  });
+});
+
+app.get("/validar_registro.ejs", (request, response) => {
+  var iter = [1, 2, 3, 4, 5, 6, 7, 8]
+  response.status(200).render("validarRegistro.ejs", { dato: iter });
+});
+// catch 404 and forward to error handler
+
 // catch 404 and forward to error handler
 
 app.get("/register", (request, response, next) => {
