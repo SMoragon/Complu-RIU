@@ -191,6 +191,41 @@ class DAO {
     });
   }
 
+  validarUsuario(id, callback){
+    this.pool.getConnection((err, connection)=>{
+      if(err){
+        callback(err);
+      }else{
+        const sql = "UPDATE usuarios SET validado = 1 WHERE id = ?"
+        connection.query(sql, id, callback);
+        connection.release();
+      }
+    })
+  }
+
+  eliminarUsuario(id, callback){
+    this.pool.getConnection((err, connection)=>{
+      if(err){
+        callback(err);
+      }else{
+        const sql = "DELETE FROM usuarios WHERE id = ?"
+        connection.query(sql, id, callback);
+        connection.release();
+      }
+    })
+  }
+  obtenerUsuariosNoValidatos(callback){
+    this.pool.getConnection((err, connection)=>{
+      if(err){
+        callback(err);
+      }else{
+        const sql = "SELECT u.id, u.nombre, apellidos, correo, f.nombre as facultadUser, curso, grupo, imagen_perfil FROM usuarios u JOIN facultades f ON f.id=u.facultad WHERE validado=0"
+        connection.query(sql, callback);
+        connection.release();
+      }
+    })
+  }
+
   obtenerFacultades(callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {

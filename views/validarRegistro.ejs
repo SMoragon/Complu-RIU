@@ -31,70 +31,74 @@
                 </div>
             </div>
         </div>
-        <% if (locals.dato) { %>
+        <% if (locals.datos) { %>
             <div class="container-fluid">
                 <div class="row justify-content-center" id="instalacion_list">
-                    <% dato.forEach(element=> { %>
+                    <% datos.forEach(element=> { %>
                         <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0"
-                            id="validar_registro_<%=element%>">
+                            id="validar_registro_<%=element.id%>">
                             <div
-                                class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4  instalacion_bgc">
+                                class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4  validar_usuario_bgc">
                                 <div class="row justify-content-center">
                                     <div class="col-sm-7 col-12 p-0">
                                         <div
                                             class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
-                                            <span class="row justify-content-center mb-2 mt-1">Nombre_<%=element%>
-                                                    </span>
-                                            <img src="/images/PingPong.webp" alt=""
-                                                class="img-fluid rounded-4 validar_registro_img">
+                                            <span class="row justify-content-center mb-2 mt-1"><%=element.nombre%></span>
+                                            <% if (element.imagen_perfil===null) { %>
+                                                <img src="/images/default_picture.jpg" alt="foto de perfil por defecto"
+                                                class="img-fluid mb-2 validar_registro_img">
+                                            <%}else{ %>
+                                                <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>" alt="foto de perfil de <%=element.nombre%>"
+                                                class="img-fluid mb-2 validar_registro_img">
+                                            <%};%>
                                         </div>
                                     </div>
                                     <div
                                         class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                                         <button type="button"
                                             class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
-                                            data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element%>"><i
+                                            data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
                                                 class="fa fa-eye"></i> Detalles</button>
                                         <button type="button"
-                                            class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate"><i
+                                            class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate validar_usuario"
+                                            id="validar_usuario_<%=element.id%>"><i
                                                 class="fa fa-gear"></i> Aceptar</button>
                                         <button type="button"
-                                            class="btn btn-sm btn-danger mb-sm-auto mb-2 text-truncate"
-                                            id="eliminar_usuario_<%=element%>">
+                                            class="btn btn-sm btn-danger mb-sm-auto mb-2 text-truncate eliminar_usuario"
+                                            id="eliminar_usuario_<%=element.id%>">
                                             <i class="fa fa-trash"></i> Eliminar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal top fade" id="usuario_detalles_<%=element%>" data-bs-backdrop="static">
+                        <div class="modal top fade" id="usuario_detalles_<%=element.id%>" data-bs-backdrop="static">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content modal-destiny-container">
                                     <div class="modal-header">
-                                        Detalles
+                                        Detalles sobre <%=element.nombre%>
                                     </div>
                                     <div class="modal-body container">
                                         <div class="row justify-content-center">
                                             <div class="col-sm-7 col-12 p-0">
                                                 <div
                                                     class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
-                                                    <img src="/images/Natacion.jpg" alt="<%=element%>"
-                                                        class="img-fluid rounded-4">
+                                                    <% if (element.imagen_perfil===null) { %>
+                                                        <img src="/images/default_picture.jpg" alt="foto de perfil por defecto"
+                                                        class="img-fluid">
+                                                    <%}else{ %>
+                                                        <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>" alt="foto de perfil de <%=element.nombre%>"
+                                                        class="img-fluid">
+                                                    <%};%>
                                                 </div>
                                             </div>
                                             <div
                                                 class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
-                                                <p><i class="fa fa-building"></i> Nombre Instalación:
-                                                    <%=element%>
-                                                </p>
-                                                <p><i class="fa fa-hourglass-1"></i> Apertura:
-                                                    <%=element%>
-                                                </p>
-                                                <p><i class="fa fa-hourglass-3"></i> Cierre: <%=element%>
-                                                </p>
-                                                <p><i class="fa fa-map-pin"></i> Tipo reserva: <%=element%>
-                                                </p>
-                                                <p><i class="fa fa-group"></i> Aforo: <%=element%>
-                                                </p>
+                                                <p><i class="fa fa-user-secret"></i> Nombre: <%=element.nombre%></p>
+                                                <p><i class="fa fa-user-plus"></i> Apellido: <%=element.apellidos%></p>
+                                                <p><i class="fa fa-envelope"></i> Correo: <%=element.correo%></p>
+                                                <p><i class="fa fa-book"></i> Curso: <%=element.curso%></p>
+                                                <p><i class="fa fa-group"></i> Curso: <%=element.grupo%></p>
+                                                <p><i class="fa fa-building"></i> Facultad: <%=element.facultadUser%></p>
                                             </div>
                                         </div>
                                     </div>
@@ -119,8 +123,6 @@
         <%- include ('pieces/footer')%>
     </footer>
 </body>
-<script src="/scripts/instalacionValidation.js"></script>
-<script src="/scripts/instalaciones.js"></script>
-
+<script src="/scripts/validarUsuarioAdmin.js"></script>
 
 </html>

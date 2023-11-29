@@ -73,6 +73,8 @@ $(document).ready((e) => {
             success: (message) => {
                 alert(message['msg'])
                 $("#instalacion_"+id).remove()
+                $("#instalacion_detalles_"+id).remove()
+                $("#instalaciones_modificar_"+id).remove()
             },
             error: (jqXHR, textStatus, errorThrown) => {
                 alert("Se ha producido un error: Intentelo mas tarde.")
