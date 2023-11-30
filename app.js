@@ -72,7 +72,7 @@ app.get("/index.html", (request, response) => {
   response.status(200).render("index.ejs");
 });
 
-app.get("/gestion_instalacion.ejs", (request, response, next) => {
+app.get("/gestion_instalacion", (request, response, next) => {
   var busqueda = "";
   if (request.query['search'] !== undefined) {
     busqueda = request.query['search'];
@@ -139,7 +139,7 @@ app.delete("/delete_instalacion/:id", (request, response) => {
   });
 });
 
-app.get("/validar_registro.ejs", (request, response, next) => {
+app.get("/validar_registro", (request, response, next) => {
   instDao.obtenerUsuariosNoValidatos((err, res) => {
     if (err) {
       next();

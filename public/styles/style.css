@@ -181,13 +181,34 @@ img > footer {
 }
 
 .last_messages_container{
-  border:solid 0.5em blueviolet;
+  border:solid 0.25em blueviolet;
   border-radius: 5%;
+  max-height: 40em;
 }
 
 .email_search_container{
-  border:solid 0.5em blueviolet;
+  border:solid 0.3em blueviolet;
   border-radius: 5%;
+}
+
+.mail_card{
+  border:solid 0.3em rgb(119, 73, 161);
+  border-radius: 5%;
+}
+
+.remitent_text{
+  font-size: calc(0.7em + 1.1vw);
+  color: rgb(140, 21, 145);
+}
+
+.email_subject{
+  font-size: calc(0.6em + 0.4vw);
+  color: rgb(129, 28, 133);
+}
+
+.remitent_img{
+  max-width: 3em;
+  max-height: 3em;
 }
 
 @media (max-width: 575.9px) {
