@@ -2,7 +2,7 @@ var express = require("express");
 var path = require("path");
 const express_validator = require("express-validator");
 const body = express_validator.body;
-
+const moment=require("moment")
 const pool = require("./pool.js");
 const dao = require("./dao.js");
 const multer = require("multer");
@@ -36,6 +36,8 @@ const hashPassword = async (password) => {
 
 const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
+moment.locale("es")
+
 var instPool = new pool("localhost", "root", "", "ucm_riu");
 var instDao = new dao(instPool.get_pool());
 
@@ -48,19 +50,37 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(express.json());
+
 app.use(middlewareSession);
 
-app.use((req, res, next) => {
-  if (req.session.isLogged) {
-    if (!req.session.profile) {
-      req.session.profile = "/images/default_picture.jpg";
-      req.session.defaultProfile = true;
-    } else if (req.session.profile !== "/images/default_picture.jpg") {
-      req.session.defaultProfile = false;
+app.use((request, response, next) => {
+  if (request.session.isLogged) {
+    if (!request.session.profile) {
+      request.session.profile = "/images/default_picture.jpg";
+      request.session.defaultProfile = true;
+    } else if (request.session.profile !== "/images/default_picture.jpg") {
+      request.session.defaultProfile = false;
     }
+
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var id_receptor = res[0].id;
+        instDao.obtenerMensajesSinLeer(id_receptor, (err, res) => {
+          if (err) {
+            response.status(400).end();
+          } else {
+            request.session.sinLeer = Number(res[0].sinLeer);
+            response.locals.session = request.session;
+            next();
+          }
+        });
+      }
+    });
   }
-  res.locals.session = req.session;
-  next();
+  else {next();}
 });
 
 // Enrutamiento de las páginas principales de nuestra aplicación.
@@ -74,111 +94,195 @@ app.get("/index.html", (request, response) => {
 
 app.get("/gestion_instalacion", (request, response, next) => {
   var busqueda = "";
-  if (request.query['search'] !== undefined) {
-    busqueda = request.query['search'];
+  if (request.query["search"] !== undefined) {
+    busqueda = request.query["search"];
   }
   instDao.buscarInstalacion(busqueda, (err, res) => {
     if (err) {
-      next();
-    }
-    else {
+      response.status(400).end();
+    } else {
       response.status(200).render("gestion_instalaciones.ejs", { dato: res });
     }
-  })
-});
-
-app.post("/add_instalacion", multerFactory.single("instalacion_imagen"), body("instalacion_nombre").escape(), (request, response) => {
-  var body = request.body
-  var datos = [
-    body["instalacion_nombre"],
-    body["horario_apertura"],
-    body["horario_cierre"],
-    body["tipo_reserva"],
-    body["aforo"],
-    request.file ? request.file.buffer : null,
-    request.file['mimetype']
-  ];
-  instDao.insertar_instalacion(datos, (err) => {
-    if (err) {
-      response.status(400)
-    } else {
-      response.status(201).json({ msg: 'Instalacion añadido con exito, para que se haga efecto, reflesca la pagina' })
-    }
-    response.end()
   });
 });
 
-app.put("/modificar_instalacion/:imagen", multerFactory.single("instalacion_imagen"), body("m_instalacion_nombre").escape(), (request, response) => {
-  var imagen = request.params.imagen == "true" ? true : false;
-  var body = request.body
-  var id = body["instalacion_id"]
-  var dato = [body["m_instalacion_nombre"], body["m_horario_apertura"], body["m_horario_cierre"], body["m_tipo_reserva"], body["m_aforo"]]
-  if (imagen) {
-    dato.push(request.file.buffer)
-    dato.push(request.file['mimetype'])
+app.post(
+  "/add_instalacion",
+  multerFactory.single("instalacion_imagen"),
+  body("instalacion_nombre").escape(),
+  (request, response) => {
+    var body = request.body;
+    var datos = [
+      body["instalacion_nombre"],
+      body["horario_apertura"],
+      body["horario_cierre"],
+      body["tipo_reserva"],
+      body["aforo"],
+      request.file ? request.file.buffer : null,
+      request.file["mimetype"],
+    ];
+    instDao.insertar_instalacion(datos, (err) => {
+      if (err) {
+        response.status(400);
+      } else {
+        response.status(201).json({
+          msg: "Instalacion añadido con exito, para que se haga efecto, reflesca la pagina",
+        });
+      }
+      response.end();
+    });
   }
-  instDao.modificarInstalacion(id, imagen, dato, (err) => {
-    if (err) {
-      response.status(400)
-    } else {
-      response.status(201).json({ msg: 'Instalacion modificado con exito, para que se haga efecto, reflesca la pagina' })
+);
+
+app.put(
+  "/modificar_instalacion/:imagen",
+  multerFactory.single("instalacion_imagen"),
+  body("m_instalacion_nombre").escape(),
+  (request, response) => {
+    var imagen = request.params.imagen == "true" ? true : false;
+    var body = request.body;
+    var id = body["instalacion_id"];
+    var dato = [
+      body["m_instalacion_nombre"],
+      body["m_horario_apertura"],
+      body["m_horario_cierre"],
+      body["m_tipo_reserva"],
+      body["m_aforo"],
+    ];
+    if (imagen) {
+      dato.push(request.file.buffer);
+      dato.push(request.file["mimetype"]);
     }
-    response.end()
-  })
-});
+    instDao.modificarInstalacion(id, imagen, dato, (err) => {
+      if (err) {
+        response.status(400);
+      } else {
+        response.status(201).json({
+          msg: "Instalacion modificado con exito, para que se haga efecto, reflesca la pagina",
+        });
+      }
+      response.end();
+    });
+  }
+);
 
 app.delete("/delete_instalacion/:id", (request, response) => {
-  var id = request.params.id
+  var id = request.params.id;
   instDao.eliminarInstalacion(id, (err) => {
     if (err) {
-      response.status(404).json({ msg: 'Instalacion no existente' })
+      response.status(404).json({ msg: "Instalacion no existente" });
     } else {
-      response.status(201).json({ msg: 'Instalacion eliminado con exito' })
+      response.status(201).json({ msg: "Instalacion eliminado con exito" });
     }
-    response.end()
+    response.end();
   });
 });
 
 app.get("/validar_registro", (request, response, next) => {
   instDao.obtenerUsuariosNoValidatos((err, res) => {
     if (err) {
-      next();
+      response.status(400).end();
     } else {
       response.status(200).render("validarRegistro.ejs", { datos: res });
     }
-  })
+  });
 });
 
 app.patch("/validar_registro/:id", (request, response, next) => {
-  var id = request.params.id
-  console.log(id)
+  var id = request.params.id;
   instDao.validarUsuario(id, (err, res) => {
     if (err) {
-      next();
+      response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
     } else {
-      response.status(200).json({ msg: 'Usuario validado con exito' });
+      response.status(200).json({ msg: "Usuario validado con exito" });
     }
-  })
-
-
+  });
 });
 
 app.delete("/eliminar_registro/:id", (request, response, next) => {
-  var id = request.params.id
-  console.log(id)
+  var id = request.params.id;
   instDao.eliminarUsuario(id, (err, res) => {
     if (err) {
-      next();
+      response.status(400).end();
     } else {
-      response.status(200).json({ msg: 'Usuario eliminado con exito' });
+      response.status(200).json({ msg: "Usuario eliminado con exito" });
     }
-  })
-
+  });
 });
 
-app.get("/inbox",(request, response, next)=>{
-  response.status(200).render("inbox.ejs")
+app.get("/inbox", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end();
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var id_receptor = res[0].id;
+        instDao.obtenerMensajes(id_receptor, (err, res) => {
+          if (err) {
+            response.status(400).end();
+          } else {
+            res.forEach((mensaje) => {
+              mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
+            });
+            response.status(200).render("inbox.ejs", { datos: res });
+          }
+        });
+      }
+    });
+  }
+});
+
+app.patch("/marcar_leido/:id", (request, response, next)=>{
+  instDao.marcarComoLeido(request.params.id, (err,res)=>{
+    if(err){
+      response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
+    }
+  })
 })
+
+app.post("/write_mail", (request, response, next) => {
+  instDao.buscarUsuario(request.session.mail, async (err, res) => {
+    if (err) {
+      response.status(400).end();
+    } else {
+      var idEmisor = res[0].id;
+      var emisor = res[0];
+      instDao.buscarUsuario(request.body.receptor, (err, res) => {
+        if (err) {
+          response.status(400).end();
+        } else {
+          if (res.length == 0) {
+            response.status(400).end("No receiver found");
+          } else {
+            if (res[0].facultad != emisor.facultad) {
+              response.status(400).end("Faculty does not match");
+            } else {
+              var idReceptor = res[0].id;
+
+              datos = [
+                idEmisor,
+                idReceptor,
+                request.body.asunto,
+                request.body.mensaje,
+                false,
+                new Date(),
+              ];
+              instDao.enviarMensaje(datos, (err, res) => {
+                if (err) {
+                  response.status(400).end();
+                } else {
+                  response.status(200).end();
+                }
+              });
+            }
+          }
+        }
+      });
+    }
+  });
+});
 
 app.get("/register", (request, response, next) => {
   instDao.obtenerFacultades((err, res) => {
@@ -365,6 +469,8 @@ app.post(
               }
               request.session.isLogged = true;
               request.session.user = context.nombre;
+              request.session.mail = context.correo;
+              request.session.sinLeer = 0;
               response.status(200).redirect("index.html"); // The error occurs after here (with try-catch, it does not detect anything, but i dont know where it is)
             }
           }
@@ -377,8 +483,10 @@ app.post(
 app.get("/logout", (request, response, next) => {
   request.session.isLogged = false;
   request.session.user = undefined;
+  request.session.mail = undefined;
   request.session.profile = undefined;
   request.session.defaultProfile = undefined;
+  request.session.sinLeer = undefined;
   response.render("index.ejs");
 });
 

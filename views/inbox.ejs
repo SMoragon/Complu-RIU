@@ -1,159 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+    <!-- Bootstrap, stylesheets, WP title and favicon load. -->
 
-<head>
-    <%- include ('pieces/head')%>
+    <head>
+        <%- include ('pieces/head')%>
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+    </head>
 
-<body>
-    <!-- Use of ejs to avoid copy-pasting the whole header. -->
-    <header>
-        <%- include ('pieces/header')%>
-    </header>
-    <main>
+    <body>
+        <!-- Use of ejs to avoid copy-pasting the whole header. -->
+        <header>
+            <%- include ('pieces/header')%>
+        </header>
+        <main>
 
-        <div id="inbox_container" class="d-flex flex-row">
+            <div id="inbox_container">
 
-            <div class="last_messages_container overflow-y-scroll col-3 mx-5 p-2">
+                <div id="last_messages_container"
+                    class="overflow-auto col-sm-3 col-auto mx-sm-3 mx-1 p-sm-2 p-1">
 
-                <div class="mail_card d-flex flex-column border-round-3 mx-1 mb-3 p-3">
+                    <%if (locals.datos && locals.datos.length>0){%>
+                        <%datos.forEach((mensaje)=>{%>
 
-                    <div class="user_info d-flex flex-row">
+                            <div id ="<%=mensaje.id %>"
+                            class="mail_card d-flex flex-column flex-wrap border-round-3 mx-1 my-3 p-3">
+    
+                            <div
+                                class="user_info d-flex flex-wrap justify-content-center flex-row">
+    
+                                <%if (mensaje.imagen_perfil){%>
+                                    <img class="remitent_img rounded-5 col-md-4" src="data:image/*;base64, <%= new Buffer(mensaje.imagen_perfil).toString('base64'); %>" alt=""> 
+                                <%}else {%>    
+                                    <img class="remitent_img rounded-5 col-md-4" src="/images/default_picture.jpg" class= alt>
+                                <%}%>
+                                <div
+                                    class="remitent_text text-center my-sm-auto my-1 mx-md-2 col-md-7">
+                                    <strong><%=mensaje.nombre%> <%=mensaje.apellidos%> </strong> </div>
+                            </div>
+    
+                            <div class="email_subject text-break mt-sm-4 mt-2">
+                                <strong>Asunto:</strong> <%=mensaje.asunto%> 
+                            </div>
 
-                        <img src="/images/default_picture.jpg" class="remitent_img rounded-5" alt="">
-                        <span class="remitent_text text-center my-auto mx-3"> <strong></strong> Zhipeng Gao </span>
-                    </div>
+                            <input type="hidden" class="hidden_sent_date" value="<%=mensaje.fecha_envio%>">
+                            <input type="hidden" class="hidden_emitter_mail" value="<%=mensaje.correo%>">
+                            <input type="hidden" class="hidden_mail_content" value="<%=mensaje.contenido%>">
+    
+                        </div>
 
-                    <div class="email_subject mt-4">
-                        Asunto: Me he cargado el repositorio...
-                    </div>
+                        <%})%>
 
-                </div>
+                    <%}else{%>
+                        <h3 class="text-center text-success m-2 p-2">¡Vaya! <br>  Parece que todavía no tienes ningún mensaje...</h3>
+                        <%}%>
 
-
-                <div class="mail_card d-flex flex-column border-round-3 mx-1 mb-3 p-3">
-
-                    <div class="user_info d-flex flex-row">
-
-                        <img src="/images/default_picture.jpg" class="remitent_img rounded-5" alt="">
-                        <span class="remitent_text text-center my-auto mx-3"> <strong></strong> Zhipeng Gao </span>
-                    </div>
-
-                    <div class="email_subject mt-4">
-                        Asunto: Me he cargado el repositorio...
-                    </div>
-
-                </div>
-
-                <div class="mail_card d-flex flex-column border-round-3 mx-1 mb-3 p-3">
-
-                    <div class="user_info d-flex flex-row">
-
-                        <img src="/images/default_picture.jpg" class="remitent_img rounded-5" alt="">
-                        <span class="remitent_text text-center my-auto mx-3"> <strong></strong> Zhipeng Gao </span>
-                    </div>
-
-                    <div class="email_subject mt-4">
-                        Asunto: Me he cargado el repositorio...
-                    </div>
+                 
 
                 </div>
 
-                <div class="mail_card d-flex flex-column border-round-3 mx-1 mb-3 p-3">
+                <div id="inbox_main"
+                    class="d-flex flex-column offset-sm-1 flex-wrap col-sm-7 my-sm-3">
 
-                    <div class="user_info d-flex flex-row">
+                    <div class="container d-flex flex-row">
+                        <div
+                            class="email_search_container rounded-5 col-12 text-center py-sm-3 py-1">
 
-                        <img src="/images/default_picture.jpg" class="remitent_img rounded-5" alt="">
-                        <span class="remitent_text text-center my-auto mx-3"> <strong></strong> Zhipeng Gao </span>
-                    </div>
+                            <button id="write_mail_but" type="button"
+                                class="inbox_buts rounded-3 mx-2 p-2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#write_email">Redactar</button>
 
-                    <div class="email_subject mt-4">
-                        Asunto: Me he cargado el repositorio...
-                    </div>
+                            <div class="d-inline-block">
+                                <form class="m-2  d-inline-block" method="get"
+                                    action="/get_filtered_mail"
+                                    id="mail_search_bar">
+                                    <input class="search_text rounded-3"
+                                        type="text"
+                                        placeholder="Buscar correo por nombre, contenido..."
+                                        name="search">
+                                    <button type="submit"
+                                        class="btn btn-primary mx-1 fa fa-search"></button>
+                                </form>
+                            </div>
 
-                </div>
+                        </div>
 
-            </div>
+                        <div class="modal top fade" id="write_email"
+                            data-bs-backdrop="static">
+                            <div
+                                class="modal-dialog modal-lg modal-dialog-centered">
+                                <div id="write_email_dialog"
+                                    class="modal-content">
 
-            <div class="d-flex flex-column offset-1 flex-wrap col-7">
-
-                <div class="d-flex flex-row container">
-                    <div class="email_search_container p-3">
-                        <button id="delete_mail_filters" type="button" class="rounded-3 mx-4 p-2">Restablecer
-                            filtros</button>
-
-                        <form class="p-0 d-inline-block" method="get" action="/get_filtered_mail" id="mail_search_bar">
-                            <input class="search_text rounded-3" type="text"
-                                placeholder="Buscar correo por nombre, contenido..." name="search">
-                            <button type="submit" class="btn btn-primary mx-3 fa fa-search"></button>
-                        </form>
-
-                        <button id="write_mail_but" type="button" class="rounded-3 mx-2 p-2" data-bs-toggle="modal"
-                            data-bs-target="#write_email">Redactar</button>
-
-                        <div class="modal top fade" id="write_email" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                <div class="modal-content">
                                     <div class="modal-header">
                                         Redactar un correo
+                                        <button type="button" class="btn-close"
+                                            data-bs-dismiss="modal"></button>
                                     </div>
-                                    <form method="POST" action="/write_mail"></form>
-                                        <div class="modal-body">
+                                    <form id="send_mail_form">
+                                        <div class="modal-body container">
 
-                                            <div class="form-group row justify-content-center my-3">
-                                                <label for="sent_email_receiver"  class="col-md-2">Destinatario</label>
-                                                <input type="text" id="sent_email_receiver"  class="col-md-6">
-                                            </div>
+                                            <div
+                                                class="form-group row justify-content-center my-2">
+                                                <label for="sent_email_receiver"
+                                                    class="send_mail_field col-md-2 text-truncate">Destinatario</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text"
+                                                        id="sent_email_receiver"
+                                                        class="send_mail_input form-control form-control-sm rounded-4">
 
-                                            <div class="form-group row justify-content-center my-3">
-                                                <label for="sent_email_subject" class="col-md-2">Asunto</label>
-                                                <input type="text" id="sent_email_subject" class="col-md-6">
-                                            </div>
-
-                                            
-                                            <div class="form-group row justify-content-center">
-                                                <label for="sent_email_content" class="my-1">Cuerpo del mensaje</label>
-                                                <div class="mx-3 mt-2">
-                                                    <textarea name="sent_email_content" id="sent_email_content" cols="20" rows="10" class="col-12 p-5" ></textarea>
                                                 </div>
-                                              
+
+                                                <span
+                                                    class="mail_form_error text-danger my-2 text-center"
+                                                    id="send_mail_email_error">El
+                                                    email introducido no es
+                                                    correcto. El formato
+                                                    debe
+                                                    ser "abcde@ucm.es".</span>
                                             </div>
 
+                                            <div
+                                                class="form-group row d-flex justify-content-center my-3">
+                                                <label for="sent_email_subject"
+                                                    class="send_mail_field col-form-label col-sm-2 text-truncate">Asunto</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text"
+                                                        id="sent_email_subject"
+                                                        class="send_mail_input form-control form-control-sm rounded-4">
+                                                </div>
+
+                                            </div>
+
+                                            <div
+                                                class="form-group row justify-content-center">
+                                                <!--label for="sent_email_content" class="my-1">Cuerpo del mensaje</!--label-->
+                                                <div class="mx-3 mt-2">
+                                                    <textarea
+                                                        name="sent_email_content"
+                                                        id="sent_email_content"
+                                                        cols="20" rows="10"
+                                                        class="send_mail_input col-12 p-5"
+                                                        style="resize: none;"></textarea>
+                                                </div>
+
+                                                <span
+                                                    class="mail_form_error text-danger my-3 text-center"
+                                                    id="send_mail_empty_error">Todos
+                                                    los campos deben estar
+                                                    rellenos.</span>
+
+                                                <span
+                                                    class="mail_form_error text-danger my-3 text-center"
+                                                    id="send_mail_error"></span>
+                                            </div>
 
                                         </div>
+
+                                        <div class="modal-footer">
+                                            <input type="button" value="Enviar"
+                                                class="btn btn-lg btn-outline-success"
+                                                id="send_email_submit_button">
+                                            <button type="reset"
+                                                data-bs-dismiss="modal"
+                                                class="btn btn-lg btn-outline-primary">Cerrar</button>
+                                        </div>
                                     </form>
-                                    <div class="modal-footer">
-                                        <input type="submit" value="Enviar" class="btn btn-lg btn-outline-success"
-                                            id="send_email_submit_button"></input>
-                                        <button type="reset" data-bs-dismiss="modal"
-                                            class="btn btn-lg btn-outline-info">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal top fade" id="write_email_ok"
+                            data-bs-backdrop="static">
+                            <div
+                                class="modal-dialog modal-sm modal-dialog-centered">
+                                <div id="write_email_ok_dialog"
+                                    class="modal-content">
+
+                                    <div
+                                        class="modal-body container text-center my-2 mx-auto p-3">
+
+                                        <div><strong>Su mensaje se ha enviado
+                                                correctamente.</strong></div>
+                                        <div>
+                                            <button type="reset"
+                                                data-bs-dismiss="modal"
+                                                class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
 
                     </div>
 
+                    <div id="message_body_container" class="my-sm-5 my-3 p-3">
 
-                </div>
+                        <h3 id="focused_email_subject"
+                            class="my-2 mb-3"> <strong></strong></h3>
+                        <div class="mb-2 mt-4" id="focused_email_info"></div>
+                        <div id="focused_email_content"></div>
+                        <h2 id="mock_text" class="text-primary text-center">Selecciona un mensaje de la columna de recibidos para mostrarlo completo aquí</h2>
 
-                <div id="message_body_container">
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
-
-    </main>
-    <!-- Dynamically footer's inclusion. -->
-    <footer>
-        <%- include ('pieces/footer')%>
-    </footer>
-</body>
-
+        </main>
+        <!-- Dynamically footer's inclusion. -->
+        <footer>
+            <%- include ('pieces/footer')%>
+        </footer>
+    </body>
+    <script src="/scripts/mailManagement.js"></script>
 </html>
