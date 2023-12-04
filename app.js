@@ -80,7 +80,7 @@ app.use((request, response, next) => {
       }
     });
   }
-  else {next();}
+  else { response.locals.session = request.session; next();}
 });
 
 app.use((req,res,next)=>{
@@ -102,7 +102,14 @@ app.use((req,res,next)=>{
 
 // Enrutamiento de las páginas principales de nuestra aplicación.
 app.get("/", (request, response) => {
-  response.status(200).render("index.ejs");
+  instDao.buscarInstalacion("", (err, res) => {
+    if (err) {
+      response.status(400).end();
+    } else {
+      response.status(200).render("index.ejs", {instalaciones:res});
+    }
+  })
+ 
 });
 
 app.get("/index.html", (request, response) => {
@@ -143,8 +150,9 @@ app.post(
         response.status(400);
       } else {
         response.status(201).json({
-          msg: "Instalacion añadido con exito, para que se haga efecto, reflesca la pagina",
+          msg: "Instalacion añadida con exito, para que se haga efecto, refresca la pagina",
         });
+        
       }
       response.end();
     });
@@ -175,7 +183,7 @@ app.put(
         response.status(400);
       } else {
         response.status(201).json({
-          msg: "Instalacion modificado con exito, para que se haga efecto, reflesca la pagina",
+          msg: "Instalacion modificada con exito, para que se haga efecto, refresca la pagina",
         });
       }
       response.end();
@@ -189,7 +197,7 @@ app.delete("/delete_instalacion/:id", (request, response) => {
     if (err) {
       response.status(404).json({ msg: "Instalacion no existente" });
     } else {
-      response.status(201).json({ msg: "Instalacion eliminado con exito" });
+      response.status(201).json({ msg: "Instalacion eliminada con exito" });
     }
     response.end();
   });
@@ -282,8 +290,6 @@ app.get("/get_filtered_mail", (request, response, next) => {
             if (err) {
               response.status(400).end();
             } else {
-              console.log(`Holaa, ${request.query["filter_by"]}`)
-              console.log("Res: ",res)
               res.forEach((mensaje) => {
                 mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
               });
@@ -298,7 +304,7 @@ app.get("/get_filtered_mail", (request, response, next) => {
 });
 
 
-app.get("/config_system.ejs", (request, response) => {
+app.get("/config_system", (request, response) => {
   response.status(200).render("config_system.ejs");
 });
 
@@ -337,7 +343,6 @@ app.put("/update_system/:imagen",
 app.patch("/marcar_leido/:id", (request, response, next)=>{
   instDao.marcarComoLeido(request.params.id, (err,res)=>{
     if(err){
-      console.log(err)
       response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
     }
   })
@@ -384,6 +389,40 @@ app.post("/write_mail", (request, response, next) => {
     }
   });
 });
+
+app.post("/reservar_instalacion", (request, response, next)=>{
+
+  if(!request.session.isLogged()){
+    request.status(400).end();  //TODO: hacer página de redirección a login
+  }
+  else{
+    instDao.buscarUsuario(request.session.mail,(err,res)=>{
+      if(err){
+        request.status(400).end(); 
+      }
+      else{
+        var body=request.body;
+        var datos=[
+          res[0].id,         
+          body["inst_id"],
+          body["book_inst_date"],
+          body["book_inst_from"],
+          body["book_inst_to"],
+        ]
+        instDao.reservarInstalacion(datos, (err,res)=>{
+          if(err){
+            console.log(err);
+            request.status(400).end(); 
+          }
+          else{
+            console.log("Okkk")
+          }
+        })
+      }
+    })
+  }
+ 
+})
 
 app.get("/register", (request, response, next) => {
   instDao.obtenerFacultades((err, res) => {

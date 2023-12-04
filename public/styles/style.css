@@ -78,7 +78,7 @@ a {
 }
 
 .instalacion_bgc{
-  background-color:  rgb(188, 180, 231) !important;
+  background-color:  rgb(183, 216, 234) !important;
 }
 
 .validar_usuario_bgc{
@@ -270,13 +270,17 @@ img > footer {
   font-size: 1.2em;
 }
 
-.send_mail_input{
+.send_mail_input, .book_inst_input{
   background-color:rgb(237, 252, 255)!important;
 }
 
 .remitent_img{
   max-width: 3em;
   max-height: 3em;
+}
+
+.book_inst_modal{
+  background-color: rgb(12, 186, 186);
 }
 
 @media (max-width: 575.9px) {

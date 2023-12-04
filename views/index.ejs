@@ -5,23 +5,175 @@
   <head>
     <%- include ('pieces/head')%>
   </head>
-<body>
+  <body>
     <!-- Use of ejs to avoid copy-pasting the whole header. -->
     <header>
-        <%- include ('pieces/header')%>
+      <%- include ('pieces/header')%>
+      <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </header>
     <main>
 
+      <button type="button">
+        Ver mis reservas
+      </button>
+
       <ul>
-        <li><a href="/gestion_instalacion.ejs">gestion</a></li>
-        <li><a href="/validar_registro.ejs">validacion_usuario</a></li>
-        <li><a href="/config_system.ejs">config</a></li>
+        <li><a href="/gestion_instalacion">gestion</a></li>
+        <li><a href="/validar_registro">validacion_usuario</a></li>
+        <li><a href="/config_system">config</a></li>
       </ul>
 
-    </main>
-    <!-- Dynamically footer's inclusion. -->
-    <footer>
-        <%- include ('pieces/footer')%>
-    </footer>
-</body>
-</html>
+      <% if (locals.instalaciones) { %>
+      <div class="container-fluid">
+        <div class="row justify-content-center" id="instalacion_list">
+          <% instalaciones.forEach(element=> { %>
+          <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0"
+            id="instalacion_<%=element.id%>">
+            <div
+              class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4  instalacion_bgc">
+              <div class="row justify-content-center mt-3"><%=element.nombre%></div>
+              <div class="row justify-content-center">
+                <div class="col-sm-7 col-12 p-0">
+                  <div
+                    class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
+                    <img
+                      src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
+                      alt="<%=element.nombre%>"
+                      class="img-fluid rounded-4 instalacion_img">
+                  </div>
+                </div>
+                <div
+                  class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                  <button type="button"
+                    class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                    data-bs-toggle="modal"
+                    data-bs-target="#instalacion_detalles_<%=element.id%>">
+                    <i class="fa fa-eye"></i> Detalles</button>
+                  <button type="button"
+                    class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate"
+                    data-bs-toggle="modal"
+                    data-bs-target="#instalacion_reservar_<%=element.id%>"><i
+                      class="fa fa-calendar-check-o"></i> Reservar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal top fade" id="instalacion_reservar_<%=element.id%>"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="book_inst_modal modal-content">
+                <div class="modal-header">
+                  Reservar una instalación
+                </div>
+                <form action="/reservar_instalacion" method="POST">
+                  
+                  <div class="modal-body container">
+
+                    <div class="row justify-content-center">
+
+                      <div class="form-group row justify-content-center my-2">
+
+                        <label for="book_inst_date"
+                          class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
+                        <div class="col-sm-7">
+                          <input type="date" id="book_inst_date"
+                            onkeydown="return false"
+                            class="book_inst_input form-control form-control-sm rounded-4">
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                      <div class="form-group row justify-content-center my-2">
+                        <label for="book_inst_from"
+                          class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                            de inicio:</strong></label>
+                        <div class="col-sm-7">
+                          <input type="time" id="book_inst_from"
+                            onkeydown="return false"
+                            class="book_inst_input form-control form-control-sm rounded-4">
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                      <div class="form-group row justify-content-center my-2">
+                        <label for="book_inst_to"
+                          class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                            de fin:</strong></label>
+                        <div class="col-sm-7">
+                          <input type="time" id="book_inst_to"
+                            onkeydown="return false"
+                            class="book_inst_input form-control form-control-sm rounded-4">
+                        </div>
+
+                      </div>
+
+                      <input type="hidden" id="inst_id" value="<%=element.id%>">
+                    </div>
+
+                  </div></form>
+
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-lg btn-success"
+                    data-bs-dismiss="modal">Enviar</button>
+                  <button type="button" class="btn btn-lg btn-info"
+                    data-bs-dismiss="modal">Cancelar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal top fade" id="instalacion_detalles_<%=element.id%>"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  Detalles
+                </div>
+                <div class="modal-body container">
+                  <div class="row justify-content-center">
+                    <div class="col-sm-7 col-12 p-0">
+                      <div
+                        class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
+                        <img
+                          src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
+                          alt="<%=element.nombre%>" class="img-fluid rounded-4">
+                      </div>
+                    </div>
+                    <div
+                      class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                      <p><i class="fa fa-building"></i> Nombre Instalación:
+                        <%=element.nombre%>
+                      </p>
+                      <p><i class="fa fa-hourglass-1"></i> Apertura:
+                        <%=element.horario_apertura%>
+                      </p>
+                      <p><i class="fa fa-hourglass-3"></i> Cierre: <%=element.horario_cierre%>
+                      </p>
+                      <p><i class="fa fa-map-pin"></i> Tipo reserva: <%=element.tipo_reserva%>
+                      </p>
+                      <p><i class="fa fa-group"></i> Aforo: <%=element.aforo%>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-lg btn-outline-success"
+                    data-bs-dismiss="modal">Aceptar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <%})} %>
+
+        </main>
+        <!-- Dynamically footer's inclusion. -->
+        <footer>
+          <%- include ('pieces/footer')%>
+        </footer>
+      </body>
+    </html>

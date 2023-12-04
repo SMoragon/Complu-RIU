@@ -336,6 +336,19 @@ class DAO {
     })
   }
 
+  reservarInstalacion(datos, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Insert into reservas (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin) VALUES (?,?,?,?,?)"
+        connection.query(sql, datos, callback);
+        connection.release();
+      }
+    })
+  }
+
   // Función que cierra el pool de conexiones una vez se hyaa terminado de hacer consultas.
   terminarConexion(callback) {
     this.pool.end(callback);
