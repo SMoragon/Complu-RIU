@@ -17,7 +17,7 @@
         <div class="d-flex align-items-center col-sm-8 col-12 offset-md-1">
             <ul id="footer_ul">
                 <!-- Company's contact information and more. -->
-                <li>
+                <li class="my-0 my-2">
                     <!-- Link to send an email to the company. -->
                     <% if (typeof session !=='undefined' && typeof session.sysConfig !=='undefined' && typeof
                         session.sysConfig['correo'] !=='undefined' ) { %>
@@ -34,7 +34,8 @@
                             </a>
                         <%};%>
                 </li>
-                <li><!-- Link to watch the "company's Instagram". -->
+
+                <li class="my-0 my-2"><!-- Link to watch the "company's Instagram". -->
                     <% if (typeof session !=='undefined' ) { %>
                         <% if (typeof session.sysConfig !=='undefined' && typeof session.sysConfig['url_instagram']
                             !=='undefined' ) {%>
@@ -60,10 +61,19 @@
                                     <span>Something went wrong</span>
                                 </a>
                             <%};%>
-                            
+
 
                 </li>
-                <li>
+
+                <li class="my-0 my-2">
+                    <a href="#">
+                        <!--Phone icon. -->
+                        <img src="/Images/phone.png" alt="Icono de telefono" class="footer_icon" />
+                        <!--Company's phone. -->
+                        <span>631 13 63 61</span>
+                    </a>
+
+                <li class="my-0 my-2">
                     <% if (typeof session !=='undefined' && typeof session.sysConfig !=='undefined' && typeof
                         session.sysConfig['direccion'] !=='undefined' ) { %>
                         <img src="/Images/dir.png" alt="Icono de direccion" class="footer_icon" />
@@ -74,8 +84,9 @@
                         <img src="/Images/dir.png" alt="Icono de mdireccionail" class="footer_icon" />
                         <span id="footer_mail"> Something went wrong</span>
                     <%};%>
+
                 </li>
-                <li>
+                <li class="my-0 my-2">
                     <!--Copyright icon. -->
                     <img src="/Images/copyright.png" alt="Icono de copyright" class="footer_icon" />
                     <!--Copyright type. -->

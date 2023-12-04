@@ -269,6 +269,73 @@ class DAO {
     })
   }
 
+  enviarMensaje(datos, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Insert into correos (id_emisor, id_receptor, asunto, contenido, leido, fecha_envio) VALUES (?,?,?,?,?,?)"
+        connection.query(sql, datos, callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerMensajes(idReceptor, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.nombre, u.apellidos, u.correo, u.imagen_perfil from correos c join usuarios u on c.id_emisor=u.id Where id_receptor=? order by c.fecha_envio Desc"
+        connection.query(sql, idReceptor, callback);
+        connection.release();
+      }
+    })
+  }
+
+   obtenerMensajesFiltrados(idReceptor,filter_by, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.apellidos, u.correo, u.imagen_perfil from correos c join usuarios u on c.id_emisor=u.id Where id_receptor=? AND (c.asunto LIKE ? OR c.contenido LIKE ? OR c.fecha_envio LIKE ? OR u.nombre LIKE ? OR u.apellidos LIKE ? OR  u.correo LIKE ?) order by c.fecha_envio Desc"
+        filter_by="%"+filter_by+"%"
+        console.log(filter_by)
+        connection.query(sql,[idReceptor,filter_by,filter_by,filter_by,filter_by,filter_by,filter_by],callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerMensajesSinLeer(idReceptor, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select Count(*) As sinLeer from correos Where id_receptor=? AND leido=0"
+        connection.query(sql, idReceptor, callback);
+        connection.release();
+      }
+    })
+  }
+
+  marcarComoLeido(idMensaje, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Update correos Set leido=1 Where id=?"
+        connection.query(sql, idMensaje, callback);
+        connection.release();
+      }
+    })
+  }
+
   // Función que cierra el pool de conexiones una vez se hyaa terminado de hacer consultas.
   terminarConexion(callback) {
     this.pool.end(callback);

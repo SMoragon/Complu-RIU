@@ -30,11 +30,11 @@
                                 name="user_email" id="user_email"
                                 value= <%=locals.body? body["user_email"]:""%>>
 
-                            <span class="popup_form_error text-danger"
+                            <span class="popup_form_error text-danger text-center mx-auto"
                                 id="mail_error">El
                                 email introducido no es correcto. El formato
                                 debe
-                                ser "abcde@fghi.jkl".</span>
+                                ser "abcde@ucm.es".</span>
 
                             <% if (locals.errors && locals.errors["user_email"])
                             { %>
@@ -65,8 +65,8 @@
                             <% if (locals.errors)
                             { %>
                             <span
-                                class="text-danger popup_form_error" style="display: inline-block;"
-                                >
+                                class="text-danger popup_form_error"
+                                style="display: inline-block;">
                                 <%= errors %>
                             </span>
                             <% } %>
@@ -79,7 +79,7 @@
                     <div class="send_buttons_cont my-4">
                         <!-- Submit form button -->
                         <input type="submit" value="ENVIAR"
-                            class="send_buttons send_but"></input>
+                            class="send_buttons send_but">
                     <!-- Close form button and redirect to the main page -->
                     <button type="button" class="send_buttons"
                         onclick="closeAndRedirect('/')">
@@ -87,9 +87,10 @@
                 </div>
                 <!-- Link that´s take you into a register page -->
                 <div class="my-3">
-                    <a href="/register" id="register_hint">¿Aún no tienes una cuenta? <br> Regístrate aquí</a>
+                    <a href="/register" id="register_hint">¿Aún no tienes una
+                        cuenta? <br> Regístrate aquí</a>
                 </div>
-              
+
             </div>
         </main>
 

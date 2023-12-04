@@ -36,12 +36,12 @@
                             <% if (session.defaultProfile) { %>
                                 <img class="user_img rounded-circle" src="<%= session.profile%>" alt=""> 
                             <%} else{ %>
-                                <img class="user_img rounded-circle" src="data:image/png;base64, <%= new Buffer(session.profile).toString('base64'); %>" alt=""> 
+                                <img class="user_img rounded-circle" src="data:image/*;base64, <%= new Buffer(session.profile).toString('base64'); %>" alt=""> 
                             <%} %>
                         </div>
                      
                         <div class="d-flex flex-column align-middle">
-                            <p class="login_text" id="hello_user">
+                            <p class="login_text text-break" id="hello_user">
                                 ¡Bienvenid@
                                 de nuevo, <%= session.user%>!
                             </p>
@@ -53,7 +53,10 @@
                     <div class="d-flex flex-row justify-content-start my-3">
 
                         <div class="d-flex flex-column mx-3">
-                            <span id="inbox_badge"class="badge bg-danger">12</span> <!-- Realmente solo se pondría si el nº de mensajes no leídos es mayor que 0-->
+                            <% if(session.sinLeer && session.sinLeer>0){%>
+                                <span id="inbox_badge"class="badge bg-danger"><%= session.sinLeer%></span>
+                            <%}%>
+                             <!-- Realmente solo se pondría si el nº de mensajes no leídos es mayor que 0-->
                             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16">
                                 <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
                               </svg>
