@@ -265,6 +265,21 @@ class DAO {
     })
   }
 
+   obtenerMensajesFiltrados(idReceptor,filter_by, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.apellidos, u.correo, u.imagen_perfil from correos c join usuarios u on c.id_emisor=u.id Where id_receptor=? AND (c.asunto LIKE ? OR c.contenido LIKE ? OR c.fecha_envio LIKE ? OR u.nombre LIKE ? OR u.apellidos LIKE ? OR  u.correo LIKE ?) order by c.fecha_envio Desc"
+        filter_by="%"+filter_by+"%"
+        console.log(filter_by)
+        connection.query(sql,[idReceptor,filter_by,filter_by,filter_by,filter_by,filter_by,filter_by],callback);
+        connection.release();
+      }
+    })
+  }
+
   obtenerMensajesSinLeer(idReceptor, callback){
     this.pool.getConnection((err, connection)=>{
       if (err) {

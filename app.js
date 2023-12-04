@@ -234,9 +234,53 @@ app.get("/inbox", (request, response, next) => {
   }
 });
 
+app.get("/get_filtered_mail", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end();
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var id_receptor = res[0].id;
+
+        if(String(request.query["filter_by"]).trimStart().trimEnd()===""){
+          instDao.obtenerMensajes(id_receptor, (err, res) => {
+            if (err) {
+              response.status(400).end();
+            } else {
+              res.forEach((mensaje) => {
+                mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
+              });
+              response.status(200).render("inbox.ejs", { datos: res });
+            }
+          });
+        }
+
+        else{
+          instDao.obtenerMensajesFiltrados(id_receptor,request.query["filter_by"], (err, res) => {
+            if (err) {
+              response.status(400).end();
+            } else {
+              console.log(`Holaa, ${request.query["filter_by"]}`)
+              console.log("Res: ",res)
+              res.forEach((mensaje) => {
+                mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
+              });
+              response.status(200).render("inbox.ejs", { datos: res });
+            }
+          });
+        }  
+       
+      }
+    });
+  }
+});
+
 app.patch("/marcar_leido/:id", (request, response, next)=>{
   instDao.marcarComoLeido(request.params.id, (err,res)=>{
     if(err){
+      console.log(err)
       response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
     }
   })
@@ -256,7 +300,7 @@ app.post("/write_mail", (request, response, next) => {
           if (res.length == 0) {
             response.status(400).end("No receiver found");
           } else {
-            if (res[0].facultad != emisor.facultad) {
+            if (res[0].facultad != emisor.facultad && !emisor.es_admin && !res[0].es_admin) {
               response.status(400).end("Faculty does not match");
             } else {
               var idReceptor = res[0].id;

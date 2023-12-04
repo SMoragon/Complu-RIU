@@ -21,42 +21,49 @@
                 <div id="last_messages_container"
                     class="overflow-auto col-sm-3 col-auto mx-sm-3 mx-1 p-sm-2 p-1">
 
-                    <%if (locals.datos && locals.datos.length>0){%>
-                        <%datos.forEach((mensaje)=>{%>
+                    <% if(locals.filtered && locals.filtered.length==0){%>
+                        <h3 class="text-center text-success m-2 p-2">No se han encontrado resultados.</h3>
+                        <%} else {%>
+                            
+                            <%if (locals.datos && locals.datos.length>0){%>
+                                <%datos.forEach((mensaje)=>{%>
 
-                            <div id ="<%=mensaje.id %>"
-                            class="mail_card d-flex flex-column flex-wrap border-round-3 mx-1 my-3 p-3">
-    
-                            <div
-                                class="user_info d-flex flex-wrap justify-content-center flex-row">
-    
-                                <%if (mensaje.imagen_perfil){%>
-                                    <img class="remitent_img rounded-5 col-md-4" src="data:image/*;base64, <%= new Buffer(mensaje.imagen_perfil).toString('base64'); %>" alt=""> 
-                                <%}else {%>    
-                                    <img class="remitent_img rounded-5 col-md-4" src="/images/default_picture.jpg" class= alt>
-                                <%}%>
-                                <div
-                                    class="remitent_text text-center my-sm-auto my-1 mx-md-2 col-md-7">
-                                    <strong><%=mensaje.nombre%> <%=mensaje.apellidos%> </strong> </div>
-                            </div>
-    
-                            <div class="email_subject text-break mt-sm-4 mt-2">
-                                <strong>Asunto:</strong> <%=mensaje.asunto%> 
-                            </div>
+                                    <div id ="<%=mensaje.id %>"
+                                    class="mail_card d-flex flex-column flex-wrap border-round-3 mx-1 my-3 p-3">
+            
+                                    <div
+                                        class="user_info d-flex flex-wrap justify-content-center flex-row">
+            
+                                        <%if (mensaje.imagen_perfil){%>
+                                            <img class="remitent_img rounded-5 col-md-4" src="data:image/*;base64, <%= new Buffer(mensaje.imagen_perfil).toString('base64'); %>" alt=""> 
+                                        <%}else {%>    
+                                            <img class="remitent_img rounded-5 col-md-4" src="/images/default_picture.jpg" class= alt>
+                                        <%}%>
+                                        <div
+                                            class="remitent_text text-center my-sm-auto my-1 mx-md-2 col-md-7">
+                                            <strong><%=mensaje.nombre%> <%=mensaje.apellidos%> </strong> </div>
+                                    </div>
+            
+                                    <div class="email_subject text-break mt-sm-4 mt-2">
+                                        <strong>Asunto:</strong> <%=mensaje.asunto%> 
+                                    </div>
 
-                            <input type="hidden" class="hidden_sent_date" value="<%=mensaje.fecha_envio%>">
-                            <input type="hidden" class="hidden_emitter_mail" value="<%=mensaje.correo%>">
-                            <input type="hidden" class="hidden_mail_content" value="<%=mensaje.contenido%>">
-    
-                        </div>
+                                    <input type="hidden" class="hidden_sent_date" value="<%=mensaje.fecha_envio%>">
+                                    <input type="hidden" class="hidden_emitter_mail" value="<%=mensaje.correo%>">
+                                    <input type="hidden" class="hidden_mail_content" value="<%=mensaje.contenido%>">
+            
+                                </div>
 
-                        <%})%>
+                                <%})%>
 
-                    <%}else{%>
-                        <h3 class="text-center text-success m-2 p-2">¡Vaya! <br>  Parece que todavía no tienes ningún mensaje...</h3>
+                            <%}else{%>
+                                <h3 class="text-center text-success m-2 p-2">¡Vaya! <br>  Parece que todavía no tienes ningún mensaje...</h3>
+                            <%}%>
                         <%}%>
+                       
 
                  
+                
 
                 </div>
 
@@ -73,14 +80,13 @@
                                 data-bs-target="#write_email">Redactar</button>
 
                             <div class="d-inline-block">
-                                <form class="m-2  d-inline-block" method="get"
-                                    action="/get_filtered_mail"
-                                    id="mail_search_bar">
-                                    <input class="search_text rounded-3"
+                                <form class="m-2 d-inline-block" action="/get_filtered_mail"
+                                      method="GET" id="mail_search_bar">
+                                    <input id="filter_by" class="search_text rounded-3"
                                         type="text"
                                         placeholder="Buscar correo por nombre, contenido..."
-                                        name="search">
-                                    <button type="submit"
+                                        name="filter_by">
+                                    <button id="get_filtered_mail" type="submit"
                                         class="btn btn-primary mx-1 fa fa-search"></button>
                                 </form>
                             </div>
@@ -105,7 +111,7 @@
                                             <div
                                                 class="form-group row justify-content-center my-2">
                                                 <label for="sent_email_receiver"
-                                                    class="send_mail_field col-md-2 text-truncate">Destinatario</label>
+                                                    class="send_mail_field col-form-label col-sm-2 text-truncate ">Destinatario</label>
                                                 <div class="col-sm-7">
                                                     <input type="text"
                                                         id="sent_email_receiver"

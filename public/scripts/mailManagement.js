@@ -68,11 +68,12 @@ function closePopups() {
   }
 
   
-  $('.mail_card div').on('click', function (event){
+ $('.mail_card div').on('click', function (event){
     event.stopPropagation();
     $(event.target).parent().trigger('click')
 
  })
+
  $('.mail_card').on('click', function (event){
     var id=$(event.target).prop("id");
     var user_full_name=String($(event.target).children(".user_info").children(".remitent_text").text()).trimStart();
@@ -102,3 +103,16 @@ function closePopups() {
     )
 
  })
+
+
+ $('#get_filtered_mail').on('click',function(event){
+
+    var filter_by=String($('#search_txt').val()).trimStart().trimEnd();
+
+    if(filter_by===""){
+        
+    }
+ })
+
+ //method="get"
+ //                                   action="/get_filtered_mail"
