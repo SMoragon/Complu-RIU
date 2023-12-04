@@ -63,6 +63,23 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req,res,next)=>{
+  if (typeof req.session.sysConfig === 'undefined'){
+    instDao.get_config_info((err,res)=>{
+      if(err){
+        next()
+      }else{
+        res[0]['url_instagram'] = res[0]['url_instagram'].replaceAll("&#x2F;","/")
+        req.session.sysConfig = res[0]
+        next();
+      }
+    })
+  }else{
+    next();
+  }
+})
+
+
 // Enrutamiento de las páginas principales de nuestra aplicación.
 app.get("/", (request, response) => {
   response.status(200).render("index.ejs");
@@ -151,7 +168,6 @@ app.get("/validar_registro.ejs", (request, response, next) => {
 
 app.patch("/validar_registro/:id", (request, response, next) => {
   var id = request.params.id
-  console.log(id)
   instDao.validarUsuario(id, (err, res) => {
     if (err) {
       next();
@@ -165,7 +181,6 @@ app.patch("/validar_registro/:id", (request, response, next) => {
 
 app.delete("/eliminar_registro/:id", (request, response, next) => {
   var id = request.params.id
-  console.log(id)
   instDao.eliminarUsuario(id, (err, res) => {
     if (err) {
       next();
@@ -175,6 +190,42 @@ app.delete("/eliminar_registro/:id", (request, response, next) => {
   })
 
 });
+
+app.get("/config_system.ejs", (request, response) => {
+  response.status(200).render("config_system.ejs");
+});
+
+app.put("/update_system/:imagen",
+  multerFactory.single("org_img"),
+  body("org_name").escape(),
+  body("org_dir").escape(),
+  body("org_ig").escape(),
+  body("org_mail").escape(),
+  (request, response) => {
+    var imagen = request.params.imagen == "true" ? true : false;
+    var body = request.body
+    var dato = [body["org_name"], body["org_dir"], body["org_ig"], body["org_mail"]];
+    if (imagen) {
+      dato.push(request.file.buffer)
+      dato.push(request.file['mimetype'])
+    }
+    instDao.update_config(imagen, dato, (err) => {
+      if (err) {
+        response.status(400)
+      } else {
+        request.session.sysConfig['nombre'] = dato[0]
+        request.session.sysConfig['direccion'] = dato[1]
+        request.session.sysConfig['url_instagram'] = dato[2].replaceAll("&#x2F;","/")
+        request.session.sysConfig['correo'] = dato[3]
+        if(imagen){
+          request.session.sysConfig['icono'] = dato[4]
+          request.session.sysConfig['icono_type'] = dato[5]
+        }
+        response.status(201).json({msg:"Se ha actualizado correctamente"})
+      }
+      response.end()
+    })
+  });
 // catch 404 and forward to error handler
 
 // catch 404 and forward to error handler

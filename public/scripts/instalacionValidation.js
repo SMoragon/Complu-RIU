@@ -35,7 +35,7 @@ function mod_instalacion(id) {
     if (image_select) {
         image_prop = checkImageProp(imagen)
     }
-    modAddErrMsg(id, any_empty, correct_time, checkAforoCorrect, image_prop)
+    modAddErrMsg(id, any_empty, correct_time, checkAforoCorrect, image_select, image_prop)
     return !any_empty && correct_time && checkAforoCorrect && image_prop;
 }
 
@@ -72,7 +72,7 @@ function addErrMsg(any_empty, correct_time, checkType, checkAforoCorrect, image_
     }
 }
 
-function modAddErrMsg(id, any_empty, correct_time, checkAforoCorrect, image_prop) {
+function modAddErrMsg(id, any_empty, correct_time, checkAforoCorrect, image_select, image_prop) {
     var msg_error_init = "<div class='form-group row justify-content-center msg_error'><div class='col-10'><span class='text-danger popup_form_error d-inline-block'>"
     var msg_error_end = "</span></div></div>"
     if (any_empty) {
@@ -84,8 +84,8 @@ function modAddErrMsg(id, any_empty, correct_time, checkAforoCorrect, image_prop
     if(!checkAforoCorrect){
         $("#modificar_instalacion_form_"+id+" .mod_instalacion_aforo").append(msg_error_init + "El minimo aforo permitido debe ser mayor o igual a '1'." + msg_error_end)
     }
-    if (!image_prop) {
-        $("#modificar_instalacion_form_"+id+" .mod_instalacion_image").append(msg_error_init + "La imagen seleccionada debe ser del tipo '*.jpg, *.jpeg, *.png', con tamaño maximo de 500kbs" + msg_error_end)
+    if (image_select && !image_prop) {
+        $("#modificar_instalacion_form_"+id+" .modinstalacion_image").append(msg_error_init + "La imagen seleccionada debe ser del tipo '*.jpg, *.jpeg, *.png', con tamaño maximo de 2mbs" + msg_error_end)
     }
 }
 
@@ -119,7 +119,8 @@ function checkImageProp(image) {
     var img_type = image['type']
     var img_type_correct = (match[0] == img_type || match[1] == img_type || match[2] == img_type)
     var img_size = image['size']
-    var img_size_correct = img_size < 512000
+    var img_size_correct = img_size < 2097152
+    
     return img_type_correct && img_size_correct;
 }
 

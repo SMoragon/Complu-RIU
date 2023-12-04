@@ -7,6 +7,36 @@ class DAO {
   constructor(pool) {
     this.pool = pool;
   }
+
+  update_config(icono, config, callback) {
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err);
+      } else {
+        var sql =
+          "UPDATE sistema SET nombre=?, direccion=?, url_instagram=?, correo=?";
+        if(icono){
+          sql += ", icono=?, icono_type=?";
+        }
+        sql += " WHERE id = 1"
+        connection.query(sql, config, callback);
+        connection.release();
+      }
+    })
+  }
+
+  get_config_info(callback) {
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err);
+      } else {
+        const sql = "SELECT * FROM sistema WHERE id = 1";
+        connection.query(sql, callback);
+        connection.release();
+      }
+    })
+  }
+
   /* Funcion que, dado los datos de una instalación, lo inserte en la bases de datos*/
   insertar_instalacion(instalacion, callback) {
     this.pool.getConnection((err, connection) => {

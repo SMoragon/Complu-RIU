@@ -2,15 +2,25 @@
 
     <div id="header_cont" class="container-fluid col-12">
 
-        <div class="col-md-3 col-sm-4 col-6">
+        <div class="col-md-3 col-sm-4 col-6 my-3">
             <!-- Company's logo. -->
-            <img class="col-md-8 col-sm-11 col-12" src="/Images/logo.png"
-                alt="Logo de COMPLU-RIU" />
+            <% if (typeof session !== 'undefined' && typeof session.sysConfig !=='undefined' && typeof session.sysConfig['icono'] !=='undefined') { %>
+                <img class="col-md-8 col-sm-11 col-12" src="data:<%=session.sysConfig['icono_type']%>;base64,<%=new Buffer(session.sysConfig['icono']).toString('base64')%>"
+                alt="Logo de session.sysConfig['nombre']"/>
+            <%}else {%>
+                <img class="col-md-8 col-sm-11 col-12" src="/images/Image_not_available.png"
+                alt="Not company´s logo" />
+            <%};%>
         </div>
 
         <div class="col-md-3 col-sm-3 col-6">
             <h1 id="header_title">
-                <a href="/index.html"> COMPLU-RIU</a>
+                <% if (typeof session !== 'undefined' && typeof session.sysConfig !=='undefined' && typeof session.sysConfig['nombre'] !=='undefined') { %>
+                    <a href="/index.html"> <%= session.sysConfig['nombre'] %></a>
+                <%}else {%>
+                    <a href="/index.html"> Something went wrong</a>
+                <%};%>
+                
             </h1>
         </div>
 
