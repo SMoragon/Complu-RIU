@@ -314,7 +314,7 @@ app.put("/update_system/:imagen",
   body("org_dir").escape(),
   body("org_ig").escape(),
   body("org_mail").escape(),
-  (request, response) => {
+  (request, response,next) => {
     var imagen = request.params.imagen == "true" ? true : false;
     var body = request.body
     var dato = [body["org_name"], body["org_dir"], body["org_ig"], body["org_mail"]];
@@ -348,7 +348,11 @@ app.patch("/marcar_leido/:id", (request, response, next)=>{
   })
 })
 
-app.post("/write_mail", (request, response, next) => {
+app.post("/write_mail",
+body("mail").escape(),
+body("receptor").escape(),
+body("asunto").escape(),
+ (request, response, next) => {
   instDao.buscarUsuario(request.session.mail, async (err, res) => {
     if (err) {
       response.status(400).end();
@@ -391,28 +395,29 @@ app.post("/write_mail", (request, response, next) => {
 });
 
 app.post("/reservar_instalacion", (request, response, next)=>{
-
-  if(!request.session.isLogged()){
-    request.status(400).end();  //TODO: hacer página de redirección a login
+console.log("RE¡¡")
+  if(!request.session.isLogged){
+    response.status(400).end();  //TODO: hacer página de redirección a login
   }
   else{
     instDao.buscarUsuario(request.session.mail,(err,res)=>{
       if(err){
-        request.status(400).end(); 
+        response.status(400).end(); 
       }
       else{
-        var body=request.body;
+        console.log(request)
         var datos=[
           res[0].id,         
-          body["inst_id"],
-          body["book_inst_date"],
-          body["book_inst_from"],
+          Number(request.body["inst_id"]),
+          request.body["book_inst_date"],
+          request.body["book_inst_from"],
           body["book_inst_to"],
+          request.body["book_inst_how_many"]
         ]
         instDao.reservarInstalacion(datos, (err,res)=>{
           if(err){
             console.log(err);
-            request.status(400).end(); 
+            response.status(400).end(); 
           }
           else{
             console.log("Okkk")

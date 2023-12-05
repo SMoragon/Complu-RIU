@@ -66,63 +66,94 @@
                 <div class="modal-header">
                   Reservar una instalación
                 </div>
-                <form action="/reservar_instalacion" method="POST">
-                  
+                <form method="POST" action="/reservar_instalacion" 
+                  id="instalacion_reservar_form_<%=element.id%>"
+                  class="res_inst_form">
+
                   <div class="modal-body container">
 
                     <div class="row justify-content-center">
 
                       <div class="form-group row justify-content-center my-2">
 
-                        <label for="book_inst_date"
+                        <label for="book_inst_date_<%=element.id%>"
                           class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
                         <div class="col-sm-7">
-                          <input type="date" id="book_inst_date"
-                            onkeydown="return false"
-                            class="book_inst_input form-control form-control-sm rounded-4">
+                          <input type="date" id="book_inst_date_<%=element.id%>"
+                            onkeydown="return false" name="book_inst_date"
+                            class="inst_date book_inst_input form-control form-control-sm rounded-4">
                         </div>
+                        <span class="book_form_error date_error text-danger text-center mx-auto"
+                        >La fecha introducida debe ser igual o posterior a la actual.</span>
 
                       </div>
                     </div>
 
                     <div class="row justify-content-center">
                       <div class="form-group row justify-content-center my-2">
-                        <label for="book_inst_from"
+                        <label for="book_inst_from_<%=element.id%>"
                           class="col-form-label col-sm-2 text-truncate "><strong>Hora
                             de inicio:</strong></label>
                         <div class="col-sm-7">
-                          <input type="time" id="book_inst_from"
-                            onkeydown="return false"
-                            class="book_inst_input form-control form-control-sm rounded-4">
+                          <input type="time" id="book_inst_from_<%=element.id%>"
+                            onkeydown="return false" name="book_inst_from"
+                            class="inst_from book_inst_input form-control form-control-sm rounded-4">
                         </div>
+                        <span class="book_form_error start_time_error text-danger text-center mx-auto"
+                        >La instalación no abre hasta las <%=element.horario_apertura%>.</span>
 
                       </div>
                     </div>
 
                     <div class="row justify-content-center">
                       <div class="form-group row justify-content-center my-2">
-                        <label for="book_inst_to"
+                        <label for="book_inst_to_<%=element.id%>"
                           class="col-form-label col-sm-2 text-truncate "><strong>Hora
                             de fin:</strong></label>
                         <div class="col-sm-7">
-                          <input type="time" id="book_inst_to"
-                            onkeydown="return false"
-                            class="book_inst_input form-control form-control-sm rounded-4">
+                          <input type="time" id="book_inst_to_<%=element.id%>"
+                            onkeydown="return false" name="book_inst_to"
+                            class="inst_to book_inst_input form-control form-control-sm rounded-4">
                         </div>
 
                       </div>
 
-                      <input type="hidden" id="inst_id" value="<%=element.id%>">
                     </div>
 
-                  </div></form>
+                    <div class="row justify-content-center">
+                      <div class="form-group row justify-content-center my-2">
+                        <label for="book_inst_how_many_<%=element.id%>"
+                          class="col-form-label col-sm-2 text-truncate "><strong>Asistentes</strong></label>
+                        <div class="col-sm-7">
+                          <input type="number" id="book_inst_how_many_<%=element.id%>"
+                            onkeydown="return false" min="1" max="<%=element.aforo%>" name="book_inst_how_many"
+                            class="inst_how_many book_inst_input form-control form-control-sm rounded-4">
+                        </div>
+                        <span class="book_form_error end_time_error text-danger text-center mx-auto"
+                        >La instalación cierra a las <%=element.horario_cierre%>.</span>
+                        
+                        <span class="book_form_error total_time_error text-danger text-center mx-auto"
+                       >La hora de inicio de la reserva debe ser anterior a la de fin.</span>
 
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-lg btn-success"
-                    data-bs-dismiss="modal">Enviar</button>
-                  <button type="button" class="btn btn-lg btn-info"
-                    data-bs-dismiss="modal">Cancelar</button>
-                </div>
+                        <span class="book_form_error empty_error text-danger text-center mx-auto"
+                        >Todos los campos deben estar rellenos.</span>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <input class="when_opens" type="hidden" value="<%=element.horario_apertura%>">
+                  <input class="when_closes" type="hidden" value="<%=element.horario_cierre%>">
+                  
+                  
+                  <div class="modal-footer">
+                    <input type="submit" class="btn btn-lg btn-success"></input>
+                    <button type="button" class="cancel_but btn btn-lg btn-info"
+                      data-bs-dismiss="modal">Cancelar</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -176,4 +207,5 @@
           <%- include ('pieces/footer')%>
         </footer>
       </body>
+      <script src="/scripts/gestionReservas.js"></script>
     </html>

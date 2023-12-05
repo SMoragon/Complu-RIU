@@ -118,7 +118,7 @@ img > footer {
   align-items: center;
 }
 
-.popup_form_error {
+.popup_form_error, .book_form_error {
   display: none;
   font-weight: bold;
   margin: 0.5em 0em;

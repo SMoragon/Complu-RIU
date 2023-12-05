@@ -342,7 +342,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Insert into reservas (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin) VALUES (?,?,?,?,?)"
+        const sql= "Insert into reservas (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin,asistentes) VALUES (?,?,?,?,?,?)"
         connection.query(sql, datos, callback);
         connection.release();
       }
