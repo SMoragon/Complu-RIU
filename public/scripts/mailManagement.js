@@ -98,10 +98,7 @@ function closePopups() {
         error: function (jqHXR, textStatus, errorThrown) {  
             alert(errorThrown, textStatus)
         }
-    }
-
-    )
-
+    })
  })
 
 

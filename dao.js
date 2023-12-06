@@ -349,6 +349,32 @@ class DAO {
     })
   }
 
+  reservarListaEspera(datos, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Insert into lista_espera (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin,fecha_envio_reserva,asistentes) VALUES (?,?,?,?,?,?,?)"
+        connection.query(sql, datos, callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservasSolape(idInst,fechaRes,horaIni,horaFin, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select COUNT(*) as solapes From reservas Where id_instalacion=? And fecha_reserva=? And ((hora_inicio<=? And hora_fin >?) Or (hora_inicio>? And hora_fin<=?))"
+        connection.query(sql, [idInst, fechaRes,horaIni,horaIni,horaIni,horaFin ], callback);
+        connection.release();
+      }
+    })
+  }
+
   // Función que cierra el pool de conexiones una vez se hyaa terminado de hacer consultas.
   terminarConexion(callback) {
     this.pool.end(callback);

@@ -2,7 +2,7 @@ var express = require("express");
 var path = require("path");
 const express_validator = require("express-validator");
 const body = express_validator.body;
-const moment=require("moment")
+const moment = require("moment");
 const pool = require("./pool.js");
 const dao = require("./dao.js");
 const multer = require("multer");
@@ -36,7 +36,7 @@ const hashPassword = async (password) => {
 
 const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
-moment.locale("es")
+moment.locale("es");
 
 var instPool = new pool("localhost", "root", "", "ucm_riu");
 var instDao = new dao(instPool.get_pool());
@@ -79,26 +79,30 @@ app.use((request, response, next) => {
         });
       }
     });
-  }
-  else { response.locals.session = request.session; next();}
-});
-
-app.use((req,res,next)=>{
-  if (typeof req.session.sysConfig === 'undefined'){
-    instDao.get_config_info((err,res)=>{
-      if(err){
-        next()
-      }else{
-        res[0]['url_instagram'] = res[0]['url_instagram'].replaceAll("&#x2F;","/")
-        req.session.sysConfig = res[0]
-        next();
-      }
-    })
-  }else{
+  } else {
+    response.locals.session = request.session;
     next();
   }
-})
+});
 
+app.use((req, res, next) => {
+  if (typeof req.session.sysConfig === "undefined") {
+    instDao.get_config_info((err, res) => {
+      if (err) {
+        next();
+      } else {
+        res[0]["url_instagram"] = res[0]["url_instagram"].replaceAll(
+          "&#x2F;",
+          "/"
+        );
+        req.session.sysConfig = res[0];
+        next();
+      }
+    });
+  } else {
+    next();
+  }
+});
 
 // Enrutamiento de las páginas principales de nuestra aplicación.
 app.get("/", (request, response) => {
@@ -106,10 +110,9 @@ app.get("/", (request, response) => {
     if (err) {
       response.status(400).end();
     } else {
-      response.status(200).render("index.ejs", {instalaciones:res});
+      response.status(200).render("index.ejs", { instalaciones: res });
     }
-  })
- 
+  });
 });
 
 app.get("/index.html", (request, response) => {
@@ -152,7 +155,6 @@ app.post(
         response.status(201).json({
           msg: "Instalacion añadida con exito, para que se haga efecto, refresca la pagina",
         });
-        
       }
       response.end();
     });
@@ -214,12 +216,13 @@ app.get("/validar_registro", (request, response, next) => {
 });
 
 app.patch("/validar_registro/:id", (request, response, next) => {
-  
   var id = request.params.id;
-  
+
   instDao.validarUsuario(id, (err, res) => {
     if (err) {
-      response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
+      response
+        .status(400)
+        .end("Ha ocurrido un error en el acceso interno de la BD.");
     } else {
       response.status(200).json({ msg: "Usuario validado con exito" });
     }
@@ -227,7 +230,6 @@ app.patch("/validar_registro/:id", (request, response, next) => {
 });
 
 app.delete("/eliminar_registro/:id", (request, response, next) => {
-
   var id = request.params.id;
   instDao.eliminarUsuario(id, (err, res) => {
     if (err) {
@@ -272,7 +274,7 @@ app.get("/get_filtered_mail", (request, response, next) => {
       } else {
         var id_receptor = res[0].id;
 
-        if(String(request.query["filter_by"]).trimStart().trimEnd()===""){
+        if (String(request.query["filter_by"]).trimStart().trimEnd() === "") {
           instDao.obtenerMensajes(id_receptor, (err, res) => {
             if (err) {
               response.status(400).end();
@@ -283,165 +285,245 @@ app.get("/get_filtered_mail", (request, response, next) => {
               response.status(200).render("inbox.ejs", { datos: res });
             }
           });
-        }
-
-        else{
-          instDao.obtenerMensajesFiltrados(id_receptor,request.query["filter_by"], (err, res) => {
-            if (err) {
-              response.status(400).end();
-            } else {
-              res.forEach((mensaje) => {
-                mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
-              });
-              response.status(200).render("inbox.ejs", { datos: res });
+        } else {
+          instDao.obtenerMensajesFiltrados(
+            id_receptor,
+            request.query["filter_by"],
+            (err, res) => {
+              if (err) {
+                response.status(400).end();
+              } else {
+                res.forEach((mensaje) => {
+                  mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
+                });
+                response.status(200).render("inbox.ejs", { datos: res });
+              }
             }
-          });
-        }  
-       
+          );
+        }
       }
     });
   }
 });
 
-
 app.get("/config_system", (request, response) => {
   response.status(200).render("config_system.ejs");
 });
 
-app.put("/update_system/:imagen",
+app.put(
+  "/update_system/:imagen",
   multerFactory.single("org_img"),
   body("org_name").escape(),
   body("org_dir").escape(),
   body("org_ig").escape(),
   body("org_mail").escape(),
-  (request, response,next) => {
+  (request, response, next) => {
     var imagen = request.params.imagen == "true" ? true : false;
-    var body = request.body
-    var dato = [body["org_name"], body["org_dir"], body["org_ig"], body["org_mail"]];
+    var body = request.body;
+    var dato = [
+      body["org_name"],
+      body["org_dir"],
+      body["org_ig"],
+      body["org_mail"],
+    ];
     if (imagen) {
-      dato.push(request.file.buffer)
-      dato.push(request.file['mimetype'])
+      dato.push(request.file.buffer);
+      dato.push(request.file["mimetype"]);
     }
     instDao.update_config(imagen, dato, (err) => {
       if (err) {
-        response.status(400)
+        response.status(400);
       } else {
-        request.session.sysConfig['nombre'] = dato[0]
-        request.session.sysConfig['direccion'] = dato[1]
-        request.session.sysConfig['url_instagram'] = dato[2].replaceAll("&#x2F;","/")
-        request.session.sysConfig['correo'] = dato[3]
-        if(imagen){
-          request.session.sysConfig['icono'] = dato[4]
-          request.session.sysConfig['icono_type'] = dato[5]
+        request.session.sysConfig["nombre"] = dato[0];
+        request.session.sysConfig["direccion"] = dato[1];
+        request.session.sysConfig["url_instagram"] = dato[2].replaceAll(
+          "&#x2F;",
+          "/"
+        );
+        request.session.sysConfig["correo"] = dato[3];
+        if (imagen) {
+          request.session.sysConfig["icono"] = dato[4];
+          request.session.sysConfig["icono_type"] = dato[5];
         }
-        response.status(201).json({msg:"Se ha actualizado correctamente"})
+        response.status(201).json({ msg: "Se ha actualizado correctamente" });
       }
-      response.end()
-    })
-  });
+      response.end();
+    });
+  }
+);
 
-app.patch("/marcar_leido/:id", (request, response, next)=>{
-  instDao.marcarComoLeido(request.params.id, (err,res)=>{
-    if(err){
-      response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
-    }
-  })
-})
+app.patch("/marcar_leido/:id", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end();
+  } else {
+    instDao.marcarComoLeido(request.params.id, (err, res) => {
+      if (err) {
+        response
+          .status(400)
+          .end("Ha ocurrido un error en el acceso interno de la BD.");
+      }
+    });
+  }
+});
 
-app.post("/write_mail",
-body("mail").escape(),
-body("receptor").escape(),
-body("asunto").escape(),
- (request, response, next) => {
-  instDao.buscarUsuario(request.session.mail, async (err, res) => {
-    if (err) {
+app.post(
+  "/write_mail",
+  body("mail").escape(),
+  body("receptor").escape(),
+  body("asunto").escape(),
+  (request, response, next) => {
+    if (!request.session.isLogged) {
       response.status(400).end();
     } else {
-      var idEmisor = res[0].id;
-      var emisor = res[0];
-      instDao.buscarUsuario(request.body.receptor, (err, res) => {
+      instDao.buscarUsuario(request.session.mail, async (err, res) => {
         if (err) {
           response.status(400).end();
         } else {
-          if (res.length == 0) {
-            response.status(400).end("No receiver found");
-          } else {
-            if (res[0].facultad != emisor.facultad && !emisor.es_admin && !res[0].es_admin) {
-              response.status(400).end("Faculty does not match");
+          var idEmisor = res[0].id;
+          var emisor = res[0];
+          instDao.buscarUsuario(request.body.receptor, (err, res) => {
+            if (err) {
+              response.status(400).end();
             } else {
-              var idReceptor = res[0].id;
-
-              datos = [
-                idEmisor,
-                idReceptor,
-                request.body.asunto,
-                request.body.mensaje,
-                false,
-                new Date(),
-              ];
-              instDao.enviarMensaje(datos, (err, res) => {
-                if (err) {
-                  response.status(400).end();
+              if (res.length == 0) {
+                response.status(400).end("No receiver found");
+              } else {
+                if (
+                  res[0].facultad != emisor.facultad &&
+                  !emisor.es_admin &&
+                  !res[0].es_admin
+                ) {
+                  response.status(400).end("Faculty does not match");
                 } else {
-                  response.status(200).end();
+                  var idReceptor = res[0].id;
+
+                  datos = [
+                    idEmisor,
+                    idReceptor,
+                    request.body.asunto,
+                    request.body.mensaje,
+                    false,
+                    new Date(),
+                  ];
+                  instDao.enviarMensaje(datos, (err, res) => {
+                    if (err) {
+                      response.status(400).end();
+                    } else {
+                      response.status(201).end();
+                    }
+                  });
                 }
-              });
+              }
             }
-          }
+          });
         }
       });
     }
-  });
+  }
+);
+
+app.post("/reservar_instalacion", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end(); //TODO: hacer página de redirección a login
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var user_id = res[0].id,
+          inst_id = Number(request.body["inst_id"]),
+          inst_date = request.body["book_inst_date"],
+          inst_from = request.body["book_inst_from"],
+          inst_to = request.body["book_inst_to"],
+          how_many = request.body["book_inst_how_many"];
+
+        instDao.obtenerReservasSolape(
+          inst_id,
+          inst_date,
+          inst_from,
+          inst_to,
+          (err, res) => {
+            if (err) {
+              response.status(400).end();
+            } else {
+              if (res[0].solapes != 0) {
+                response.status(400).end("Solape");
+              } else {
+                var datos = [
+                  user_id,
+                  inst_id,
+                  inst_date,
+                  inst_from,
+                  inst_to,
+                  how_many,
+                ];
+                instDao.reservarInstalacion(datos, (err, res) => {
+                  if (err) {
+                    response.status(400).end();
+                  } else {
+                    response.status(201).end();
+                  }
+                });
+              }
+            }
+          }
+        );
+      }
+    });
+  }
 });
 
-app.post("/reservar_instalacion", (request, response, next)=>{
-console.log("RE¡¡")
-  if(!request.session.isLogged){
-    response.status(400).end();  //TODO: hacer página de redirección a login
-  }
-  else{
-    instDao.buscarUsuario(request.session.mail,(err,res)=>{
-      if(err){
-        response.status(400).end(); 
-      }
-      else{
-        console.log(request)
-        var datos=[
-          res[0].id,         
-          Number(request.body["inst_id"]),
-          request.body["book_inst_date"],
-          request.body["book_inst_from"],
-          body["book_inst_to"],
-          request.body["book_inst_how_many"]
-        ]
-        instDao.reservarInstalacion(datos, (err,res)=>{
-          if(err){
-            console.log(err);
-            response.status(400).end(); 
+app.post("/lista_espera", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end(); //TODO: hacer página de redirección a login
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var inst_id = Number(request.body["inst_id"]),
+          inst_date = request.body["book_inst_date"],
+          inst_from = request.body["book_inst_from"],
+          inst_to = request.body["book_inst_to"],
+          how_many = request.body["book_inst_how_many"];
+        var datos = [
+          res[0].id,
+          inst_id,
+          inst_date,
+          inst_from,
+          inst_to,
+          new Date(),
+          how_many,
+        ];
+        instDao.reservarListaEspera(datos, (err, res) => {
+          if (err) {
+            response.status(400).end();
+          } else {
+            response.status(201).end();
           }
-          else{
-            console.log("Okkk")
-          }
-        })
+        });
       }
-    })
+    });
   }
- 
-})
+});
 
 app.get("/register", (request, response, next) => {
-  instDao.obtenerFacultades((err, res) => {
-    if (err) {
-      response.status(403).render("register.ejs", {
-        errors: `No se han podido obtener las facultades`,
-        body: request.body,
-      });
-    } else {
-      response.status(200).render("register.ejs", {
-        facultades: res,
-      });
-    }
-  });
+  if (request.session.isLogged) {
+    response.status(400).end();
+  } else {
+    instDao.obtenerFacultades((err, res) => {
+      if (err) {
+        response.status(403).render("register.ejs", {
+          errors: `No se han podido obtener las facultades`,
+          body: request.body,
+        });
+      } else {
+        response.status(200).render("register.ejs", {
+          facultades: res,
+        });
+      }
+    });
+  }
 });
 
 app.post(
@@ -463,94 +545,99 @@ app.post(
   body("user_course").escape(),
   body("user_group").escape(),
   (request, response, next) => {
-    instDao.obtenerFacultades((err, res) => {
-      if (err) {
-        response.status(403).render("register.ejs", {
-          errors: `No se han podido obtener las facultades`,
-          body: request.body,
-        });
-      } else {
-        facultades = res;
-
-        var result = validationResult(request).array();
-
-        if (result.length != 0) {
-          var errs = [];
-
-          result.forEach((element) => {
-            errs[element.path] = element.msg;
-          });
-
+    if (request.session.isLogged) {
+      response.status(400).end();
+    } else {
+      instDao.obtenerFacultades((err, res) => {
+        if (err) {
           response.status(403).render("register.ejs", {
-            errors: errs,
+            errors: `No se han podido obtener las facultades`,
             body: request.body,
-            facultades: facultades,
           });
         } else {
-          instDao.buscarUsuario(
-            request.body["user_email"],
-            async (err, res) => {
-              if (err) {
-                response.status(403).render("register.ejs", {
-                  errors: "Ha ocurrido un error interno en el acceso a la BD.",
-                  body: request.body,
-                  facultades: facultades,
-                });
-              } else {
-                if (res.length != 0) {
+          facultades = res;
+
+          var result = validationResult(request).array();
+
+          if (result.length != 0) {
+            var errs = [];
+
+            result.forEach((element) => {
+              errs[element.path] = element.msg;
+            });
+
+            response.status(403).render("register.ejs", {
+              errors: errs,
+              body: request.body,
+              facultades: facultades,
+            });
+          } else {
+            instDao.buscarUsuario(
+              request.body["user_email"],
+              async (err, res) => {
+                if (err) {
                   response.status(403).render("register.ejs", {
-                    errors: "El correo introducido ya está registrado.",
+                    errors:
+                      "Ha ocurrido un error interno en el acceso a la BD.",
                     body: request.body,
                     facultades: facultades,
                   });
                 } else {
-                  var req = request.body;
-                  var mimetype = request.file
-                    ? request.file.mimetype
-                    : undefined;
-                  if (mimetype && !allowedFormats.includes(mimetype)) {
+                  if (res.length != 0) {
                     response.status(403).render("register.ejs", {
-                      errors: `El formato ${mimetype} no está permitido.`,
+                      errors: "El correo introducido ya está registrado.",
                       body: request.body,
                       facultades: facultades,
                     });
                   } else {
-                    var hashedPassword = await hashPassword(
-                      req["user_password"]
-                    );
-                    var datos = [
-                      req["user_name"],
-                      req["user_surname"],
-                      req["user_email"],
-                      hashedPassword,
-                      Number(req["user_faculty"]),
-                      req["user_course"],
-                      req["user_group"],
-                      request.file ? request.file.buffer : null,
-                      false,
-                      false,
-                    ];
-                    instDao.registrarUsuario(datos, (err, res) => {
-                      if (err) {
-                        datos[3] = req["user_password"];
-                        response.status(403).render("register.ejs", {
-                          errors:
-                            "Ha ocurrido un error interno en el acceso a la BD.",
-                          body: request.body,
-                          facultades: facultades,
-                        });
-                      } else {
-                        response.status(200).render("registroCompletado.ejs");
-                      }
-                    });
+                    var req = request.body;
+                    var mimetype = request.file
+                      ? request.file.mimetype
+                      : undefined;
+                    if (mimetype && !allowedFormats.includes(mimetype)) {
+                      response.status(403).render("register.ejs", {
+                        errors: `El formato ${mimetype} no está permitido.`,
+                        body: request.body,
+                        facultades: facultades,
+                      });
+                    } else {
+                      var hashedPassword = await hashPassword(
+                        req["user_password"]
+                      );
+                      var datos = [
+                        req["user_name"],
+                        req["user_surname"],
+                        req["user_email"],
+                        hashedPassword,
+                        Number(req["user_faculty"]),
+                        req["user_course"],
+                        req["user_group"],
+                        request.file ? request.file.buffer : null,
+                        false,
+                        false,
+                      ];
+                      instDao.registrarUsuario(datos, (err, res) => {
+                        if (err) {
+                          datos[3] = req["user_password"];
+                          response.status(403).render("register.ejs", {
+                            errors:
+                              "Ha ocurrido un error interno en el acceso a la BD.",
+                            body: request.body,
+                            facultades: facultades,
+                          });
+                        } else {
+                          response.status(200).render("registroCompletado.ejs");
+                        }
+                      });
+                    }
                   }
                 }
               }
-            }
-          );
+            );
+          }
         }
-      }
-    });
+      });
+    }
   }
 );
 
@@ -615,6 +702,7 @@ app.post(
               request.session.isLogged = true;
               request.session.user = context.nombre;
               request.session.mail = context.correo;
+              request.session.isAdmin = context.es_admin;
               request.session.sinLeer = 0;
               response.status(200).redirect("index.html"); // The error occurs after here (with try-catch, it does not detect anything, but i dont know where it is)
             }
@@ -632,6 +720,7 @@ app.get("/logout", (request, response, next) => {
   request.session.profile = undefined;
   request.session.defaultProfile = undefined;
   request.session.sinLeer = undefined;
+  request.session.isAdmin = undefined;
   response.render("index.ejs");
 });
 

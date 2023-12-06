@@ -14,7 +14,8 @@
     </header>
     <main>
 
-      <button type="button">
+      <button class="btn btn-secondary" type="button" data-bs-toggle="modal"
+        data-bs-target="#book_inst_list_modal">
         Ver mis reservas
       </button>
 
@@ -23,6 +24,139 @@
         <li><a href="/validar_registro">validacion_usuario</a></li>
         <li><a href="/config_system">config</a></li>
       </ul>
+
+      <div class="modal top fade" id="book_inst_list_modal"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-md modal-dialog-centered" >
+          <div class="modal-content book_inst_list_content">
+           
+            <div class="modal-body container" >
+              <button type="button" class="btn-close"
+              data-bs-dismiss="modal"></button>
+              <div class="booking_cards_container">
+
+                <div class="card_book my-4">
+                  <div class="card_book_inst_name text-center my-2">
+                    <h3>Pista de Patinaje</h3>
+                  </div>
+
+                  <div class="booking_cards_body">
+
+                    <div
+                      class="card_book_inst_img col-md-6 col-11 mx-md-3 mx-auto my-2">
+                      <img class="img-fluid rounded-4"
+                        src="/images/Natacion.jpg" alt>
+                    </div>
+
+                    <div
+                      class="card_book_inst_info col-auto">
+
+                      <div
+                        class="card_book_inst_date my-md-2 my-1">Fecha:
+                        16/05/2004</div>
+                      <div
+                        class="card_book_inst_from my-md-2 my-1">Hora
+                        inicio: 18:30</div>
+                      <div
+                        class="card_book_inst_to my-md-2 my-1">Hora
+                        fin: 18:50</div>
+                      <div
+                        class="card_book_inst_how_many my-md-2 my-1">Asistentes:
+                        2</div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="card_book_inst_but mx-auto my-3">
+                    <button type="button"
+                      class="btn btn-warning cancel_book_but ">Cancelar reserva</button>
+                  </div>
+                </div>
+
+                <div class="card_book d-flex flex-column my-4">
+                  <div class="card_book_inst_name text-center my-2">
+                    <h3>Pista de Patinaje</h3>
+                  </div>
+
+                  <div class="booking_cards_body d-flex flex-row flex-wrap">
+
+                    <div
+                      class="card_book_inst_img col-md-6 col-11 mx-md-3 mx-auto my-2">
+                      <img class="img-fluid rounded-4"
+                        src="/images/Natacion.jpg" alt>
+                    </div>
+
+                    <div
+                      class="card_book_inst_info d-flex flex-column text-center justify-content-center col-auto mx-auto">
+
+                      <div
+                        class="card_book_inst_text card_book_inst_date my-md-2 my-1">Fecha:
+                        16/05/2004</div>
+                      <div
+                        class="card_book_inst_text card_book_inst_from my-md-2 my-1">Hora
+                        inicio: 18:30</div>
+                      <div
+                        class="card_book_inst_text card_book_inst_to my-md-2 my-1">Hora
+                        fin: 18:50</div>
+                      <div
+                        class="card_book_inst_text card_book_inst_how_many my-md-2 my-1">Asistentes:
+                        2</div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="card_book_inst_but mx-auto my-3">
+                    <button type="button"
+                      class="btn btn-warning cancel_book_but ">Cancelar reserva</button>
+                  </div>
+                </div>
+
+                <div class="card_book d-flex flex-column my-4">
+                  <div class="card_book_inst_name text-center my-2">
+                    <h3>Pista de Patinaje</h3>
+                  </div>
+
+                  <div class="booking_cards_body d-flex flex-row flex-wrap">
+
+                    <div
+                      class="card_book_inst_img col-md-6 col-11 mx-md-3 mx-auto my-2">
+                      <img class="img-fluid rounded-4"
+                        src="/images/Natacion.jpg" alt>
+                    </div>
+
+                    <div
+                      class="card_book_inst_info d-flex flex-column text-center justify-content-center col-auto mx-auto">
+
+                      <div
+                        class="card_book_inst_text card_book_inst_date my-md-2 my-1">Fecha:
+                        16/05/2004</div>
+                      <div
+                        class="card_book_inst_text card_book_inst_from my-md-2 my-1">Hora
+                        inicio: 18:30</div>
+                      <div
+                        class="card_book_inst_text card_book_inst_to my-md-2 my-1">Hora
+                        fin: 18:50</div>
+                      <div
+                        class="card_book_inst_text card_book_inst_how_many my-md-2 my-1">Asistentes:
+                        2</div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="card_book_inst_but mx-auto my-3">
+                    <button type="button"
+                      class="btn btn-warning cancel_book_but ">Cancelar reserva</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <% if (locals.instalaciones) { %>
       <div class="container-fluid">
@@ -59,14 +193,15 @@
               </div>
             </div>
           </div>
-          <div class="modal top fade" id="instalacion_reservar_<%=element.id%>"
+          <div class="modal top fade book_inst_modal"
+            id="instalacion_reservar_<%=element.id%>"
             data-bs-backdrop="static">
             <div class="modal-dialog modal-lg modal-dialog-centered">
-              <div class="book_inst_modal modal-content">
+              <div class="modal-content book_inst_content">
                 <div class="modal-header">
                   Reservar una instalación
                 </div>
-                <form method="POST" action="/reservar_instalacion" 
+                <form method="POST" action="/reservar_instalacion"
                   id="instalacion_reservar_form_<%=element.id%>"
                   class="res_inst_form">
 
@@ -83,8 +218,10 @@
                             onkeydown="return false" name="book_inst_date"
                             class="inst_date book_inst_input form-control form-control-sm rounded-4">
                         </div>
-                        <span class="book_form_error date_error text-danger text-center mx-auto"
-                        >La fecha introducida debe ser igual o posterior a la actual.</span>
+                        <span
+                          class="book_form_error date_error text-danger text-center mx-auto">La
+                          fecha introducida debe ser igual o posterior a la
+                          actual.</span>
 
                       </div>
                     </div>
@@ -99,8 +236,9 @@
                             onkeydown="return false" name="book_inst_from"
                             class="inst_from book_inst_input form-control form-control-sm rounded-4">
                         </div>
-                        <span class="book_form_error start_time_error text-danger text-center mx-auto"
-                        >La instalación no abre hasta las <%=element.horario_apertura%>.</span>
+                        <span
+                          class="book_form_error start_time_error text-danger text-center mx-auto">La
+                          instalación no abre hasta las <%=element.horario_apertura%>.</span>
 
                       </div>
                     </div>
@@ -125,18 +263,29 @@
                         <label for="book_inst_how_many_<%=element.id%>"
                           class="col-form-label col-sm-2 text-truncate "><strong>Asistentes</strong></label>
                         <div class="col-sm-7">
-                          <input type="number" id="book_inst_how_many_<%=element.id%>"
-                            onkeydown="return false" min="1" max="<%=element.aforo%>" name="book_inst_how_many"
-                            class="inst_how_many book_inst_input form-control form-control-sm rounded-4">
+                          <input type="number"
+                            id="book_inst_how_many_<%=element.id%>"
+                            onkeydown="return false" min="1"
+                            <%if (element.tipo_reserva==="colectivo"){%>
+                          max="<%=element.aforo%>"
+                          <%}else{%>
+                          max="1"
+                          <%}%>
+                          name="book_inst_how_many"
+                          class="inst_how_many book_inst_input form-control form-control-sm rounded-4">
                         </div>
-                        <span class="book_form_error end_time_error text-danger text-center mx-auto"
-                        >La instalación cierra a las <%=element.horario_cierre%>.</span>
-                        
-                        <span class="book_form_error total_time_error text-danger text-center mx-auto"
-                       >La hora de inicio de la reserva debe ser anterior a la de fin.</span>
+                        <span
+                          class="book_form_error end_time_error text-danger text-center mx-auto">La
+                          instalación cierra a las <%=element.horario_cierre%>.</span>
 
-                        <span class="book_form_error empty_error text-danger text-center mx-auto"
-                        >Todos los campos deben estar rellenos.</span>
+                        <span
+                          class="book_form_error total_time_error text-danger text-center mx-auto">La
+                          hora de inicio de la reserva debe ser anterior a la de
+                          fin.</span>
+
+                        <span
+                          class="book_form_error empty_error text-danger text-center mx-auto">Todos
+                          los campos deben estar rellenos.</span>
 
                       </div>
 
@@ -144,68 +293,143 @@
 
                   </div>
 
-                  <input class="when_opens" type="hidden" value="<%=element.horario_apertura%>">
-                  <input class="when_closes" type="hidden" value="<%=element.horario_cierre%>">
-                  
-                  
+                  <input class="when_opens" type="hidden"
+                    value="<%=element.horario_apertura%>">
+                  <input class="when_closes" type="hidden"
+                    value="<%=element.horario_cierre%>">
+                  <input class="inst_id" type="hidden"
+                    value="<%=element.id%>">
+
                   <div class="modal-footer">
                     <input type="submit" class="btn btn-lg btn-success"></input>
-                    <button type="button" class="cancel_but btn btn-lg btn-info"
-                      data-bs-dismiss="modal">Cancelar</button>
-                  </div>
-                </form>
-              </div>
+                  <button type="reset" class="cancel_but btn btn-lg btn-info"
+                    data-bs-dismiss="modal">Cancelar</button>
+                </div>
+              </form>
             </div>
           </div>
+        </div>
 
-          <div class="modal top fade" id="instalacion_detalles_<%=element.id%>"
-            data-bs-backdrop="static">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  Detalles
-                </div>
-                <div class="modal-body container">
-                  <div class="row justify-content-center">
-                    <div class="col-sm-7 col-12 p-0">
-                      <div
-                        class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
-                        <img
-                          src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
-                          alt="<%=element.nombre%>" class="img-fluid rounded-4">
-                      </div>
-                    </div>
+        <div class="modal top fade" id="instalacion_detalles_<%=element.id%>"
+          data-bs-backdrop="static">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                Detalles
+              </div>
+              <div class="modal-body container">
+                <div class="row justify-content-center">
+                  <div class="col-sm-7 col-12 p-0">
                     <div
-                      class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
-                      <p><i class="fa fa-building"></i> Nombre Instalación:
-                        <%=element.nombre%>
-                      </p>
-                      <p><i class="fa fa-hourglass-1"></i> Apertura:
-                        <%=element.horario_apertura%>
-                      </p>
-                      <p><i class="fa fa-hourglass-3"></i> Cierre: <%=element.horario_cierre%>
-                      </p>
-                      <p><i class="fa fa-map-pin"></i> Tipo reserva: <%=element.tipo_reserva%>
-                      </p>
-                      <p><i class="fa fa-group"></i> Aforo: <%=element.aforo%>
-                      </p>
+                      class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
+                      <img
+                        src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
+                        alt="<%=element.nombre%>" class="img-fluid rounded-4">
                     </div>
                   </div>
+                  <div
+                    class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                    <p><i class="fa fa-building"></i> Nombre Instalación:
+                      <%=element.nombre%>
+                    </p>
+                    <p><i class="fa fa-hourglass-1"></i> Apertura:
+                      <%=element.horario_apertura%>
+                    </p>
+                    <p><i class="fa fa-hourglass-3"></i> Cierre: <%=element.horario_cierre%>
+                    </p>
+                    <p><i class="fa fa-map-pin"></i> Tipo reserva: <%=element.tipo_reserva%>
+                    </p>
+                    <p><i class="fa fa-group"></i> Aforo: <%=element.aforo%>
+                    </p>
+                  </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-lg btn-outline-success"
-                    data-bs-dismiss="modal">Aceptar</button>
-                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-lg btn-outline-success"
+                  data-bs-dismiss="modal">Aceptar</button>
               </div>
             </div>
           </div>
-          <%})} %>
+        </div>
+        <%})} %>
 
-        </main>
-        <!-- Dynamically footer's inclusion. -->
-        <footer>
-          <%- include ('pieces/footer')%>
-        </footer>
-      </body>
-      <script src="/scripts/gestionReservas.js"></script>
-    </html>
+        <div class="modal top fade" id="book_inst_ok"
+          data-bs-backdrop="static">
+          <div
+            class="modal-dialog modal-sm modal-dialog-centered">
+            <div id="book_inst_ok_dialog"
+              class="modal-content">
+
+              <div
+                class="modal-body container text-center my-2 mx-auto p-3">
+
+                <div><strong>Su reserva se ha efectuado correctamente.<br> Puede
+                    ver el estado de sus reservas en la pestaña <i>"Mis reservas"</i>.</strong></div>
+                <div>
+                  <button
+                    data-bs-dismiss="modal"
+                    class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="modal top fade" id="book_inst_ko"
+          data-bs-backdrop="static">
+          <div
+            class="modal-dialog modal-sm modal-dialog-centered">
+            <div id="book_inst_ko_dialog"
+              class="modal-content">
+
+              <div
+                class="modal-body container text-center my-2 mx-auto p-3">
+
+                <div>Actualmente, no existe disponibilidad en el horario que ha
+                  fijado. ¿Desea apuntarse en la lista de espera y recibir un
+                  mail en caso de cancelación?</div>
+              </div>
+
+              <div class="modal-footer">
+                <input id="wait_list_ok_but" type="button"
+                  class="btn btn-lg btn-success" value="Aceptar"></input>
+              <button type="button" class="cancel_but btn btn-lg btn-info"
+                data-bs-dismiss="modal">Cancelar</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal top fade" id="add_wait_list_ok"
+        data-bs-backdrop="static">
+        <div
+          class="modal-dialog modal-sm modal-dialog-centered">
+          <div id="add_wait_list_ok_dialog"
+            class="modal-content">
+
+            <div
+              class="modal-body container text-center my-2 mx-auto p-3">
+
+              <div><strong>Su reserva se ha añadido con éxito a la lista de
+                  espera.</strong></div>
+              <div>
+                <button type="reset"
+                  data-bs-dismiss="modal"
+                  class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </main>
+    <!-- Dynamically footer's inclusion. -->
+    <footer>
+      <%- include ('pieces/footer')%>
+    </footer>
+  </body>
+  <script src="/scripts/gestionReservas.js"></script>
+</html>
