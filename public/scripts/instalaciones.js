@@ -21,6 +21,7 @@ $(document).ready((e) => {
                     var modal = $("#add_instalaciones")
                     modal.modal("hide")
                     datos.reset()
+                    location.reload();
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     alert("Se ha producido un error: Intentelo mas tarde.")
@@ -54,6 +55,7 @@ $(document).ready((e) => {
                     var modal = $("#instalaciones_modificar_"+id)
                     modal.modal("hide")
                     event.target.reset()
+                    location.reload();
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     alert("Se ha producido un error: Intentelo mas tarde."+ errorThrown)

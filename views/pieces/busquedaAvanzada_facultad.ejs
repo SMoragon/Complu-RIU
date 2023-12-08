@@ -1,0 +1,91 @@
+<div class="container-fluid">
+    <div id="facultad_container" class="row justify-content-center">
+        <% facultades.forEach(element=> { %>
+            <div class="col-10 row bg-info-subtle border border-3 rounded-4 border-info my-3">
+                <div class="d-inline-block col-sm-6 col-12 mt-2">
+                    <p><i class="fa fa-key"></i> Id: <%=element.id%>
+                    </p>
+                    <p><i class="fa fa-building"></i> Nombre Facultad:
+                        <%=element.nombre%>
+                    </p>
+                </div>
+                <div
+                    class="d-inline-block col-sm-6 col-12 d-flex justify-content-sm-end justify-content-center my-auto">
+                    <button type="button" id="user_list_button_<%=element.id%>"
+                        class="user_list_button btn btn-sm btn-success text-truncate mx-2 mb-2" data-bs-toggle="modal"
+                        data-bs-target="#user_list_<%=element.id%>"><i class="fa fa-group"></i> Listar Usuario</button>
+                    <button type="button" id="estadistica_facultad_button_<%=element.id%>"
+                        class="btn btn-sm btn-primary text-truncate mx-2 mb-2 estadistica_facultad"
+                        data-bs-toggle="modal" data-bs-target="#estadistica_facultad_<%=element.id%>"><i
+                            class="fa fa-bar-chart"></i> Ver
+                        Estadistica</button>
+                </div>
+            </div>
+            <div class="modal top fade" id="user_list_<%=element.id%>" data-bs-backdrop="static">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Lista de usuarios de la facultad: <%=element.nombre%>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 overflow-auto">
+                                        <table class="table table-responsive table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-truncate" scope="col">Id</th>
+                                                    <th class="text-truncate" scope="col">Nombre</th>
+                                                    <th class="text-truncate" scope="col">Apellido</th>
+                                                    <th class="text-truncate" scope="col">Correo</th>
+                                                    <th class="text-truncate" scope="col">Curso</th>
+                                                    <th class="text-truncate" scope="col">Grupo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table_row_<%=element.id%>">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row justify-content-md-end">
+                                <div class="col-10 mx-sm-2">
+                                    <button type="button" class="btn btn-lg btn-outline-success text-truncate"
+                                        data-bs-dismiss="modal">Aceptar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal top fade" id="estadistica_facultad_<%=element.id%>" data-bs-backdrop="static">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header text-truncate text-primary">
+                            Estadistica de la Facultad: <%=element.nombre%>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row justify-content-center">
+                                    <div class="col-auto overflow-auto" id="chart_<%=element.id%>_container">
+                                        <canvas id="chart_<%=element.id%>"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row justify-content-md-end">
+                                <div class="col-10 mx-sm-2">
+                                    <button type="button" class="btn btn-lg btn-outline-success text-truncate"
+                                        data-bs-dismiss="modal">Aceptar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%});%>
+    </div>
+</div>

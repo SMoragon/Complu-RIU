@@ -23,7 +23,6 @@
                 
             </h1>
         </div>
-
         <div class=" col-md-4 col-sm-4 ">
             <div id="login_cont" class="mx-md-5">
                 <!-- JS code to show the login button only if user is logged. Otherwise, a login button will appear.. -->
@@ -66,7 +65,6 @@
                            <a id="a_inbox" href="/inbox">Bandeja de entrada</a> 
                         </div>
                     </div>
-
                 <% } else { %>
 
                 <div class="offset-5" id="login_reg_disp_cont">
@@ -75,10 +73,45 @@
                     <a class="account_but d-flex" href="/register">Registrarse</a>
 
                 </div>
-
                 <% } %>
             </div>
         </div>
-
+        <% if (session.is_admin) { %>
+            <!-- Navigation bar. -->
+            <div class="container">
+                <div class="row justify-content-center">
+                    <nav class="navbar navbar-expand-md">
+                        <div class="container-fluid">
+                        <!-- Navigation bar toggler to show when screen size is too small to display all of its content (responsiveness aid). -->
+                            <button class="navbar-toggler" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse container-fluid" id="navbarNav">
+                            <!-- Navigation bar content (main pages of the app). -->
+                            <ul class="navbar-nav" id="navbar-list">
+                                <li class="nav-item">
+                                    <a href="/index.html" class="nav-link"
+                                        aria-current="page">Inicio</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/gestion_instalacion" class="nav-link">Gestion Instalación</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/validar_registro" class="nav-link">Validacion Registro</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/busquedaAvanzada" class="nav-link">Busqueda Avanzada</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/config_system" class="nav-link">Configuración Sistema</a>
+                                </li>
+                            </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        <% }; %>
     </div>
 </div>

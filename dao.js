@@ -97,97 +97,18 @@ class DAO {
     });
   }
 
-  /* Función que, dado un nombre, descripción, una ruta de imagen local y un precio, lo inserta en la BD.
-   Si no existe el path de la imagen, manda el error al callback. */
-  insertarDestino(destino, callback) {
+  obtenerNombreInstalacion(callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
         callback(err);
       } else {
-        var imgRoute = destino[2];
-        var img = undefined;
-        try {
-          img = fs.readFileSync(imgRoute);
-        } catch (error) {
-          callback(error);
-          return;
-        }
+        const sql = "SELECT nombre FROM Instalaciones"
+        connection.query(sql, callback);
+        connection.release();
+      }
+    });
+  };
 
-        destino[2] = img;
-
-        const sql =
-          "Insert Into destinos (nombre, descripcion, imagen, precio) VALUES (?,?,?,?) ";
-        connection.query(sql, destino, callback);
-        connection.release();
-      }
-    });
-  }
-
-  insertarImagen(datos, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql =
-          "Insert Into imagen (destino_id, img, descripcion) VALUES (?,?,?) ";
-        connection.query(sql, datos, callback);
-        connection.release();
-      }
-    });
-  }
-  leerImagen(id, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql = "Select * From imagen Where destino_id = ?";
-        connection.query(sql, id, callback);
-        connection.release();
-      }
-    });
-  }
-  /* Función que, dado un identificador de destino, lee el destino asociado a ese ID de la BD y devuelve todos
-   sus parámetros (en caso de haberlos). */
-  leerDestinoId(id, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql = "Select * From destinos Where id = ?";
-        connection.query(sql, id, callback);
-        connection.release();
-      }
-    });
-  }
-
-  /* Función que, dado un nombre de destino, lee el destino con ese nombre de la BD y devuelve todos
-   sus parámetros (en caso de haberlos). */
-  leerDestinoNombre(name, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql = "Select * From destinos Where nombre = ?";
-        connection.query(sql, name, callback);
-        connection.release();
-      }
-    });
-  }
-
-  /* Función que, dado un id válido de destino, un nombre, un correo, una fecha de reserva de ida y una de vuelta, genera
-   una nueva reserva en la tabla correspondiente. */
-  reservaDestino(dato, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql =
-          "Insert Into reservas (destino_id, nombre_cliente, correo_cliente, fecha_reserva_ida, fecha_reserva_vuelta) VALUES (?,?,?,?,?)";
-        connection.query(sql, dato, callback);
-        connection.release();
-      }
-    });
-  }
 
   /* Función que, dado un correo y una contraseña válidos, inserta un usuario en
     la base de datos, para que pase a estar registrado. */
@@ -268,6 +189,253 @@ class DAO {
       }
     })
   }
+
+  obtenerFacultadesPorNombre(name, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        name = `%${name}%`;
+        const sql = "SELECT DISTINCT * FROM facultades WHERE nombre LIKE ?";
+        connection.query(sql, [name], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerFacultadesPorUsuarioNombre(user, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        user = `%${user}%`;
+        const sql = "SELECT DISTINCT f.id as id, f.nombre as nombre FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.nombre LIKE ?";
+        connection.query(sql, [user], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerFacultadesPorUsuarioApellido(user, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        user = `%${user}%`;
+        const sql = "SELECT DISTINCT f.id as id, f.nombre as nombre FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.apellidos LIKE ?";
+        connection.query(sql, [user], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerFacultadesListaUsuario(id, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE f.id = ?";
+        connection.query(sql, [id], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerEstadisticaFacultad(id,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT i.nombre as label ,COUNT(i.id) as counter FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN facultades f ON f.id = u.facultad JOIN instalaciones i ON r.id_instalacion = i.id WHERE f.id = ? GROUP BY i.id";
+        connection.query(sql, [id], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerListaUsuarioPorFaculdad(facultad, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        facultad = `%${facultad}%`
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE f.nombre like ?";
+        connection.query(sql, [facultad], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerListaUsuarioPorCorreo(correo, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        correo = `%${correo}%`
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE correo like ?";
+        connection.query(sql, [correo], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerListaUsuarioPorNombre(nombre, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        nombre = `%${nombre}%`
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.nombre like ?";
+        connection.query(sql, [nombre], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerListaUsuarioPorApellido(apellido, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        apellido = `%${apellido}%`
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE apellidos like ?";
+        connection.query(sql, [apellido], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerHistorialUsuario(id,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT i.nombre as nombre, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN instalaciones i ON r.id_instalacion=i.id WHERE id_reservante = ?";
+        connection.query(sql, [id], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerEstadisticaUsuario(id,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT i.nombre as label ,COUNT(i.id) as counter FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE u.id = ? GROUP BY i.id";
+        connection.query(sql, [id], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerInstalacionPorNombre(nombre,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        nombre = `%${nombre}%`
+        const sql = "SELECT * FROM instalaciones WHERE nombre LIKE ?";
+        connection.query(sql, [nombre], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerHistorialInstalacion(id,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT u.nombre as nombre, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id WHERE r.id_instalacion = ?";
+        connection.query(sql, [id], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservaPorNombreUsuario(nombre,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE u.nombre like ?";
+        nombre = `%${nombre}%`
+        connection.query(sql, [nombre], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservaPorApellidoUsuario(apellido,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE u.apellidos like ?";
+        apellido = `%${apellido}%`
+        connection.query(sql, [apellido], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservaPorNombreInstalacion(nombre,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE i.nombre like ?";
+        nombre = `%${nombre}%`
+        connection.query(sql, [nombre], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservaPorNombreFacultad(nombre,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN facultades f ON u.facultad = f.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE f.nombre like ?";
+        nombre = `%${nombre}%`
+        connection.query(sql, [nombre], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservaPorRangoTemporal(fechas,callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE fecha_reserva >= ? AND fecha_reserva <= ?";
+        connection.query(sql, fechas, callback);
+        connection.release();
+      }
+    })
+  }
+
 
   enviarMensaje(datos, callback){
     this.pool.getConnection((err, connection)=>{
