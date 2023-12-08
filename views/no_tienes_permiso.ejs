@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
+<head>
+    <%- include ('pieces/head')%>
+</head>
+
+<body>
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <p class="h1 text-danger text-truncate">Te voy a mataaaar!!!</p>
+                </div>
+            </div>
+            <div class="row justify-content-center my-5">
+                <div class="col-md-6 col-sm-9 col-11">
+                    <img src="/images/no_tienes_permiso.jpg" alt="imagen del sistema enfadado" class="img-fluid">
+                </div>
+            </div>
+            <div class="row justify-content-center my-3">
+                <div class="col-auto">
+                    <button class="border border-3 border-danger rounded-3 btn btn-lg bg-danger bg-opacity-25">
+                        <a href="/" class="text-danger text-truncate">Run Away</a></button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+</html>

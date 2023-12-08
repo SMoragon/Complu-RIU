@@ -1,0 +1,48 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <table class="table table-responsive table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-truncate" scope="col">Id Reserva</th>
+                    <th class="text-truncate" scope="col">Usuario</th>
+                    <th class="text-truncate" scope="col">Correo</th>
+                    <th class="text-truncate" scope="col">Instalacion</th>
+                    <th class="text-truncate" scope="col">Fecha Reserva</th>
+                    <th class="text-truncate" scope="col">Hora Inicio</th>
+                    <th class="text-truncate" scope="col">Hora Fin</th>
+                    <th class="text-truncate" scope="col">Asistente</th>
+                </tr>
+            </thead>
+            <tbody">
+                <% reservas.forEach(element=> { %>
+                    <tr>
+                        <th scope="row">
+                            <%= element.id %>
+                        </th>
+                        <td>
+                            <%= element.usuario %>
+                        </td>
+                        <td>
+                            <%= element.correo %>
+                        </td>
+                        <td>
+                            <%= element.instalacion %>
+                        </td>
+                        <td>
+                            <%= element.fecha_reserva.toLocaleDateString() %>
+                        </td>
+                        <td>
+                            <%= element.hora_inicio %>
+                        </td>
+                        <td>
+                            <%= element.hora_fin %>
+                        </td>
+                        <td>
+                            <%= element.asistentes %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</div>

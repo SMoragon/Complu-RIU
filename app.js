@@ -6,6 +6,7 @@ const moment = require("moment");
 const pool = require("./pool.js");
 const dao = require("./dao.js");
 const multer = require("multer");
+const querystring = require("querystring")
 const multerFactory = multer({ storage: multer.memoryStorage() });
 const port = 3000;
 const session = require("express-session");
@@ -84,24 +85,22 @@ app.use((request, response, next) => {
   } else {
     response.locals.session = request.session;
     next();
-  }
-});
+  }});
 
-app.use((req, res, next) => {
-  if (typeof req.session.sysConfig === "undefined") {
+app.use((request, response, next) => {
+  if (typeof request.session.sysConfig === 'undefined') {
     instDao.get_config_info((err, res) => {
       if (err) {
-        next();
+        next()
       } else {
-        res[0]["url_instagram"] = res[0]["url_instagram"].replaceAll(
-          "&#x2F;",
-          "/"
-        );
-        req.session.sysConfig = res[0];
+        res[0]['url_instagram'] = res[0]['url_instagram'].replaceAll("&#x2F;", "/")
+        request.session.sysConfig = res[0]
+        response.locals.session = request.session;
         next();
       }
-    });
+    })
   } else {
+    response.locals.session = request.session;
     next();
   }
 });
@@ -127,25 +126,33 @@ app.get("/index.html", (request, response) => {
   });
 });
 
-app.get("/gestion_instalacion", (request, response, next) => {
-  var busqueda = "";
-  if (request.query["search"] !== undefined) {
-    busqueda = request.query["search"];
-  }
-  instDao.buscarInstalacion(busqueda, (err, res) => {
-    if (err) {
-      response.status(400).end();
-    } else {
-      res.map((element)=>{
-        var [horas, mins, segs] =element.horario_apertura.split(":");
-        element.horario_apertura =horas + ":" + mins;
+app.get("/gestion_instalacion", (request, response) => {
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var busqueda = "";
+      if (request.query["search"] !== undefined) {
+        busqueda = request.query["search"];
+      }
+      instDao.buscarInstalacion(busqueda, (err, res) => {
+        if (err) {
+          response.status(400).end();
+        } else {
+           res.map((element)=>{
+            var [horas, mins, segs] =element.horario_apertura.split(":");
+            element.horario_apertura =horas + ":" + mins;
 
-        var [horas, mins, segs] =element.horario_cierre.split(":");
-        element.horario_cierre =horas + ":" + mins;
-      })
-      response.status(200).render("gestion_instalaciones.ejs", { dato: res });
+            var [horas, mins, segs] =element.horario_cierre.split(":");
+            element.horario_cierre =horas + ":" + mins;
+          })
+          response.status(200).render("gestion_instalaciones.ejs", { dato: res });
+        }
+      });
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
     }
-  });
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
 });
 
 app.post(
@@ -153,26 +160,34 @@ app.post(
   multerFactory.single("instalacion_imagen"),
   body("instalacion_nombre").escape(),
   (request, response) => {
-    var body = request.body;
-    var datos = [
-      body["instalacion_nombre"],
-      body["horario_apertura"],
-      body["horario_cierre"],
-      body["tipo_reserva"],
-      body["aforo"],
-      request.file ? request.file.buffer : null,
-      request.file["mimetype"],
-    ];
-    instDao.insertar_instalacion(datos, (err) => {
-      if (err) {
-        response.status(400);
-      } else {
-        response.status(201).json({
-          msg: "Instalacion añadida con exito, para que se haga efecto, refresca la pagina",
+    if (request.session.isLogged) {
+      if (request.session.is_admin) {
+        var body = request.body;
+        var datos = [
+          body["instalacion_nombre"],
+          body["horario_apertura"],
+          body["horario_cierre"],
+          body["tipo_reserva"],
+          body["aforo"],
+          request.file ? request.file.buffer : null,
+          request.file["mimetype"],
+        ];
+        instDao.insertar_instalacion(datos, (err) => {
+          if (err) {
+            response.status(400);
+          } else {
+            response.status(201).json({
+              msg: "Instalación añadida con éxito, para que haga efecto, refresca la página",
+            });
+          }
+          response.end();
         });
+      } else {
+        response.status(200).render("no_tienes_permiso.ejs");
       }
-      response.end();
-    });
+    } else {
+      response.status(200).render("must_be_login.ejs");
+    };
   }
 );
 
@@ -181,78 +196,121 @@ app.put(
   multerFactory.single("instalacion_imagen"),
   body("m_instalacion_nombre").escape(),
   (request, response) => {
-    var imagen = request.params.imagen == "true" ? true : false;
-    var body = request.body;
-    var id = body["instalacion_id"];
-    var dato = [
-      body["m_instalacion_nombre"],
-      body["m_horario_apertura"],
-      body["m_horario_cierre"],
-      body["m_tipo_reserva"],
-      body["m_aforo"],
-    ];
-    if (imagen) {
-      dato.push(request.file.buffer);
-      dato.push(request.file["mimetype"]);
-    }
-    instDao.modificarInstalacion(id, imagen, dato, (err) => {
-      if (err) {
-        response.status(400);
-      } else {
-        response.status(201).json({
-          msg: "Instalacion modificada con exito, para que se haga efecto, refresca la pagina",
+
+    if (request.session.isLogged) {
+      if (request.session.is_admin) {
+        var imagen = request.params.imagen == "true" ? true : false;
+        var body = request.body;
+        var id = body["instalacion_id"];
+        var dato = [
+          body["m_instalacion_nombre"],
+          body["m_horario_apertura"],
+          body["m_horario_cierre"],
+          body["m_tipo_reserva"],
+          body["m_aforo"],
+        ];
+        if (imagen) {
+          dato.push(request.file.buffer);
+          dato.push(request.file["mimetype"]);
+        }
+        instDao.modificarInstalacion(id, imagen, dato, (err) => {
+          if (err) {
+            response.status(400);
+          } else {
+            response.status(201).json({
+              msg: "Instalacion modificado con exito, para que se haga efecto, reflesca la pagina",
+            });
+          }
+          response.end();
         });
+      } else {
+        response.status(200).render("no_tienes_permiso.ejs");
       }
-      response.end();
-    });
+    } else {
+      response.status(200).render("must_be_login.ejs");
+    };
   }
 );
 
 app.delete("/delete_instalacion/:id", (request, response) => {
-  var id = request.params.id;
-  instDao.eliminarInstalacion(id, (err) => {
-    if (err) {
-      response.status(404).json({ msg: "Instalacion no existente" });
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.eliminarInstalacion(id, (err) => {
+        if (err) {
+          response.status(404).json({ msg: "Instalacion no existente" });
+        } else {
+          response.status(201).json({ msg: "Instalacion eliminado con exito" });
+        }
+        response.end();
+      });
     } else {
-      response.status(201).json({ msg: "Instalacion eliminada con exito" });
+      response.status(200).render("no_tienes_permiso.ejs");
     }
-    response.end();
-  });
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
 });
 
 app.get("/validar_registro", (request, response, next) => {
-  instDao.obtenerUsuariosNoValidatos((err, res) => {
-    if (err) {
-      response.status(400).end();
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      instDao.obtenerUsuariosNoValidatos((err, res) => {
+        if (err) {
+          response.status(400).end();
+        } else {
+          response.status(200).render("validarRegistro.ejs", { datos: res });
+        }
+      });
     } else {
-      response.status(200).render("validarRegistro.ejs", { datos: res });
+      response.status(200).render("no_tienes_permiso.ejs");
     }
-  });
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
 });
 
 app.patch("/validar_registro/:id", (request, response, next) => {
-  var id = request.params.id;
-
-  instDao.validarUsuario(id, (err, res) => {
-    if (err) {
-      response
-        .status(400)
-        .end("Ha ocurrido un error en el acceso interno de la BD.");
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.validarUsuario(id, (err, res) => {
+        if (err) {
+          response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
+        } else {
+          response.status(200).json({ msg: "Usuario validado con exito" });
+        }
+      });
     } else {
-      response.status(200).json({ msg: "Usuario validado con exito" });
+      response.status(200).render("no_tienes_permiso.ejs");
     }
-  });
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
 });
 
 app.delete("/eliminar_registro/:id", (request, response, next) => {
-  var id = request.params.id;
-  instDao.eliminarUsuario(id, (err, res) => {
-    if (err) {
-      response.status(400).end();
+
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.eliminarUsuario(id, (err, res) => {
+        if (err) {
+          response.status(400).end();
+        } else {
+          response.status(200).json({ msg: "Usuario eliminado con exito" });
+        }
+      });
+
     } else {
-      response.status(200).json({ msg: "Usuario eliminado con exito" });
+      response.status(200).render("no_tienes_permiso.ejs");
     }
-  });
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
 });
 
 app.get("/inbox", (request, response, next) => {
@@ -322,7 +380,220 @@ app.get("/get_filtered_mail", (request, response, next) => {
 });
 
 app.get("/config_system", (request, response) => {
-  response.status(200).render("config_system.ejs");
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      response.status(200).render("config_system.ejs");
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
+    }
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
+});
+
+app.get("/facultad_usuarios/:id", (request, response) => {
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.obtenerFacultadesListaUsuario(id, (err, result) => {
+        if (err) {
+          response.status(404).end();
+        } else {
+          response.status(200).json({ "usuarios": result });
+        }
+      })
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
+    }
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
+});
+
+app.get("/facultad_historial_usuario/:id", (request, response) => {
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.obtenerHistorialUsuario(id, (err, result) => {
+        if (err) {
+          response.status(404).end();
+        } else {
+          response.status(200).json({ "historial": result });
+        }
+      })
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
+    }
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
+});
+
+app.get("/facultad_historial_instalacion/:id", (request, response) => {
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.obtenerHistorialInstalacion(id, (err, result) => {
+        if (err) {
+          response.status(404).end();
+        } else {
+          response.status(200).json({ "historial": result });
+        }
+      })
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
+    }
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
+});
+
+app.get("/estadistica_usuario/:id", (request, response) => {
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.obtenerEstadisticaUsuario(id, (err, result) => {
+        if (err) {
+          response.status(404).end();
+        } else {
+          response.status(200).json({ "estadistica": result });
+        }
+      });
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
+    }
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
+});
+
+app.get("/estadistica_facultad/:id", (request, response) => {
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var id = request.params.id;
+      id = querystring.escape(id);
+      instDao.obtenerEstadisticaFacultad(id, (err, result) => {
+        if (err) {
+          console.log
+          response.status(404).end();
+        } else {
+          response.status(200).json({ "estadistica": result });
+        }
+      })
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
+    }
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
+});
+
+app.get("/busquedaAvanzada", (request, response, next) => {
+  if (request.session.isLogged) {
+    if (request.session.is_admin) {
+      var tipo_busqueda = request.query["tipo_busqueda"];
+      var filtrar_por = request.query["filtrar_por"];
+      var search = request.query["search"];
+      var date_init = request.query["date_init"];
+      var date_end = request.query["date_end"];
+      if (search !== undefined) {
+        search = querystring.escape(search);
+        search = search.replaceAll("%40", "@");
+        search = search.replaceAll("%20", " ");
+      }
+      var usuario_callback = (err, res_usuario) => {
+        if (err) {
+          next()
+        } else {
+          response.status(200).render("busquedaAvanzada.ejs", { "usuarios": res_usuario });
+        }
+      }
+      var reservas_callback = (err, res_reservas) => {
+        if (err) {
+          next()
+        } else {
+          response.status(200).render("busquedaAvanzada.ejs", { "reservas": res_reservas });
+        }
+      }
+      var facultad_callback = (err, res_facultad) => {
+        if (err) {
+          next()
+        } else {
+          response.status(200).render("busquedaAvanzada.ejs", { "facultades": res_facultad });
+        }
+      }
+      var instalacion_callback = (err, res_instalacion) => {
+        if (err) {
+          next()
+        } else {
+          response.status(200).render("busquedaAvanzada.ejs", { "instalaciones": res_instalacion });
+        }
+      }
+      switch (tipo_busqueda) {
+        case "Usuario":
+          switch (filtrar_por) {
+            case "Nombre":
+              instDao.obtenerListaUsuarioPorNombre(search, usuario_callback);
+              break;
+            case "Apellido":
+              instDao.obtenerListaUsuarioPorApellido(search, usuario_callback);
+              break;
+            case "Correo":
+              instDao.obtenerListaUsuarioPorCorreo(search, usuario_callback);
+              break;
+            case "Facultad":
+              instDao.obtenerListaUsuarioPorFaculdad(search, usuario_callback);
+              break;
+          }
+          break;
+        case "Reserva":
+          switch (filtrar_por) {
+            case "Nombre Usuario":
+              instDao.obtenerReservaPorNombreUsuario(search, reservas_callback);
+              break;
+            case "Apellido Usuario":
+              instDao.obtenerReservaPorApellidoUsuario(search, reservas_callback);
+              break;
+            case "Nombre Facultad":
+              instDao.obtenerReservaPorNombreFacultad(search, reservas_callback);
+              break;
+            case "Nombre Instalacion":
+              instDao.obtenerReservaPorNombreInstalacion(search, reservas_callback);
+              break;
+            case "Fecha Inicio - Fecha Fin":
+              instDao.obtenerReservaPorRangoTemporal([date_init, date_end], reservas_callback);
+              break;
+          }
+          break;
+        case "Facultad":
+          switch (filtrar_por) {
+            case "Nombre Facultad":
+              instDao.obtenerFacultadesPorNombre(search, facultad_callback);
+              break;
+            case "Nombre Usuario":
+              instDao.obtenerFacultadesPorUsuarioNombre(search, facultad_callback);
+              break;
+            case "Apellido Usuario":
+              instDao.obtenerFacultadesPorUsuarioApellido(search, facultad_callback);
+              break;
+          }
+          break;
+        case "Instalacion":
+          instDao.obtenerInstalacionPorNombre(search, instalacion_callback);
+          break;
+        default:
+          response.status(200).render("busquedaAvanzada.ejs");
+      }
+    } else {
+      response.status(200).render("no_tienes_permiso.ejs");
+    }
+  } else {
+    response.status(200).render("must_be_login.ejs");
+  };
 });
 
 app.put(
@@ -333,39 +604,38 @@ app.put(
   body("org_ig").escape(),
   body("org_mail").escape(),
   (request, response, next) => {
-    var imagen = request.params.imagen == "true" ? true : false;
-    var body = request.body;
-    var dato = [
-      body["org_name"],
-      body["org_dir"],
-      body["org_ig"],
-      body["org_mail"],
-    ];
-    if (imagen) {
-      dato.push(request.file.buffer);
-      dato.push(request.file["mimetype"]);
-    }
-    instDao.update_config(imagen, dato, (err) => {
-      if (err) {
-        response.status(400);
-      } else {
-        request.session.sysConfig["nombre"] = dato[0];
-        request.session.sysConfig["direccion"] = dato[1];
-        request.session.sysConfig["url_instagram"] = dato[2].replaceAll(
-          "&#x2F;",
-          "/"
-        );
-        request.session.sysConfig["correo"] = dato[3];
+    if (request.session.isLogged) {
+      if (request.session.is_admin) {
+        var imagen = request.params.imagen == "true" ? true : false;
+        var body = request.body
+        var dato = [body["org_name"], body["org_dir"], body["org_ig"], body["org_mail"]];
         if (imagen) {
-          request.session.sysConfig["icono"] = dato[4];
-          request.session.sysConfig["icono_type"] = dato[5];
+          dato.push(request.file.buffer)
+          dato.push(request.file['mimetype'])
         }
-        response.status(201).json({ msg: "Se ha actualizado correctamente" });
+        instDao.update_config(imagen, dato, (err) => {
+          if (err) {
+            response.status(400)
+          } else {
+            request.session.sysConfig['nombre'] = dato[0]
+            request.session.sysConfig['direccion'] = dato[1]
+            request.session.sysConfig['url_instagram'] = dato[2].replaceAll("&#x2F;", "/")
+            request.session.sysConfig['correo'] = dato[3]
+            if (imagen) {
+              request.session.sysConfig['icono'] = dato[4]
+              request.session.sysConfig['icono_type'] = dato[5]
+            }
+            response.status(201).json({ msg: "Se ha actualizado correctamente" })
+          }
+          response.end()
+        })
+      } else {
+        response.status(200).render("no_tienes_permiso.ejs");
       }
-      response.end();
-    });
-  }
-);
+    } else {
+      response.status(200).render("must_be_login.ejs");
+    };
+  });
 
 app.patch("/marcar_leido/:id", (request, response, next) => {
   if (!request.session.isLogged) {
@@ -373,9 +643,7 @@ app.patch("/marcar_leido/:id", (request, response, next) => {
   } else {
     instDao.marcarComoLeido(request.params.id, (err, res) => {
       if (err) {
-        response
-          .status(400)
-          .end("Ha ocurrido un error en el acceso interno de la BD.");
+        response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
       }
     });
   }
@@ -890,7 +1158,7 @@ app.post(
               request.session.isLogged = true;
               request.session.user = context.nombre;
               request.session.mail = context.correo;
-              request.session.isAdmin = context.es_admin;
+              request.session.is_admin = context.es_admin;
               request.session.sinLeer = 0;
               response.status(200).redirect("index.html");
             }
@@ -908,7 +1176,7 @@ app.get("/logout", (request, response, next) => {
   request.session.profile = undefined;
   request.session.defaultProfile = undefined;
   request.session.sinLeer = undefined;
-  request.session.isAdmin = undefined;
+  request.session.is_admin = undefined;
   response.render("index.ejs");
 });
 

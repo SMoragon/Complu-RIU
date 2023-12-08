@@ -49,6 +49,24 @@ a {
   font-weight: bold;
 }
 
+.nav-item {
+  font-size: calc(0.8em + 0.75vw);
+  padding-left: calc(1em + 0.58vw);
+  padding-right: calc(1em + 0.5vw);
+  font-family: "Comic Sans";
+}
+
+.nav-item:hover {
+  background-color: hsl(28, 60%, 65%);
+  font-weight: bold;
+}
+
+.navbar-nav {
+  flex-direction: column;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
 #footer_cont {
   display: flex;
   flex-wrap: wrap;
@@ -79,6 +97,16 @@ a {
 
 .instalacion_bgc{
   background-color:  rgb(183, 216, 234) !important;
+}
+
+.list_usuario_bgc{
+  background-color:  rgb(188, 180, 231) !important;
+}
+
+.list_usuario_img{
+  height: 10em;
+  min-height: 10em;
+  max-height: 10em;
 }
 
 .validar_usuario_bgc{
@@ -181,7 +209,11 @@ img > footer {
 
 .search_text{
   height: 2.5em;
-  width: 20vw;
+  width: calc(10em + 10vw);
+}
+
+.search_text_mine{
+  width: calc(7em + 8vw);
 }
 
 .register_ok_but{
@@ -324,6 +356,21 @@ img > footer {
 #no_books_msg{
   display: none;
   color: rgb(190, 196, 227);
+
+@media (min-width: 768px) {
+  #navbar-list {
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+}
+
+@media (max-width:767.9px){
+  .search_text_mine{
+    width: 35vw !important;
+  }
+
 }
 
 @media (max-width: 575.9px) {

@@ -4,18 +4,7 @@
 <!-- Bootstrap, stylesheets, WP title and favicon load. -->
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="/styles/style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-        crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <title>Complu-RIU</title>
-    <link rel="icon" type="image/jpg" href="Images/favicon.jpg">
+    <%- include ('pieces/head')%>
 </head>
 
 <body>
@@ -96,9 +85,9 @@
                                                 <p><i class="fa fa-user-secret"></i> Nombre: <%=element.nombre%></p>
                                                 <p><i class="fa fa-user-plus"></i> Apellido: <%=element.apellidos%></p>
                                                 <p><i class="fa fa-envelope"></i> Correo: <%=element.correo%></p>
-                                                <p><i class="fa fa-book"></i> Curso: <%=element.curso%></p>
-                                                <p><i class="fa fa-group"></i> Curso: <%=element.grupo%></p>
                                                 <p><i class="fa fa-building"></i> Facultad: <%=element.facultadUser%></p>
+                                                <p><i class="fa fa-book"></i> Curso: <%=element.curso%></p>
+                                                <p><i class="fa fa-group"></i> Grupo: <%=element.grupo%></p>
                                             </div>
                                         </div>
                                     </div>
