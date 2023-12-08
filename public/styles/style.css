@@ -96,7 +96,7 @@ a {
 }
 
 .instalacion_bgc{
-  background-color:  rgb(188, 180, 231) !important;
+  background-color:  rgb(183, 216, 234) !important;
 }
 
 .list_usuario_bgc{
@@ -146,7 +146,7 @@ img > footer {
   align-items: center;
 }
 
-.popup_form_error {
+.popup_form_error, .book_form_error {
   display: none;
   font-weight: bold;
   margin: 0.5em 0em;
@@ -292,7 +292,7 @@ img > footer {
   font-weight: bold;
 }
 
-#write_email_dialog, #write_email_ok_dialog {
+#write_email_dialog, #write_email_ok_dialog,#book_inst_ok_dialog, #add_wait_list_ok_dialog  {
   background-color:rgb(213, 235, 245);
 }
 
@@ -302,7 +302,7 @@ img > footer {
   font-size: 1.2em;
 }
 
-.send_mail_input{
+.send_mail_input, .book_inst_input{
   background-color:rgb(237, 252, 255)!important;
 }
 
@@ -310,6 +310,52 @@ img > footer {
   max-width: 3em;
   max-height: 3em;
 }
+
+.book_inst_content{
+  background-color: rgb(12, 186, 186);
+}
+
+.card_book_inst_info{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: calc(0.9em + 0.2vw);;
+}
+
+.booking_cards_body{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.card_book{
+  display: flex;
+  flex-direction: column;
+  border: solid 0.2em hsl(160, 53%, 37%);
+  border-radius: 0.5em;
+  background-color: rgb(210, 152, 107);
+}
+
+#del_res_dialog{
+  background-color: rgb(113, 176, 147);;
+}
+
+#booking_cards_container{
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.book_inst_list_content{
+  background-color: transparent; 
+  border: none;
+}
+
+#no_books_msg{
+  display: none;
+  color: rgb(190, 196, 227);
 
 @media (min-width: 768px) {
   #navbar-list {
@@ -324,6 +370,7 @@ img > footer {
   .search_text_mine{
     width: 35vw !important;
   }
+
 }
 
 @media (max-width: 575.9px) {

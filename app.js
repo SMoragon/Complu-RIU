@@ -2,7 +2,7 @@ var express = require("express");
 var path = require("path");
 const express_validator = require("express-validator");
 const body = express_validator.body;
-const moment = require("moment")
+const moment = require("moment");
 const pool = require("./pool.js");
 const dao = require("./dao.js");
 const multer = require("multer");
@@ -26,6 +26,8 @@ const middlewareSession = session({
   store: sessionStore,
 });
 
+const ID_ADMIN = 1;
+
 const bcrypt = require("bcrypt");
 
 const hashPassword = async (password) => {
@@ -37,7 +39,7 @@ const hashPassword = async (password) => {
 
 const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
-moment.locale("es")
+moment.locale("es");
 
 var instPool = new pool("localhost", "root", "", "ucm_riu");
 var instDao = new dao(instPool.get_pool());
@@ -69,7 +71,6 @@ app.use((request, response, next) => {
         response.status(400).end();
       } else {
         var id_receptor = res[0].id;
-        request.session.is_admin = res[0].es_admin;
         instDao.obtenerMensajesSinLeer(id_receptor, (err, res) => {
           if (err) {
             response.status(400).end();
@@ -81,9 +82,10 @@ app.use((request, response, next) => {
         });
       }
     });
-  }
-  else { next(); }
-});
+  } else {
+    response.locals.session = request.session;
+    next();
+  }});
 
 app.use((request, response, next) => {
   if (typeof request.session.sysConfig === 'undefined') {
@@ -101,16 +103,27 @@ app.use((request, response, next) => {
     response.locals.session = request.session;
     next();
   }
-})
-
+});
 
 // Enrutamiento de las páginas principales de nuestra aplicación.
 app.get("/", (request, response) => {
-  response.status(200).render("index.ejs");
+  instDao.buscarInstalacion("", (err, res) => {
+    if (err) {
+      response.status(400).end();
+    } else {
+      response.status(200).render("index.ejs", { instalaciones: res });
+    }
+  });
 });
 
 app.get("/index.html", (request, response) => {
-  response.status(200).render("index.ejs");
+  instDao.buscarInstalacion("", (err, res) => {
+    if (err) {
+      response.status(400).end();
+    } else {
+      response.status(200).render("index.ejs", { instalaciones: res });
+    }
+  });
 });
 
 app.get("/gestion_instalacion", (request, response) => {
@@ -124,6 +137,13 @@ app.get("/gestion_instalacion", (request, response) => {
         if (err) {
           response.status(400).end();
         } else {
+           res.map((element)=>{
+            var [horas, mins, segs] =element.horario_apertura.split(":");
+            element.horario_apertura =horas + ":" + mins;
+
+            var [horas, mins, segs] =element.horario_cierre.split(":");
+            element.horario_cierre =horas + ":" + mins;
+          })
           response.status(200).render("gestion_instalaciones.ejs", { dato: res });
         }
       });
@@ -157,7 +177,7 @@ app.post(
             response.status(400);
           } else {
             response.status(201).json({
-              msg: "Instalacion añadido con exito, para que se haga efecto, reflesca la pagina",
+              msg: "Instalación añadida con éxito, para que haga efecto, refresca la página",
             });
           }
           response.end();
@@ -168,7 +188,6 @@ app.post(
     } else {
       response.status(200).render("must_be_login.ejs");
     };
-
   }
 );
 
@@ -177,6 +196,7 @@ app.put(
   multerFactory.single("instalacion_imagen"),
   body("m_instalacion_nombre").escape(),
   (request, response) => {
+
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var imagen = request.params.imagen == "true" ? true : false;
@@ -272,6 +292,7 @@ app.patch("/validar_registro/:id", (request, response, next) => {
 });
 
 app.delete("/eliminar_registro/:id", (request, response, next) => {
+
   if (request.session.isLogged) {
     if (request.session.is_admin) {
       var id = request.params.id;
@@ -283,6 +304,7 @@ app.delete("/eliminar_registro/:id", (request, response, next) => {
           response.status(200).json({ msg: "Usuario eliminado con exito" });
         }
       });
+
     } else {
       response.status(200).render("no_tienes_permiso.ejs");
     }
@@ -336,28 +358,26 @@ app.get("/get_filtered_mail", (request, response, next) => {
               response.status(200).render("inbox.ejs", { datos: res });
             }
           });
-        }
-
-        else {
-          instDao.obtenerMensajesFiltrados(id_receptor, request.query["filter_by"], (err, res) => {
-            if (err) {
-              response.status(400).end();
-            } else {
-              console.log(`Holaa, ${request.query["filter_by"]}`)
-              console.log("Res: ", res)
-              res.forEach((mensaje) => {
-                mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
-              });
-              response.status(200).render("inbox.ejs", { datos: res });
+        } else {
+          instDao.obtenerMensajesFiltrados(
+            id_receptor,
+            request.query["filter_by"],
+            (err, res) => {
+              if (err) {
+                response.status(400).end();
+              } else {
+                res.forEach((mensaje) => {
+                  mensaje.fecha_envio = moment(mensaje.fecha_envio).fromNow();
+                });
+                response.status(200).render("inbox.ejs", { datos: res });
+              }
             }
-          });
+          );
         }
-
       }
     });
   }
 });
-
 
 app.get("/config_system", (request, response) => {
   if (request.session.isLogged) {
@@ -576,13 +596,14 @@ app.get("/busquedaAvanzada", (request, response, next) => {
   };
 });
 
-app.put("/update_system/:imagen",
+app.put(
+  "/update_system/:imagen",
   multerFactory.single("org_img"),
   body("org_name").escape(),
   body("org_dir").escape(),
   body("org_ig").escape(),
   body("org_mail").escape(),
-  (request, response) => {
+  (request, response, next) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var imagen = request.params.imagen == "true" ? true : false;
@@ -617,50 +638,324 @@ app.put("/update_system/:imagen",
   });
 
 app.patch("/marcar_leido/:id", (request, response, next) => {
-  instDao.marcarComoLeido(request.params.id, (err, res) => {
-    if (err) {
-      console.log(err)
-      response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
-    }
-  })
-})
+  if (!request.session.isLogged) {
+    response.status(400).end();
+  } else {
+    instDao.marcarComoLeido(request.params.id, (err, res) => {
+      if (err) {
+        response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
+      }
+    });
+  }
+});
 
-app.post("/write_mail", (request, response, next) => {
-  instDao.buscarUsuario(request.session.mail, async (err, res) => {
-    if (err) {
+app.post(
+  "/write_mail",
+  body("mail").escape(),
+  body("receptor").escape(),
+  body("asunto").escape(),
+  (request, response, next) => {
+    if (!request.session.isLogged) {
       response.status(400).end();
     } else {
-      var idEmisor = res[0].id;
-      var emisor = res[0];
-      instDao.buscarUsuario(request.body.receptor, (err, res) => {
+      instDao.buscarUsuario(request.session.mail, async (err, res) => {
         if (err) {
           response.status(400).end();
         } else {
-          if (res.length == 0) {
-            response.status(400).end("No receiver found");
-          } else {
-            if (res[0].facultad != emisor.facultad && !emisor.es_admin && !res[0].es_admin) {
-              response.status(400).end("Faculty does not match");
+          var idEmisor = res[0].id;
+          var emisor = res[0];
+          instDao.buscarUsuario(request.body.receptor, (err, res) => {
+            if (err) {
+              response.status(400).end();
             } else {
-              var idReceptor = res[0].id;
-
-              datos = [
-                idEmisor,
-                idReceptor,
-                request.body.asunto,
-                request.body.mensaje,
-                false,
-                new Date(),
-              ];
-              instDao.enviarMensaje(datos, (err, res) => {
-                if (err) {
-                  response.status(400).end();
+              if (res.length == 0) {
+                response.status(400).end("No receiver found");
+              } else {
+                if (
+                  res[0].facultad != emisor.facultad &&
+                  !emisor.es_admin &&
+                  !res[0].es_admin
+                ) {
+                  response.status(400).end("Faculty does not match");
                 } else {
-                  response.status(200).end();
+                  var idReceptor = res[0].id;
+
+                  datos = [
+                    idEmisor,
+                    idReceptor,
+                    request.body.asunto,
+                    request.body.mensaje,
+                    false,
+                    new Date(),
+                  ];
+                  instDao.enviarMensaje(datos, (err, res) => {
+                    if (err) {
+                      response.status(400).end();
+                    } else {
+                      response.status(201).end();
+                    }
+                  });
                 }
-              });
+              }
+            }
+          });
+        }
+      });
+    }
+  }
+);
+
+app.post("/reservar_instalacion", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end(); //TODO: hacer página de redirección a login
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        console.log(err)
+        response.status(400).end();
+      } else {
+        var user_id = res[0].id,
+          inst_id = Number(request.body["inst_id"]),
+          inst_date = request.body["book_inst_date"],
+          inst_from = request.body["book_inst_from"],
+          inst_to = request.body["book_inst_to"],
+          how_many = request.body["book_inst_how_many"];
+
+        instDao.obtenerReservasSolape(
+          inst_id,
+          inst_date,
+          inst_from,
+          inst_to,
+          (err, res) => {
+            if (err) {
+              response.status(400).end();
+            } else {
+              if (res[0].solapes != 0) {
+                response.status(400).end("Solape");
+              } else {
+                var datos = [
+                  user_id,
+                  inst_id,
+                  inst_date,
+                  inst_from,
+                  inst_to,
+                  how_many,
+                ];
+                instDao.reservarInstalacion(datos, (err, res) => {
+                  if (err) {
+                    console.log(err)
+                    response.status(400).end();
+                  } else {
+                    response.status(201).end();
+                  }
+                });
+              }
             }
           }
+        );
+      }
+    });
+  }
+});
+
+app.get("/obtener_reservas", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end(); // TODO: redirigir a página de "debes loguearte..."
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response
+          .status(400)
+          .end("Se ha producido un error interno en el acceso a la BD.");
+      } else {
+        var id_reservante = res[0].id;
+        instDao.obtenerReservasUsuario(id_reservante, async (err, res) => {
+          if (err) {
+            console.log(err);
+            response
+              .status(400)
+              .end("Se ha producido un error interno en el acceso a la BD.");
+          } else {
+            res.map((elem) => {
+              elem.imagen = elem.imagen.toString("base64");
+              elem.fecha_reserva = elem.fecha_reserva.toLocaleDateString();
+            });
+            response.status(200).json({ reservas: res });
+          }
+        });
+      }
+    });
+  }
+});
+
+app.post("/lista_espera", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end(); //TODO: hacer página de redirección a login
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var inst_id = Number(request.body["inst_id"]),
+          inst_date = request.body["book_inst_date"],
+          inst_from = request.body["book_inst_from"],
+          inst_to = request.body["book_inst_to"],
+          how_many = request.body["book_inst_how_many"];
+        var datos = [
+          res[0].id,
+          inst_id,
+          inst_date,
+          inst_from,
+          inst_to,
+          new Date(),
+          how_many,
+        ];
+        instDao.reservarListaEspera(datos, (err, res) => {
+          if (err) {
+            response.status(400).end();
+          } else {
+            response.status(201).end();
+          }
+        });
+      }
+    });
+  }
+});
+
+app.delete("/eliminar_reserva/:id", (request, response, next) => {
+  var id_res = request.params.id;
+  instDao.obtenerReservasId(id_res, (err, res) => {
+    if (err) {
+      console.log("Entro 1", err);
+      response.status(400).end();
+    } else {
+      var reserva = res[0];
+      console.log(reserva);
+      instDao.eliminarReserva(id_res, (err, res) => {
+        if (err) {
+          console.log("Entro 2", err);
+          response.status(400).end();
+        } else {
+          instDao.obtenerListaEspera(reserva.id_instalacion,reserva.fecha_reserva,reserva.hora_inicio, reserva.hora_fin,
+            (err, res) => {
+              if (err) {
+                console.log("Entro 3", err);
+                response.status(400).end();
+              } else {
+                var res_lista = res;
+                if (res_lista.length > 0) {
+                  instDao.obtenerReservasInstalacion(
+                    reserva.id_instalacion,
+                    reserva.fecha_reserva,
+                    (err, res) => {
+                      if (err) {
+                        response.status(400).end();
+                      } else {
+                        console.log(res_lista);
+                        var reservas=res;
+                        var candidato = undefined;
+                       
+                          for (var i = 0; i < res_lista.length; i++) {
+                            var actI = res_lista[i];
+                            var no_solapes = true;
+
+                            for (var j = 0; j < reservas.length && no_solapes;j++) {
+                      
+                                var actJ = reservas[j];
+                                if (
+                                  (actJ.hora_inicio >= actI.hora_inicio &&
+                                    actJ.hora_inicio < actI.hora_fin) ||
+                                  (actJ.hora_inicio < actI.hora_inicio &&
+                                    actJ.hora_fin > actI.hora_inicio)
+                                ) {
+                                  no_solapes = false;
+                                }
+                              }
+                            
+
+                            if (no_solapes) {
+                              console.log("No solapes");
+                              candidato = actI;
+                              break;
+                            }
+                          }
+                        
+                        console.log("Candidato: ", candidato);
+                        if (candidato) {
+                          console.log("Hay candidato, y es: ", candidato);
+                          instDao.eliminarReservaListaEspera(
+                            candidato.id,
+                            (err, res) => {
+                              if (err) {
+                                console.log("Entro 4", err);
+                                response.status(400).end();
+                              } else {
+                                console.log("Entrrada eliminada");
+                                var datos = [
+                                  candidato.id_reservante,
+                                  candidato.id_instalacion,
+                                  candidato.fecha_reserva,
+                                  candidato.hora_inicio,
+                                  candidato.hora_fin,
+                                  candidato.asistentes,
+                                ];
+                                instDao.reservarInstalacion(
+                                  datos,
+                                  (err, res) => {
+                                    if (err) {
+                                      response.status(400).end();
+                                    } else {
+                                      var [horas, mins, segs] =
+                                        candidato.hora_inicio.split(":");
+                                      candidato.hora_inicio =
+                                        horas + ":" + mins;
+
+                                      var [horas, mins, segs] =
+                                        candidato.hora_fin.split(":");
+                                      candidato.hora_fin = horas + ":" + mins;
+
+                                      candidato.fecha_reserva=candidato.fecha_reserva.toLocaleDateString();
+                                    
+
+                                      var datos = [
+                                        ID_ADMIN,
+                                        candidato.id_reservante,
+                                        `Reserva en la instalación "${candidato.nombre}" el ${candidato.fecha_reserva} de ${candidato.hora_inicio} a ${candidato.hora_fin} `,
+                                        `Alguien ha cancelado su reserva, así que ahora es tuya. ¡Genial! Si deseas cancelarla, ve a la pestaña "Mis reservas" y haz click en "Cancelar reserva".`,
+                                        false,
+                                        new Date(),
+                                      ];
+                                      instDao.enviarMensaje(
+                                        datos,
+                                        (err, res) => {
+                                          if (err) {
+                                            console.log("Entro 5", err);
+                                            response.status(400).end();
+                                          } else {
+                                            response.status(200).end();
+                                            console.log("Mnesaje enviado");
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        } else {
+                          response.status(200).end();
+                        }
+                      }
+                    }
+                  );
+                }
+                else{
+                  response.status(200).end();
+                }
+              }
+            }
+          );
         }
       });
     }
@@ -668,18 +963,22 @@ app.post("/write_mail", (request, response, next) => {
 });
 
 app.get("/register", (request, response, next) => {
-  instDao.obtenerFacultades((err, res) => {
-    if (err) {
-      response.status(403).render("register.ejs", {
-        errors: `No se han podido obtener las facultades`,
-        body: request.body,
-      });
-    } else {
-      response.status(200).render("register.ejs", {
-        facultades: res,
-      });
-    }
-  });
+  if (request.session.isLogged) {
+    response.status(400).end();
+  } else {
+    instDao.obtenerFacultades((err, res) => {
+      if (err) {
+        response.status(403).render("register.ejs", {
+          errors: `No se han podido obtener las facultades`,
+          body: request.body,
+        });
+      } else {
+        response.status(200).render("register.ejs", {
+          facultades: res,
+        });
+      }
+    });
+  }
 });
 
 app.post(
@@ -701,94 +1000,99 @@ app.post(
   body("user_course").escape(),
   body("user_group").escape(),
   (request, response, next) => {
-    instDao.obtenerFacultades((err, res) => {
-      if (err) {
-        response.status(403).render("register.ejs", {
-          errors: `No se han podido obtener las facultades`,
-          body: request.body,
-        });
-      } else {
-        facultades = res;
-
-        var result = validationResult(request).array();
-
-        if (result.length != 0) {
-          var errs = [];
-
-          result.forEach((element) => {
-            errs[element.path] = element.msg;
-          });
-
+    if (request.session.isLogged) {
+      response.status(400).end();
+    } else {
+      instDao.obtenerFacultades((err, res) => {
+        if (err) {
           response.status(403).render("register.ejs", {
-            errors: errs,
+            errors: `No se han podido obtener las facultades`,
             body: request.body,
-            facultades: facultades,
           });
         } else {
-          instDao.buscarUsuario(
-            request.body["user_email"],
-            async (err, res) => {
-              if (err) {
-                response.status(403).render("register.ejs", {
-                  errors: "Ha ocurrido un error interno en el acceso a la BD.",
-                  body: request.body,
-                  facultades: facultades,
-                });
-              } else {
-                if (res.length != 0) {
+          facultades = res;
+
+          var result = validationResult(request).array();
+
+          if (result.length != 0) {
+            var errs = [];
+
+            result.forEach((element) => {
+              errs[element.path] = element.msg;
+            });
+
+            response.status(403).render("register.ejs", {
+              errors: errs,
+              body: request.body,
+              facultades: facultades,
+            });
+          } else {
+            instDao.buscarUsuario(
+              request.body["user_email"],
+              async (err, res) => {
+                if (err) {
                   response.status(403).render("register.ejs", {
-                    errors: "El correo introducido ya está registrado.",
+                    errors:
+                      "Ha ocurrido un error interno en el acceso a la BD.",
                     body: request.body,
                     facultades: facultades,
                   });
                 } else {
-                  var req = request.body;
-                  var mimetype = request.file
-                    ? request.file.mimetype
-                    : undefined;
-                  if (mimetype && !allowedFormats.includes(mimetype)) {
+                  if (res.length != 0) {
                     response.status(403).render("register.ejs", {
-                      errors: `El formato ${mimetype} no está permitido.`,
+                      errors: "El correo introducido ya está registrado.",
                       body: request.body,
                       facultades: facultades,
                     });
                   } else {
-                    var hashedPassword = await hashPassword(
-                      req["user_password"]
-                    );
-                    var datos = [
-                      req["user_name"],
-                      req["user_surname"],
-                      req["user_email"],
-                      hashedPassword,
-                      Number(req["user_faculty"]),
-                      req["user_course"],
-                      req["user_group"],
-                      request.file ? request.file.buffer : null,
-                      false,
-                      false,
-                    ];
-                    instDao.registrarUsuario(datos, (err, res) => {
-                      if (err) {
-                        datos[3] = req["user_password"];
-                        response.status(403).render("register.ejs", {
-                          errors:
-                            "Ha ocurrido un error interno en el acceso a la BD.",
-                          body: request.body,
-                          facultades: facultades,
-                        });
-                      } else {
-                        response.status(200).render("registroCompletado.ejs");
-                      }
-                    });
+                    var req = request.body;
+                    var mimetype = request.file
+                      ? request.file.mimetype
+                      : undefined;
+                    if (mimetype && !allowedFormats.includes(mimetype)) {
+                      response.status(403).render("register.ejs", {
+                        errors: `El formato ${mimetype} no está permitido.`,
+                        body: request.body,
+                        facultades: facultades,
+                      });
+                    } else {
+                      var hashedPassword = await hashPassword(
+                        req["user_password"]
+                      );
+                      var datos = [
+                        req["user_name"],
+                        req["user_surname"],
+                        req["user_email"],
+                        hashedPassword,
+                        Number(req["user_faculty"]),
+                        req["user_course"],
+                        req["user_group"],
+                        request.file ? request.file.buffer : null,
+                        false,
+                        false,
+                      ];
+                      instDao.registrarUsuario(datos, (err, res) => {
+                        if (err) {
+                          datos[3] = req["user_password"];
+                          response.status(403).render("register.ejs", {
+                            errors:
+                              "Ha ocurrido un error interno en el acceso a la BD.",
+                            body: request.body,
+                            facultades: facultades,
+                          });
+                        } else {
+                          response.status(200).render("registroCompletado.ejs");
+                        }
+                      });
+                    }
                   }
                 }
               }
-            }
-          );
+            );
+          }
         }
-      }
-    });
+      });
+    }
   }
 );
 
@@ -821,6 +1125,7 @@ app.post(
     } else {
       instDao.buscarUsuario(request.body["user_email"], async (err, res) => {
         if (err) {
+          console.log(err);
           response.status(403).render("login.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
             body: request.body,
@@ -853,8 +1158,9 @@ app.post(
               request.session.isLogged = true;
               request.session.user = context.nombre;
               request.session.mail = context.correo;
+              request.session.is_admin = context.es_admin;
               request.session.sinLeer = 0;
-              response.status(200).redirect("index.html"); // The error occurs after here (with try-catch, it does not detect anything, but i dont know where it is)
+              response.status(200).redirect("index.html");
             }
           }
         }
