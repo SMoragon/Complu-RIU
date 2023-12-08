@@ -14,10 +14,12 @@
     </header>
     <main>
 
+      <%if (session.isLogged && !session.isAdmin){%>
       <button class="btn btn-secondary" type="button" data-bs-toggle="modal"
-        data-bs-target="#book_inst_list_modal">
-        Ver mis reservas
+        data-bs-target="#book_inst_list_modal" id="list_all_books_but">
+        Mis reservas
       </button>
+      <%}%>
 
       <ul>
         <li><a href="/gestion_instalacion">gestion</a></li>
@@ -27,130 +29,17 @@
 
       <div class="modal top fade" id="book_inst_list_modal"
         data-bs-backdrop="static">
-        <div class="modal-dialog modal-md modal-dialog-centered" >
+        <div class="modal-dialog modal-md modal-dialog-centered">
           <div class="modal-content book_inst_list_content">
-           
-            <div class="modal-body container" >
+
+            <div class="modal-body container">
               <button type="button" class="btn-close"
-              data-bs-dismiss="modal"></button>
-              <div class="booking_cards_container">
-
-                <div class="card_book my-4">
-                  <div class="card_book_inst_name text-center my-2">
-                    <h3>Pista de Patinaje</h3>
-                  </div>
-
-                  <div class="booking_cards_body">
-
-                    <div
-                      class="card_book_inst_img col-md-6 col-11 mx-md-3 mx-auto my-2">
-                      <img class="img-fluid rounded-4"
-                        src="/images/Natacion.jpg" alt>
-                    </div>
-
-                    <div
-                      class="card_book_inst_info col-auto">
-
-                      <div
-                        class="card_book_inst_date my-md-2 my-1">Fecha:
-                        16/05/2004</div>
-                      <div
-                        class="card_book_inst_from my-md-2 my-1">Hora
-                        inicio: 18:30</div>
-                      <div
-                        class="card_book_inst_to my-md-2 my-1">Hora
-                        fin: 18:50</div>
-                      <div
-                        class="card_book_inst_how_many my-md-2 my-1">Asistentes:
-                        2</div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="card_book_inst_but mx-auto my-3">
-                    <button type="button"
-                      class="btn btn-warning cancel_book_but ">Cancelar reserva</button>
-                  </div>
-                </div>
-
-                <div class="card_book d-flex flex-column my-4">
-                  <div class="card_book_inst_name text-center my-2">
-                    <h3>Pista de Patinaje</h3>
-                  </div>
-
-                  <div class="booking_cards_body d-flex flex-row flex-wrap">
-
-                    <div
-                      class="card_book_inst_img col-md-6 col-11 mx-md-3 mx-auto my-2">
-                      <img class="img-fluid rounded-4"
-                        src="/images/Natacion.jpg" alt>
-                    </div>
-
-                    <div
-                      class="card_book_inst_info d-flex flex-column text-center justify-content-center col-auto mx-auto">
-
-                      <div
-                        class="card_book_inst_text card_book_inst_date my-md-2 my-1">Fecha:
-                        16/05/2004</div>
-                      <div
-                        class="card_book_inst_text card_book_inst_from my-md-2 my-1">Hora
-                        inicio: 18:30</div>
-                      <div
-                        class="card_book_inst_text card_book_inst_to my-md-2 my-1">Hora
-                        fin: 18:50</div>
-                      <div
-                        class="card_book_inst_text card_book_inst_how_many my-md-2 my-1">Asistentes:
-                        2</div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="card_book_inst_but mx-auto my-3">
-                    <button type="button"
-                      class="btn btn-warning cancel_book_but ">Cancelar reserva</button>
-                  </div>
-                </div>
-
-                <div class="card_book d-flex flex-column my-4">
-                  <div class="card_book_inst_name text-center my-2">
-                    <h3>Pista de Patinaje</h3>
-                  </div>
-
-                  <div class="booking_cards_body d-flex flex-row flex-wrap">
-
-                    <div
-                      class="card_book_inst_img col-md-6 col-11 mx-md-3 mx-auto my-2">
-                      <img class="img-fluid rounded-4"
-                        src="/images/Natacion.jpg" alt>
-                    </div>
-
-                    <div
-                      class="card_book_inst_info d-flex flex-column text-center justify-content-center col-auto mx-auto">
-
-                      <div
-                        class="card_book_inst_text card_book_inst_date my-md-2 my-1">Fecha:
-                        16/05/2004</div>
-                      <div
-                        class="card_book_inst_text card_book_inst_from my-md-2 my-1">Hora
-                        inicio: 18:30</div>
-                      <div
-                        class="card_book_inst_text card_book_inst_to my-md-2 my-1">Hora
-                        fin: 18:50</div>
-                      <div
-                        class="card_book_inst_text card_book_inst_how_many my-md-2 my-1">Asistentes:
-                        2</div>
-
-                    </div>
-
-                  </div>
-
-                  <div class="card_book_inst_but mx-auto my-3">
-                    <button type="button"
-                      class="btn btn-warning cancel_book_but ">Cancelar reserva</button>
-                  </div>
-                </div>
+                data-bs-dismiss="modal"></button>
+              <div id="no_books_msg" class="my-4"><h3>De momento no tienes
+                  ninguna reserva. ¡Anímate y pasa el rato en alguna de nuestras
+                  instalaciones!</h3>
+              </div>
+              <div id="booking_cards_container">
 
               </div>
             </div>
@@ -424,6 +313,56 @@
           </div>
         </div>
       </div>
+
+      <div class="modal top fade" id="del_res_modal"
+        data-bs-backdrop="static">
+        <div
+          class="modal-dialog modal-sm modal-dialog-centered">
+          <div id="del_res_dialog"
+            class="modal-content">
+            <div class="modal-header">
+              <h3><strong>ATENCIÓN</strong></h3>
+            </div>
+            <div
+              class="modal-body container text-center my-2 mx-auto p-3">
+
+              <div><strong>Si elimina su reserva, ésta será asignada a otro
+                  usuario en caso de haber lista de espera.<br> ¿Desea
+                  continuar? </strong></div>
+              <div>
+                <button data-bs-dismiss="modal"
+                class="btn btn-lg btn-outline-warning mt-4 mx-2">Cancelar</button>
+            
+                <button id="confirm_del_res_but"
+                  data-bs-dismiss="modal"
+                  class="btn btn-lg btn-outline-success mt-4">Aceptar</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal top fade" id="del_res_ok_modal"
+      data-bs-backdrop="static">
+      <div
+        class="modal-dialog modal-sm modal-dialog-centered">
+        <div id="del_res_ok_dialog"
+          class="modal-content">
+          <div
+            class="modal-body container text-center my-2 mx-auto p-3">
+
+            <div><strong>Su reserva se ha eliminado con éxito.</strong></div>
+            <div>
+              <button
+                data-bs-dismiss="modal"
+                class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     </main>
     <!-- Dynamically footer's inclusion. -->

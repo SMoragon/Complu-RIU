@@ -25,6 +25,8 @@ const middlewareSession = session({
   store: sessionStore,
 });
 
+const ID_ADMIN = 1;
+
 const bcrypt = require("bcrypt");
 
 const hashPassword = async (password) => {
@@ -116,7 +118,13 @@ app.get("/", (request, response) => {
 });
 
 app.get("/index.html", (request, response) => {
-  response.status(200).render("index.ejs");
+  instDao.buscarInstalacion("", (err, res) => {
+    if (err) {
+      response.status(400).end();
+    } else {
+      response.status(200).render("index.ejs", { instalaciones: res });
+    }
+  });
 });
 
 app.get("/gestion_instalacion", (request, response, next) => {
@@ -128,6 +136,13 @@ app.get("/gestion_instalacion", (request, response, next) => {
     if (err) {
       response.status(400).end();
     } else {
+      res.map((element)=>{
+        var [horas, mins, segs] =element.horario_apertura.split(":");
+        element.horario_apertura =horas + ":" + mins;
+
+        var [horas, mins, segs] =element.horario_cierre.split(":");
+        element.horario_cierre =horas + ":" + mins;
+      })
       response.status(200).render("gestion_instalaciones.ejs", { dato: res });
     }
   });
@@ -428,6 +443,7 @@ app.post("/reservar_instalacion", (request, response, next) => {
   } else {
     instDao.buscarUsuario(request.session.mail, (err, res) => {
       if (err) {
+        console.log(err)
         response.status(400).end();
       } else {
         var user_id = res[0].id,
@@ -459,6 +475,7 @@ app.post("/reservar_instalacion", (request, response, next) => {
                 ];
                 instDao.reservarInstalacion(datos, (err, res) => {
                   if (err) {
+                    console.log(err)
                     response.status(400).end();
                   } else {
                     response.status(201).end();
@@ -468,6 +485,36 @@ app.post("/reservar_instalacion", (request, response, next) => {
             }
           }
         );
+      }
+    });
+  }
+});
+
+app.get("/obtener_reservas", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end(); // TODO: redirigir a página de "debes loguearte..."
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response
+          .status(400)
+          .end("Se ha producido un error interno en el acceso a la BD.");
+      } else {
+        var id_reservante = res[0].id;
+        instDao.obtenerReservasUsuario(id_reservante, async (err, res) => {
+          if (err) {
+            console.log(err);
+            response
+              .status(400)
+              .end("Se ha producido un error interno en el acceso a la BD.");
+          } else {
+            res.map((elem) => {
+              elem.imagen = elem.imagen.toString("base64");
+              elem.fecha_reserva = elem.fecha_reserva.toLocaleDateString();
+            });
+            response.status(200).json({ reservas: res });
+          }
+        });
       }
     });
   }
@@ -505,6 +552,146 @@ app.post("/lista_espera", (request, response, next) => {
       }
     });
   }
+});
+
+app.delete("/eliminar_reserva/:id", (request, response, next) => {
+  var id_res = request.params.id;
+  instDao.obtenerReservasId(id_res, (err, res) => {
+    if (err) {
+      console.log("Entro 1", err);
+      response.status(400).end();
+    } else {
+      var reserva = res[0];
+      console.log(reserva);
+      instDao.eliminarReserva(id_res, (err, res) => {
+        if (err) {
+          console.log("Entro 2", err);
+          response.status(400).end();
+        } else {
+          instDao.obtenerListaEspera(reserva.id_instalacion,reserva.fecha_reserva,reserva.hora_inicio, reserva.hora_fin,
+            (err, res) => {
+              if (err) {
+                console.log("Entro 3", err);
+                response.status(400).end();
+              } else {
+                var res_lista = res;
+                if (res_lista.length > 0) {
+                  instDao.obtenerReservasInstalacion(
+                    reserva.id_instalacion,
+                    reserva.fecha_reserva,
+                    (err, res) => {
+                      if (err) {
+                        response.status(400).end();
+                      } else {
+                        console.log(res_lista);
+                        var reservas=res;
+                        var candidato = undefined;
+                       
+                          for (var i = 0; i < res_lista.length; i++) {
+                            var actI = res_lista[i];
+                            var no_solapes = true;
+
+                            for (var j = 0; j < reservas.length && no_solapes;j++) {
+                      
+                                var actJ = reservas[j];
+                                if (
+                                  (actJ.hora_inicio >= actI.hora_inicio &&
+                                    actJ.hora_inicio < actI.hora_fin) ||
+                                  (actJ.hora_inicio < actI.hora_inicio &&
+                                    actJ.hora_fin > actI.hora_inicio)
+                                ) {
+                                  no_solapes = false;
+                                }
+                              }
+                            
+
+                            if (no_solapes) {
+                              console.log("No solapes");
+                              candidato = actI;
+                              break;
+                            }
+                          }
+                        
+                        console.log("Candidato: ", candidato);
+                        if (candidato) {
+                          console.log("Hay candidato, y es: ", candidato);
+                          instDao.eliminarReservaListaEspera(
+                            candidato.id,
+                            (err, res) => {
+                              if (err) {
+                                console.log("Entro 4", err);
+                                response.status(400).end();
+                              } else {
+                                console.log("Entrrada eliminada");
+                                var datos = [
+                                  candidato.id_reservante,
+                                  candidato.id_instalacion,
+                                  candidato.fecha_reserva,
+                                  candidato.hora_inicio,
+                                  candidato.hora_fin,
+                                  candidato.asistentes,
+                                ];
+                                instDao.reservarInstalacion(
+                                  datos,
+                                  (err, res) => {
+                                    if (err) {
+                                      response.status(400).end();
+                                    } else {
+                                      var [horas, mins, segs] =
+                                        candidato.hora_inicio.split(":");
+                                      candidato.hora_inicio =
+                                        horas + ":" + mins;
+
+                                      var [horas, mins, segs] =
+                                        candidato.hora_fin.split(":");
+                                      candidato.hora_fin = horas + ":" + mins;
+
+                                      candidato.fecha_reserva=candidato.fecha_reserva.toLocaleDateString();
+                                    
+
+                                      var datos = [
+                                        ID_ADMIN,
+                                        candidato.id_reservante,
+                                        `Reserva en la instalación "${candidato.nombre}" el ${candidato.fecha_reserva} de ${candidato.hora_inicio} a ${candidato.hora_fin} `,
+                                        `Alguien ha cancelado su reserva, así que ahora es tuya. ¡Genial! Si deseas cancelarla, ve a la pestaña "Mis reservas" y haz click en "Cancelar reserva".`,
+                                        false,
+                                        new Date(),
+                                      ];
+                                      instDao.enviarMensaje(
+                                        datos,
+                                        (err, res) => {
+                                          if (err) {
+                                            console.log("Entro 5", err);
+                                            response.status(400).end();
+                                          } else {
+                                            response.status(200).end();
+                                            console.log("Mnesaje enviado");
+                                          }
+                                        }
+                                      );
+                                    }
+                                  }
+                                );
+                              }
+                            }
+                          );
+                        } else {
+                          response.status(200).end();
+                        }
+                      }
+                    }
+                  );
+                }
+                else{
+                  response.status(200).end();
+                }
+              }
+            }
+          );
+        }
+      });
+    }
+  });
 });
 
 app.get("/register", (request, response, next) => {
@@ -670,6 +857,7 @@ app.post(
     } else {
       instDao.buscarUsuario(request.body["user_email"], async (err, res) => {
         if (err) {
+          console.log(err);
           response.status(403).render("login.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
             body: request.body,
@@ -704,7 +892,7 @@ app.post(
               request.session.mail = context.correo;
               request.session.isAdmin = context.es_admin;
               request.session.sinLeer = 0;
-              response.status(200).redirect("index.html"); // The error occurs after here (with try-catch, it does not detect anything, but i dont know where it is)
+              response.status(200).redirect("index.html");
             }
           }
         }

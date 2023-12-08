@@ -56,7 +56,7 @@ function addErrMsg(any_empty, correct_time, checkType, checkAforoCorrect, image_
         $("#add_instalacion_body").prepend(msg_error_init + "Los campos deben estar rellenos." + msg_error_end)
     }
     if (!correct_time) {
-        $("#add_instalacion_close_time").append(msg_error_init + "El horario de cierre debe ser posteriol al de la apertura." + msg_error_end)
+        $("#add_instalacion_close_time").append(msg_error_init + "El horario de cierre debe ser posterior al de la apertura." + msg_error_end)
     }
     if (!checkType) {
         $("#add_instalacion_type").append(msg_error_init + "Seleccione un tipo de reserva." + msg_error_end)

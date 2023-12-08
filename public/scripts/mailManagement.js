@@ -100,16 +100,3 @@ function closePopups() {
         }
     })
  })
-
-
- $('#get_filtered_mail').on('click',function(event){
-
-    var filter_by=String($('#search_txt').val()).trimStart().trimEnd();
-
-    if(filter_by===""){
-        
-    }
- })
-
- //method="get"
- //                                   action="/get_filtered_mail"

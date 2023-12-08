@@ -306,7 +306,11 @@ img > footer {
   background-color: rgb(210, 152, 107);
 }
 
-.booking_cards_container{
+#del_res_dialog{
+  background-color: rgb(113, 176, 147);;
+}
+
+#booking_cards_container{
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -317,6 +321,10 @@ img > footer {
   border: none;
 }
 
+#no_books_msg{
+  display: none;
+  color: rgb(190, 196, 227);
+}
 
 @media (max-width: 575.9px) {
 

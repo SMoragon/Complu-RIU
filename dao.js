@@ -97,98 +97,6 @@ class DAO {
     });
   }
 
-  /* Función que, dado un nombre, descripción, una ruta de imagen local y un precio, lo inserta en la BD.
-   Si no existe el path de la imagen, manda el error al callback. */
-  insertarDestino(destino, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        var imgRoute = destino[2];
-        var img = undefined;
-        try {
-          img = fs.readFileSync(imgRoute);
-        } catch (error) {
-          callback(error);
-          return;
-        }
-
-        destino[2] = img;
-
-        const sql =
-          "Insert Into destinos (nombre, descripcion, imagen, precio) VALUES (?,?,?,?) ";
-        connection.query(sql, destino, callback);
-        connection.release();
-      }
-    });
-  }
-
-  insertarImagen(datos, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql =
-          "Insert Into imagen (destino_id, img, descripcion) VALUES (?,?,?) ";
-        connection.query(sql, datos, callback);
-        connection.release();
-      }
-    });
-  }
-  leerImagen(id, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql = "Select * From imagen Where destino_id = ?";
-        connection.query(sql, id, callback);
-        connection.release();
-      }
-    });
-  }
-  /* Función que, dado un identificador de destino, lee el destino asociado a ese ID de la BD y devuelve todos
-   sus parámetros (en caso de haberlos). */
-  leerDestinoId(id, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql = "Select * From destinos Where id = ?";
-        connection.query(sql, id, callback);
-        connection.release();
-      }
-    });
-  }
-
-  /* Función que, dado un nombre de destino, lee el destino con ese nombre de la BD y devuelve todos
-   sus parámetros (en caso de haberlos). */
-  leerDestinoNombre(name, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql = "Select * From destinos Where nombre = ?";
-        connection.query(sql, name, callback);
-        connection.release();
-      }
-    });
-  }
-
-  /* Función que, dado un id válido de destino, un nombre, un correo, una fecha de reserva de ida y una de vuelta, genera
-   una nueva reserva en la tabla correspondiente. */
-  reservaDestino(dato, callback) {
-    this.pool.getConnection((err, connection) => {
-      if (err) {
-        callback(err);
-      } else {
-        const sql =
-          "Insert Into reservas (destino_id, nombre_cliente, correo_cliente, fecha_reserva_ida, fecha_reserva_vuelta) VALUES (?,?,?,?,?)";
-        connection.query(sql, dato, callback);
-        connection.release();
-      }
-    });
-  }
-
   /* Función que, dado un correo y una contraseña válidos, inserta un usuario en
     la base de datos, para que pase a estar registrado. */
   registrarUsuario(datos, callback) {
@@ -303,7 +211,6 @@ class DAO {
       else {
         const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.apellidos, u.correo, u.imagen_perfil from correos c join usuarios u on c.id_emisor=u.id Where id_receptor=? AND (c.asunto LIKE ? OR c.contenido LIKE ? OR c.fecha_envio LIKE ? OR u.nombre LIKE ? OR u.apellidos LIKE ? OR  u.correo LIKE ?) order by c.fecha_envio Desc"
         filter_by="%"+filter_by+"%"
-        console.log(filter_by)
         connection.query(sql,[idReceptor,filter_by,filter_by,filter_by,filter_by,filter_by,filter_by],callback);
         connection.release();
       }
@@ -367,9 +274,87 @@ class DAO {
       if (err) {
         callback(err)
       }
+      else {                                                                
+        const sql= "Select COUNT(*) as solapes From reservas Where id_instalacion=? And fecha_reserva=? And ((hora_inicio>=? And hora_inicio <?) Or (hora_inicio<? And hora_fin>?))"
+        connection.query(sql, [idInst, fechaRes,horaIni,horaFin,horaIni,horaIni ], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservasUsuario(id_reservante, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
       else {
-        const sql= "Select COUNT(*) as solapes From reservas Where id_instalacion=? And fecha_reserva=? And ((hora_inicio<=? And hora_fin >?) Or (hora_inicio>? And hora_fin<=?))"
-        connection.query(sql, [idInst, fechaRes,horaIni,horaIni,horaIni,horaFin ], callback);
+        const sql= "Select r.id as id_reserva, r.fecha_reserva, r.hora_inicio, r.hora_fin, r.asistentes, i.nombre, i.imagen, i.imagen_tipo from reservas r Join instalaciones i On r.id_instalacion=i.id  Where r.id_reservante=? Order By r.fecha_reserva Desc"
+        connection.query(sql, id_reservante, callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservasId(id_reserva, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select * from reservas Where id=?"
+        connection.query(sql, id_reserva, callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerReservasInstalacion(id_instalacion,fecha_res, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select * from reservas Where id_instalacion=? And fecha_reserva=?"
+        connection.query(sql, [id_instalacion,fecha_res], callback);
+        connection.release();
+      }
+    })
+  }
+
+  obtenerListaEspera(idInst,fechaRes,horaIni,horaFin, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select l.id,l.id_reservante, l.id_instalacion, l.fecha_reserva, l.hora_inicio, l.hora_fin, l.asistentes, i.nombre From lista_espera l Join instalaciones i On l.id_instalacion=i.id where l.id_instalacion=? And l.fecha_reserva=? And ((l.hora_inicio>=? And l.hora_inicio <?) Or (l.hora_inicio<? And l.hora_fin>?)) Order By l.fecha_envio_reserva Asc"
+        connection.query(sql,[idInst, fechaRes,horaIni,horaFin,horaIni,horaIni ], callback);
+        connection.release();
+      }
+    })
+  }
+
+  eliminarReserva(id_reserva, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Delete from reservas Where id=?"
+        connection.query(sql, id_reserva, callback);
+        connection.release();
+      }
+    })
+  }
+
+  eliminarReservaListaEspera(id, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Delete from lista_espera Where id=?"
+        connection.query(sql, id, callback);
         connection.release();
       }
     })
