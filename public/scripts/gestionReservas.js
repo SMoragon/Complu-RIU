@@ -1,6 +1,8 @@
 "use strict"
 
-var target,inst_date, inst_from, inst_to,how_many, open_date, close_date, now,inst_id;
+var target,inst_date, inst_from, inst_to,how_many, open_date, close_date, now,inst_id,calendarEl,calendar,reservas;
+
+var bg_colours=["lightblue","lightcoral","lightgreen", "lightsalmon", "orange","lightpink", "burlywood", "cian", "purple"];
 
 $(".res_inst_form").on("submit", function (event) {
 
@@ -158,6 +160,23 @@ $("#confirm_del_res_but").on("click", function(event){
    })
 });
 
+$("#watch_calendar_but").on('click',function(event){
+
+    $.ajax({
+        method:"GET",
+        url:"/obtener_todas_reservas/",
+        success:function(data, textStatus,jqHXR){
+            reservas=data.reservas;   
+            calendarEl =document.getElementById('res_calendar');
+            setTimeout(inicializarCalendario,300);
+        },
+        error:function(data, textStatus,jqHXR){
+            alert(errorThrown);
+        },
+    })
+})
+
+
 function validate() {
     if(anyEmpty()){
         target.find(".empty_error").show();
@@ -217,3 +236,36 @@ function closePopups() {
     });
   }
 
+function inicializarCalendario(){
+    calendar = new FullCalendar.Calendar(calendarEl, {
+       locale: 'en',  
+       initialView: 'dayGridMonth',
+       stickyHeaderDates:true,
+       dayMaxEventRows:true,
+ 
+       eventTimeFormat: { // like '14:30:00'
+         hour: '2-digit',
+         minute: '2-digit',
+         hour24: true
+       },
+       headerToolbar:{
+             left: 'prev,next today',
+             center: 'title',
+             right: 'dayGridMonth,timeGridWeek,timeGridDay',
+       },
+ 
+     });
+
+     reservas.forEach((res)=>{
+        calendar.addEvent({
+            title:`${res.nombre}`,
+            start:`${res.fecha_reserva}T${res.hora_inicio}`,
+            end:`${res.fecha_reserva}T${res.hora_fin}`,
+            backgroundColor:bg_colours[res.id_instalacion%bg_colours.length]
+            
+        })
+     })
+
+
+     calendar.render();
+}

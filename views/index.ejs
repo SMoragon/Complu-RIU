@@ -15,12 +15,18 @@
     <main>
 
       <%if (session.isLogged && !session.isAdmin){%>
-      <button class="btn btn-secondary" type="button" data-bs-toggle="modal"
+      <button class="btn btn-secondary mx-3" type="button"
+        data-bs-toggle="modal"
         data-bs-target="#book_inst_list_modal" id="list_all_books_but">
         Mis reservas
       </button>
+
+      <button id="watch_calendar_but" class="btn btn-dark" type="button" data-bs-toggle="modal"
+        data-bs-target="#calendar_modal">
+        Consultar disponibilidad
+      </button>
       <%}%>
-      
+
       <div class="modal top fade" id="book_inst_list_modal"
         data-bs-backdrop="static">
         <div class="modal-dialog modal-md modal-dialog-centered">
@@ -236,6 +242,27 @@
         </div>
         <%})} %>
 
+        <div class="modal top fade" id="calendar_modal"
+          data-bs-backdrop="static">
+          <div
+            class="modal-dialog modal-fullscreen ">
+            <div id="calendar_modal_dialog"
+              class="modal-content">
+              <div class="modal-header">
+                <h3><strong>Calendario de reservas</strong></h3>
+              <button type="button" class="btn-close"
+              data-bs-dismiss="modal"></button>
+              </div>
+              <div
+                class="modal-body ">
+
+                <div class="text-truncate" id="res_calendar"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
         <div class="modal top fade" id="book_inst_ok"
           data-bs-backdrop="static">
           <div
@@ -325,8 +352,8 @@
                   continuar? </strong></div>
               <div>
                 <button data-bs-dismiss="modal"
-                class="btn btn-lg btn-outline-warning mt-4 mx-2">Cancelar</button>
-            
+                  class="btn btn-lg btn-outline-warning mt-4 mx-2">Cancelar</button>
+
                 <button id="confirm_del_res_but"
                   data-bs-dismiss="modal"
                   class="btn btn-lg btn-outline-success mt-4">Aceptar</button>
@@ -338,31 +365,32 @@
       </div>
 
       <div class="modal top fade" id="del_res_ok_modal"
-      data-bs-backdrop="static">
-      <div
-        class="modal-dialog modal-sm modal-dialog-centered">
-        <div id="del_res_ok_dialog"
-          class="modal-content">
-          <div
-            class="modal-body container text-center my-2 mx-auto p-3">
+        data-bs-backdrop="static">
+        <div
+          class="modal-dialog modal-sm modal-dialog-centered">
+          <div id="del_res_ok_dialog"
+            class="modal-content">
+            <div
+              class="modal-body container text-center my-2 mx-auto p-3">
 
-            <div><strong>Su reserva se ha eliminado con éxito.</strong></div>
-            <div>
-              <button
-                data-bs-dismiss="modal"
-                class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+              <div><strong>Su reserva se ha eliminado con éxito.</strong></div>
+              <div>
+                <button
+                  data-bs-dismiss="modal"
+                  class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
-    </div>
 
     </main>
     <!-- Dynamically footer's inclusion. -->
     <footer>
       <%- include ('pieces/footer')%>
     </footer>
-  </body>
+  </body>  
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
   <script src="/scripts/gestionReservas.js"></script>
 </html>

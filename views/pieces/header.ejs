@@ -16,9 +16,9 @@
         <div class="col-md-3 col-sm-3 col-6">
             <h1 id="header_title">
                 <% if (typeof session !== 'undefined' && typeof session.sysConfig !=='undefined' && typeof session.sysConfig['nombre'] !=='undefined') { %>
-                    <a href="/index.html"> <%= session.sysConfig['nombre'] %></a>
+                    <a class="text-break" href="/index.html"> <%= session.sysConfig['nombre'] %></a>
                 <%}else {%>
-                    <a href="/index.html"> Something went wrong</a>
+                    <a  class="text-break" href="/index.html"> Something went wrong</a>
                 <%};%>
                 
             </h1>

@@ -580,6 +580,19 @@ class DAO {
     })
   }
 
+  obtenerReservas(callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Select r.fecha_reserva, r.hora_inicio, r.hora_fin,r.id_instalacion, i.nombre from reservas r Join instalaciones i On r.id_instalacion=i.id"
+        connection.query(sql, callback);
+        connection.release();
+      }
+    })
+  }
+
   obtenerListaEspera(idInst,fechaRes,horaIni,horaFin, callback){
     this.pool.getConnection((err, connection)=>{
       if (err) {

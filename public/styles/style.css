@@ -260,11 +260,6 @@ img > footer {
   font-weight: bold;
 }
 
-/*.email_search_container{
-  border:solid 0.25em rgb(167, 91, 238);
-}*/
-
-
 #focused_email_subject{
   color: rgb(48, 111, 138);
 }
@@ -356,6 +351,7 @@ img > footer {
 #no_books_msg{
   display: none;
   color: rgb(190, 196, 227);
+}
 
 @media (min-width: 768px) {
   #navbar-list {
@@ -380,6 +376,15 @@ img > footer {
   }
 }
 
+
+@media (min-width: 577.1px) {
+
+  #focused_email_subject{
+    word-break: break-all  !important;
+  }
+
+}
+
 @media (max-width: 577px) {
 
   #last_messages_container{
@@ -392,8 +397,6 @@ img > footer {
     margin-bottom: 1em;
   }
 }
-
-
 
 @media (max-width: 250px) {
   #header_title {

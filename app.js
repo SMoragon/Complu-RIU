@@ -660,6 +660,9 @@ app.patch("/marcar_leido/:id", (request, response, next) => {
       if (err) {
         response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
       }
+      else{
+        response.status(200).end();
+      }
     });
   }
 });
@@ -834,6 +837,29 @@ app.post("/lista_espera", (request, response, next) => {
         });
       }
     });
+  }
+});
+
+app.get("/obtener_todas_reservas", (request, response, next) => {
+  if (!request.session.isLogged) {
+    response.status(400).end(); // TODO: redirigir a página de "debes loguearte..."
+  } else {
+
+        instDao.obtenerReservas((err, res) => {
+          if (err) {
+            console.log(err);
+            response.status(400).end("Se ha producido un error interno en el acceso a la BD.");
+          } else {
+            console.log("Reservas: ", res)
+            res.forEach((r)=>{
+              var date=new Date(r.fecha_reserva);
+              r.fecha_reserva=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+            })
+            console.log("Reservas: ", res)
+            response.status(200).json({ reservas: res });
+          }
+        });
+      
   }
 });
 
