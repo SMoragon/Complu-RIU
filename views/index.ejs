@@ -21,7 +21,8 @@
         Mis reservas
       </button>
 
-      <button id="watch_calendar_but" class="btn btn-dark" type="button" data-bs-toggle="modal"
+      <button id="watch_calendar_but" class="btn btn-dark" type="button"
+        data-bs-toggle="modal"
         data-bs-target="#calendar_modal">
         Consultar disponibilidad
       </button>
@@ -128,7 +129,10 @@
                         <span
                           class="book_form_error start_time_error text-danger text-center mx-auto">La
                           instalación no abre hasta las <%=element.horario_apertura%>.</span>
-
+                          <span
+                          class="book_form_error start_act_error text-danger text-center mx-auto">La
+                          hora de inicio de la reserva debe ser mayor a la hora
+                          actual</span>
                       </div>
                     </div>
 
@@ -250,8 +254,8 @@
               class="modal-content">
               <div class="modal-header">
                 <h3><strong>Calendario de reservas</strong></h3>
-              <button type="button" class="btn-close"
-              data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close mx-3"
+                  data-bs-dismiss="modal"></button>
               </div>
               <div
                 class="modal-body ">
@@ -385,12 +389,135 @@
         </div>
       </div>
 
+      <div class="modal top fade"
+        id="reservar_instalacion_calendario"
+        data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content book_inst_content">
+            <div class="modal-header">
+              Reservar una instalación
+            </div>
+            <form method="POST" action="/reservar_instalacion"
+              id="reservar_instalacion_calendario_form"
+              class="res_inst_cal_form">
+
+              <div class="modal-body container">
+
+                <div class="form-group row justify-content-center">
+
+                  <div class="row justify-content-center">
+                    <div class="form-group row justify-content-center my-2">
+                      <label for="book_inst_cal_name"
+                        class="col-form-label col-sm-2 text-truncate "><strong>Instalación:</strong></label>
+                      <div class="col-sm-7">
+                        <select name="book_inst_cal_name"
+                          id="book_inst_cal_name"
+                          class="book_inst_input form-control-plaintext form-control-sm rounded-4">
+                        </select>
+                      </div>
+                      <span
+                        class="book_form_error inst_cal_error text-danger text-center mx-auto">Por
+                        favor, selecciona una instalación válida.</span>
+
+                    </div>
+                  </div>
+
+                  <div class="form-group row justify-content-center my-2">
+
+                    <label for="book_inst_cal_date"
+                      class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
+                    <div class="col-sm-7">
+                      <input type="date" id="book_inst_cal_date"
+                        onkeydown="return false" name="book_inst_cal_date"
+                        class="book_inst_input form-control form-control-sm rounded-4">
+                    </div>
+                    <span
+                      class="book_form_error date_cal_error text-danger text-center mx-auto">La
+                      fecha introducida debe ser igual o posterior a la
+                      actual.</span>
+                  </div>
+                </div>
+
+                <div class="row justify-content-center">
+                  <div class="form-group row justify-content-center my-2">
+                    <label for="book_inst_cal_from"
+                      class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                        de inicio:</strong></label>
+                    <div class="col-sm-7">
+                      <input type="time" id="book_inst_cal_from"
+                        onkeydown="return false" name="book_inst_cal_from"
+                        class="book_inst_input form-control form-control-sm rounded-4">
+                    </div>
+                    <span
+                      class="book_form_error start_time_cal_error text-danger text-center mx-auto"></span>
+                    <span
+                      class="book_form_error start_act_cal_error text-danger text-center mx-auto">La
+                      hora de inicio de la reserva debe ser mayor a la hora
+                      actual</span>
+                  </div>
+                </div>
+
+                <div class="row justify-content-center">
+                  <div class="form-group row justify-content-center my-2">
+                    <label for="book_inst_cal_to"
+                      class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                        de fin:</strong></label>
+                    <div class="col-sm-7">
+                      <input type="time" id="book_inst_cal_to"
+                        onkeydown="return false" name="book_inst_cal_to"
+                        class="book_inst_input form-control form-control-sm rounded-4">
+                    </div>
+                    <span
+                      class="book_form_error end_time_cal_error text-danger text-center mx-auto"></span>
+
+                  </div>
+
+                </div>
+
+                <div class="row justify-content-center">
+                  <div class="form-group row justify-content-center my-2">
+                    <label for="book_inst_cal_how_many"
+                      class="col-form-label col-sm-2 text-truncate "><strong>Asistentes</strong></label>
+                    <div class="col-sm-7">
+                      <input type="number"
+                        id="book_inst_cal_how_many"
+                        onkeydown="return false" min="1"
+                        name="book_inst_cal_how_many"
+                        class="book_inst_input form-control form-control-sm rounded-4">
+                    </div>
+
+                    <span
+                      class="book_form_error total_time_cal_error text-danger text-center mx-auto">La
+                      hora de inicio de la reserva debe ser anterior a la de
+                      fin.</span>
+
+                    <span
+                      class="book_form_error empty_cal_error text-danger text-center mx-auto">Todos
+                      los campos deben estar rellenos.</span>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="modal-footer">
+                <input type="submit" class="btn btn-lg btn-success"></input>
+              <button type="reset" class="cancel_but btn btn-lg btn-info"
+                data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
     </main>
     <!-- Dynamically footer's inclusion. -->
     <footer>
       <%- include ('pieces/footer')%>
     </footer>
-  </body>  
-  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+  </body>
+  <script
+    src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
   <script src="/scripts/gestionReservas.js"></script>
+  <script src="/scripts/gestionCalendario.js"></script>
 </html>

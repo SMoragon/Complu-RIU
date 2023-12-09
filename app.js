@@ -760,10 +760,12 @@ app.post(
 
 app.post("/reservar_instalacion", (request, response, next) => {
   if (!request.session.isLogged) {
+   
     response.status(400).end(); //TODO: hacer página de redirección a login
   } else {
     instDao.buscarUsuario(request.session.mail, (err, res) => {
       if (err) {
+        console.log(err)
         response.status(400).end();
       } else {
         var user_id = res[0].id,
@@ -780,6 +782,7 @@ app.post("/reservar_instalacion", (request, response, next) => {
           inst_to,
           (err, res) => {
             if (err) {
+              console.log(err)
               response.status(400).end();
             } else {
               if (res[0].solapes != 0) {
@@ -795,6 +798,7 @@ app.post("/reservar_instalacion", (request, response, next) => {
                 ];
                 instDao.reservarInstalacion(datos, (err, res) => {
                   if (err) {
+                    console.log(err)
                     response.status(400).end();
                   } else {
                     response.status(201).end();
@@ -872,7 +876,7 @@ app.post("/lista_espera", (request, response, next) => {
   }
 });
 
-app.get("/obtener_todas_reservas", (request, response, next) => {
+app.get("/obtener_reservas_inst", (request, response, next) => {
   if (!request.session.isLogged) {
     response.status(400).end(); // TODO: redirigir a página de "debes loguearte..."
   } else {
@@ -885,7 +889,17 @@ app.get("/obtener_todas_reservas", (request, response, next) => {
               var date=new Date(r.fecha_reserva);
               r.fecha_reserva=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
             })
-            response.status(200).json({ reservas: res });
+            var reservas=res;
+
+            instDao.obtenerInstalacionPorNombre("", (err,res)=>{
+              if(err){
+                response.status(400).end();
+              }
+              else{
+                response.status(200).json({ reservas: reservas, instalaciones:res });
+              }
+            })
+           
           }
         });
       
