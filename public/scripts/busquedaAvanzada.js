@@ -105,6 +105,26 @@ $(document).ready((e) => {
         });
     });
 
+    $("#usuario_list button.hacer_admin_button").on('click', (event) => {
+        event.preventDefault();
+        var id = event.target.id.split("_")[3]
+        $.ajax({
+            type: 'PATCH',
+            url: '/hacer_admin/' + id,
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: (message) => {
+                alert(message["msg"]);
+                location.reload();
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                alert("Se ha producido un error: Intentelo mas tarde." + errorThrown + ", " + textStatus)
+            }
+        });
+
+    })
+
     $("#usuario_list .estadistica_usuario").on('click', (event) => {
         var id = event.target.id.split("_")[3]
         $.ajax({

@@ -264,7 +264,7 @@ class DAO {
       }
       else {
         facultad = `%${facultad}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE f.nombre like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE f.nombre like ?";
         connection.query(sql, [facultad], callback);
         connection.release();
       }
@@ -278,7 +278,7 @@ class DAO {
       }
       else {
         correo = `%${correo}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE correo like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE correo like ?";
         connection.query(sql, [correo], callback);
         connection.release();
       }
@@ -292,7 +292,7 @@ class DAO {
       }
       else {
         nombre = `%${nombre}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.nombre like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.nombre like ?";
         connection.query(sql, [nombre], callback);
         connection.release();
       }
@@ -306,7 +306,7 @@ class DAO {
       }
       else {
         apellido = `%${apellido}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE apellidos like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE apellidos like ?";
         connection.query(sql, [apellido], callback);
         connection.release();
       }
@@ -334,6 +334,19 @@ class DAO {
       else {
         const sql = "SELECT i.nombre as label ,COUNT(i.id) as counter FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE u.id = ? GROUP BY i.id";
         connection.query(sql, [id], callback);
+        connection.release();
+      }
+    })
+  }
+
+  updateToAdminUser(id, callback){
+    this.pool.getConnection((err, connection) => {
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql = "UPDATE usuarios SET es_admin = 1 WHERE id = ?";
+        connection.query(sql, id, callback);
         connection.release();
       }
     })

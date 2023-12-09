@@ -3,7 +3,6 @@ $(document).ready((e) => {
     $("#instalacion_list button.validar_usuario").on('click', (event) => {
         event.preventDefault();
         var id = event.target.id.split("_")[2]
-        console.log(id)
         $.ajax({
             type: 'PATCH',
             url: '/validar_registro/' + id,
@@ -20,7 +19,7 @@ $(document).ready((e) => {
             },
             error: (jqXHR, textStatus, errorThrown) => {
                 alert("Se ha producido un error: Intentelo mas tarde." + errorThrown)
-                event.target.removeAttr("disabled");
+                $("#"+event.target.id).removeAttr("disabled");
             }
         });
 
@@ -44,7 +43,7 @@ $(document).ready((e) => {
             },
             error: (jqXHR, textStatus, errorThrown) => {
                 alert("Se ha producido un error: Intentelo mas tarde.")
-                event.target.removeAttr("disabled");
+                $("#"+event.target.id).removeAttr("disabled");
             }
         });
     })

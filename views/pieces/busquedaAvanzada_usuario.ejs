@@ -4,7 +4,7 @@
             <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0">
                 <div class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4 list_usuario_bgc">
                     <div class="row justify-content-center">
-                        <div class="col-sm-7 col-12 p-0">
+                        <div class="col-sm-7 col-11 p-0">
                             <div
                                 class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
                                 <span class="row justify-content-center mb-2 mt-1">
@@ -13,28 +13,53 @@
                                 <% if (element.imagen_perfil===null) { %>
                                     <img src="/images/default_picture.jpg" alt="foto de perfil por defecto"
                                         class="img-fluid mb-2 list_usuario_img">
-                                    <%}else{ %>
-                                        <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
-                                            alt="foto de perfil de <%=element.nombre%>"
-                                            class="img-fluid mb-2 list_usuario_img">
-                                        <%};%>
+                                <%}else{ %>
+                                    <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
+                                        alt="foto de perfil de <%=element.nombre%>"
+                                        class="img-fluid mb-2 list_usuario_img">
+                                <%};%>
                             </div>
                         </div>
                         <div
                             class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
-                            <button type="button" class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
-                                data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
+                            <% if (element.es_admin===0) { %>
+                                <button type="button"
+                                    class="btn btn-sm btn-success mt-sm-auto my-1 text-truncate"
+                                    data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
                                     class="fa fa-eye"></i> Detalles</button>
-                            <button type="button"
-                                class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate estadistica_usuario"
-                                id="estadistica_usuario_button_<%=element.id%>" data-bs-toggle="modal"
-                                data-bs-target="#estadistica_usuario_<%=element.id%>"><i class="fa fa-bar-chart"></i>
-                                Ver
-                                Estadistica</button>
-                            <button type="button" id="historial_usuario_btn_<%=element.id%>"
-                                class="btn btn-sm btn-warning mb-sm-auto mb-2 text-truncate historial_usuario"
-                                data-bs-toggle="modal" data-bs-target="#historial_usuario_<%=element.id%>">
-                                <i class="fa fa-history"></i> Historial</button>
+                                <button type="button"
+                                    class="btn btn-sm btn-primary my-1 text-truncate estadistica_usuario"
+                                    id="estadistica_usuario_button_<%=element.id%>" data-bs-toggle="modal"
+                                    data-bs-target="#estadistica_usuario_<%=element.id%>"><i
+                                    class="fa fa-bar-chart"></i>
+                                    Ver
+                                    Estadistica</button>
+                                <button type="button"
+                                    class="btn btn-sm btn-info my-1 text-truncate hacer_admin_button"
+                                    id="hacer_admin_button_<%=element.id%>"><i class="fa fa-rocket"></i>
+                                    Hacer Admin</button>
+                                <button type="button" id="historial_usuario_btn_<%=element.id%>"
+                                    class="btn btn-sm btn-warning mb-sm-auto my-1 text-truncate historial_usuario"
+                                    data-bs-toggle="modal" data-bs-target="#historial_usuario_<%=element.id%>">
+                                    <i class="fa fa-history"></i> Historial</button>
+                            <%}else{ %>
+                                <button type="button"
+                                    class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                                    data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
+                                    class="fa fa-eye"></i> Detalles</button>
+                                <button type="button"
+                                    class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate estadistica_usuario"
+                                    id="estadistica_usuario_button_<%=element.id%>" data-bs-toggle="modal"
+                                    data-bs-target="#estadistica_usuario_<%=element.id%>"><i
+                                    class="fa fa-bar-chart"></i>
+                                    Ver
+                                    Estadistica</button>
+                                <button type="button" id="historial_usuario_btn_<%=element.id%>"
+                                    class="btn btn-sm btn-warning mb-sm-auto mb-2 text-truncate historial_usuario"
+                                    data-bs-toggle="modal" data-bs-target="#historial_usuario_<%=element.id%>">
+                                    <i class="fa fa-history"></i> Historial</button>
+                            <%};%>
+                                        
                         </div>
                     </div>
                 </div>

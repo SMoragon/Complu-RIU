@@ -89,12 +89,6 @@ a {
   margin-right: 2em;
 }
 
-.instalacion_img{
-  height: 10em;
-  min-height: 10em;
-  max-height: 10em;
-}
-
 .instalacion_bgc{
   background-color:  rgb(183, 216, 234) !important;
 }
@@ -103,20 +97,8 @@ a {
   background-color:  rgb(188, 180, 231) !important;
 }
 
-.list_usuario_img{
-  height: 10em;
-  min-height: 10em;
-  max-height: 10em;
-}
-
 .validar_usuario_bgc{
   background-color:  rgb(188, 180, 231) !important;
-}
-
-.validar_registro_img{
-  height: 10em;
-  min-height: 10em;
-  max-height: 10em;
 }
 
 img > footer {
@@ -378,6 +360,18 @@ img > footer {
 
 
 @media (min-width: 577.1px) {
+
+  .instalacion_img{
+    height: 10em;
+    min-height: 10em;
+    max-height: 10em;
+  }
+
+  .list_usuario_img{
+    height: 10em;
+    min-height: 10em;
+    max-height: 10em;
+  }
 
   #focused_email_subject{
     word-break: break-all  !important;
