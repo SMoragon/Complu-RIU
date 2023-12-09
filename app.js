@@ -493,7 +493,6 @@ app.get("/estadistica_facultad/:id", (request, response) => {
       id = querystring.escape(id);
       instDao.obtenerEstadisticaFacultad(id, (err, result) => {
         if (err) {
-          console.log
           response.status(404).end();
         } else {
           response.status(200).json({ "estadistica": result });
@@ -729,7 +728,6 @@ app.post("/reservar_instalacion", (request, response, next) => {
   } else {
     instDao.buscarUsuario(request.session.mail, (err, res) => {
       if (err) {
-        console.log(err)
         response.status(400).end();
       } else {
         var user_id = res[0].id,
@@ -761,7 +759,6 @@ app.post("/reservar_instalacion", (request, response, next) => {
                 ];
                 instDao.reservarInstalacion(datos, (err, res) => {
                   if (err) {
-                    console.log(err)
                     response.status(400).end();
                   } else {
                     response.status(201).end();
@@ -789,7 +786,6 @@ app.get("/obtener_reservas", (request, response, next) => {
         var id_reservante = res[0].id;
         instDao.obtenerReservasUsuario(id_reservante, async (err, res) => {
           if (err) {
-            console.log(err);
             response
               .status(400)
               .end("Se ha producido un error interno en el acceso a la BD.");
@@ -847,15 +843,12 @@ app.get("/obtener_todas_reservas", (request, response, next) => {
 
         instDao.obtenerReservas((err, res) => {
           if (err) {
-            console.log(err);
             response.status(400).end("Se ha producido un error interno en el acceso a la BD.");
           } else {
-            console.log("Reservas: ", res)
             res.forEach((r)=>{
               var date=new Date(r.fecha_reserva);
               r.fecha_reserva=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
             })
-            console.log("Reservas: ", res)
             response.status(200).json({ reservas: res });
           }
         });
@@ -867,20 +860,16 @@ app.delete("/eliminar_reserva/:id", (request, response, next) => {
   var id_res = request.params.id;
   instDao.obtenerReservasId(id_res, (err, res) => {
     if (err) {
-      console.log("Entro 1", err);
       response.status(400).end();
     } else {
       var reserva = res[0];
-      console.log(reserva);
       instDao.eliminarReserva(id_res, (err, res) => {
         if (err) {
-          console.log("Entro 2", err);
           response.status(400).end();
         } else {
           instDao.obtenerListaEspera(reserva.id_instalacion,reserva.fecha_reserva,reserva.hora_inicio, reserva.hora_fin,
             (err, res) => {
               if (err) {
-                console.log("Entro 3", err);
                 response.status(400).end();
               } else {
                 var res_lista = res;
@@ -892,7 +881,6 @@ app.delete("/eliminar_reserva/:id", (request, response, next) => {
                       if (err) {
                         response.status(400).end();
                       } else {
-                        console.log(res_lista);
                         var reservas=res;
                         var candidato = undefined;
                        
@@ -915,23 +903,18 @@ app.delete("/eliminar_reserva/:id", (request, response, next) => {
                             
 
                             if (no_solapes) {
-                              console.log("No solapes");
                               candidato = actI;
                               break;
                             }
                           }
-                        
-                        console.log("Candidato: ", candidato);
+                      
                         if (candidato) {
-                          console.log("Hay candidato, y es: ", candidato);
                           instDao.eliminarReservaListaEspera(
                             candidato.id,
                             (err, res) => {
                               if (err) {
-                                console.log("Entro 4", err);
                                 response.status(400).end();
                               } else {
-                                console.log("Entrrada eliminada");
                                 var datos = [
                                   candidato.id_reservante,
                                   candidato.id_instalacion,
@@ -970,11 +953,9 @@ app.delete("/eliminar_reserva/:id", (request, response, next) => {
                                         datos,
                                         (err, res) => {
                                           if (err) {
-                                            console.log("Entro 5", err);
                                             response.status(400).end();
                                           } else {
                                             response.status(200).end();
-                                            console.log("Mnesaje enviado");
                                           }
                                         }
                                       );
@@ -1166,7 +1147,6 @@ app.post(
     } else {
       instDao.buscarUsuario(request.body["user_email"], async (err, res) => {
         if (err) {
-          console.log(err);
           response.status(403).render("login.ejs", {
             errors: "Ha ocurrido un error interno en el acceso a la BD.",
             body: request.body,
