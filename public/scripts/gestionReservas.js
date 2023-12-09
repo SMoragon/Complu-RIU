@@ -264,7 +264,7 @@ function inicializarCalendario(){
             backgroundColor:bg_colours[res.id_instalacion%bg_colours.length]
             
         })
-     })
+     });
 
 
      calendar.render();

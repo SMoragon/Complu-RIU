@@ -50,3 +50,13 @@ function closeAndRedirect(newSite) {
   });
   window.location.href = newSite;
 }
+
+function showPasswd() {
+  console.log("a")
+  var pass = $("#user_password");
+  if (pass.attr("type") === "password") {
+    pass.attr("type", "text");
+  } else {
+    pass.attr("type", "password");
+  }
+}

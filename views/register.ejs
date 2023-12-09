@@ -96,6 +96,8 @@
                                 class="form-control form-control-sm reg_log_input"
                                 name="user_password" id="user_password"
                                 value= <%=locals.body? body["user_password"]:""%>>
+                            <input type="checkbox" onclick="showPasswd()"
+                                class="my-2 mx-2">Mostrar Contraseña
 
                             <% if (locals.errors && locals.errors["user_password"])
                             { %>
@@ -123,6 +125,9 @@
                                 value= <%=locals.body?
                                 body["user_password_again"]:""%>>
 
+                            <input type="checkbox" onclick="showAgainPasswd()"
+                                class="my-2 mx-2">Mostrar Contraseña
+
                             <span class="popup_form_error text-danger"
                                 id="password_error">Las contraseñas no
                                 coinciden.</span>
@@ -143,16 +148,16 @@
                             <select name="user_faculty" id="user_faculty"
                                 class="form-control form-control-sm reg_field reg_log_input text-center text-truncate">
                                 <option value="0">Seleccione una facultad</option>
-                                
+
                                 <%if (locals.facultades){ %>
-                                    <% facultades.forEach((facultad)=>{ %>
-                                    <option value=<%=facultad.id%> ><%=facultad.nombre%></option>
-                                    <% });}  %>
-                                
-                               
+                                <% facultades.forEach((facultad)=>{ %>
+                                <option value=<%=facultad.id%> ><%=facultad.nombre%></option>
+                                <% });} %>
+
                             </select>
                             <span class="popup_form_error text-danger"
-                            id="faculty_error">Por favor, selecciona una facultad.</span>
+                                id="faculty_error">Por favor, selecciona una
+                                facultad.</span>
                         </div>
                     </div>
 
