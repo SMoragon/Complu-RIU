@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+    <!-- Bootstrap, stylesheets, WP title and favicon load. -->
     <head>
         <%- include ('pieces/head')%>
     </head>
@@ -15,13 +16,13 @@
             <!-- Login Form -->
             <div class="container my-5">
                 <form id="login_form" method="POST" action="/login">
-                    <!-- Email field -->
+                   
                     <div class="form-group row my-2">
 
+                        <!-- Email field -->
                         <label for="user_email"
                             class="text-center col-md-4 col-10 col-form-label login_field">
                             Correo electrónico: </label>
-
                         <div
                             class="offset-md-0 col-md-6 offset-sm-2 col-sm-7 offset-1 col-10">
 
@@ -30,12 +31,14 @@
                                 name="user_email" id="user_email"
                                 value= <%=locals.body? body["user_email"]:""%>>
 
+                            <!-- If the email is not correct, a message will be shown. -->
                             <span class="popup_form_error text-danger text-center mx-auto"
                                 id="mail_error">El
                                 email introducido no es correcto. El formato
                                 debe
                                 ser "abcde@ucm.es".</span>
 
+                            <!-- Server-side validation errors. -->
                             <% if (locals.errors && locals.errors["user_email"])
                             { %>
                             <span
@@ -47,6 +50,7 @@
 
                         </div>
                     </div>
+
                     <!-- Password Field -->
                     <div class="form-group row my-2">
                         <label for="user_password"
@@ -58,11 +62,14 @@
                             <input type="password"
                                 class="form-control form-control-sm reg_log_input"
                                 name="user_password" id="user_password">
+                            <!-- Button to toggle password's visibility. -->
+                            <input type="checkbox" onclick="showPasswd()" class="my-2 mx-2">Mostrar Contraseña 
 
-                            <input type="checkbox" onclick="showPasswd()" class="my-2 mx-2">Mostrar Contraseña    
+                            <!-- If there are any empty fields, a message will be shown. -->
                             <div class="popup_form_error text-danger"
                                 id="empty_error">Todos
                                 los campos deben estar rellenos.</div>
+                            <!-- Server-side validation errors. -->
                             <% if (locals.errors)
                             { %>
                             <span
@@ -74,19 +81,18 @@
 
                         </div>
                     </div>
-                    <!-- After check the Email and Password it´s exist on our databases 
-                    and if it doesn´t exist it shows an error message -->
 
+            
                     <div class="send_buttons_cont my-4">
                         <!-- Submit form button -->
                         <input type="submit" value="ENVIAR"
                             class="send_buttons send_but">
-                    <!-- Close form button and redirect to the main page -->
+                    <!-- Close form button and redirect to the main page. -->
                     <button type="button" class="send_buttons"
                         onclick="closeAndRedirect('/')">
                         CERRAR</button>
                 </div>
-                <!-- Link that´s take you into a register page -->
+                <!-- Link that takes the user to the registration page. -->
                 <div class="my-3">
                     <a href="/register" id="register_hint">¿Aún no tienes una
                         cuenta? <br> Regístrate aquí</a>

@@ -1,5 +1,4 @@
-<!-- TODO: allow admin to custom all these params. -->
-
+  <!-- Footer structure, in which the user would watch some company's information. -->
 <div id="footer_cont" class="container-fluid">
     <div class="row container">
         <div class="col-lg-3 col-md-4 col-sm-4 col-8">
@@ -35,7 +34,8 @@
                         <%};%>
                 </li>
 
-                <li class="my-0 my-2"><!-- Link to watch the "company's Instagram". -->
+                <li class="my-0 my-2">
+                    <!-- Link to watch the "company's Instagram". -->
                     <% if (typeof session !=='undefined' ) { %>
                         <% if (typeof session.sysConfig !=='undefined' && typeof session.sysConfig['url_instagram']
                             !=='undefined' ) {%>

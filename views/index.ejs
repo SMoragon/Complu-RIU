@@ -9,11 +9,14 @@
     <!-- Use of ejs to avoid copy-pasting the whole header. -->
     <header>
       <%- include ('pieces/header')%>
+      <!-- Additional external script to show some icons. -->
       <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </header>
     <main>
 
+      <!-- If the user is logged, a couple of buttons to check the bookings made and open a calendar to show all bookings (and even make some if wanted) will
+      be displayed. -->
       <%if (session.isLogged && !session.isAdmin){%>
       <button class="btn btn-secondary mx-3" type="button"
         data-bs-toggle="modal"
@@ -28,6 +31,7 @@
       </button>
       <%}%>
 
+      <!-- Default message that will be displayed if a logged user (external validation ensures this) clicks to watch its bookings and there are none yet.  -->
       <div class="modal top fade" id="book_inst_list_modal"
         data-bs-backdrop="static">
         <div class="modal-dialog modal-md modal-dialog-centered">
@@ -48,12 +52,14 @@
         </div>
       </div>
 
+      <!-- Dynamically installation cards building, that allows the user to watch them placed all together. -->
       <% if (locals.instalaciones) { %>
       <div class="container-fluid">
         <div class="row justify-content-center" id="instalacion_list">
           <% instalaciones.forEach(element=> { %>
           <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0"
             id="instalacion_<%=element.id%>">
+            <!-- Installation's name. -->
             <div
               class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4  instalacion_bgc">
               <div class="row justify-content-center mt-3"><%=element.nombre%></div>
@@ -61,12 +67,14 @@
                 <div class="col-sm-7 col-12 p-0">
                   <div
                     class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
+                    <!--  Installation's picture. -->
                     <img
                       src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
                       alt="<%=element.nombre%>"
                       class="img-fluid rounded-4 instalacion_img">
                   </div>
                 </div>
+                <!-- Watch details and book buttons, so that a logged user (again, external validation ensures this) can benefit from it. -->
                 <div
                   class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                   <button type="button"
@@ -83,6 +91,8 @@
               </div>
             </div>
           </div>
+
+          <!-- Booking installation's form. -->
           <div class="modal top fade book_inst_modal"
             id="instalacion_reservar_<%=element.id%>"
             data-bs-backdrop="static">
@@ -101,6 +111,7 @@
 
                       <div class="form-group row justify-content-center my-2">
 
+                        <!-- Book's date. -->
                         <label for="book_inst_date_<%=element.id%>"
                           class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
                         <div class="col-sm-7">
@@ -108,6 +119,8 @@
                             onkeydown="return false" name="book_inst_date"
                             class="inst_date book_inst_input form-control form-control-sm rounded-4">
                         </div>
+
+                        <!-- If the user books in a date previous than current one, a message will be displayed. -->
                         <span
                           class="book_form_error date_error text-danger text-center mx-auto">La
                           fecha introducida debe ser igual o posterior a la
@@ -118,6 +131,7 @@
 
                     <div class="row justify-content-center">
                       <div class="form-group row justify-content-center my-2">
+                        <!-- Book's start time. -->
                         <label for="book_inst_from_<%=element.id%>"
                           class="col-form-label col-sm-2 text-truncate "><strong>Hora
                             de inicio:</strong></label>
@@ -126,9 +140,13 @@
                             onkeydown="return false" name="book_inst_from"
                             class="inst_from book_inst_input form-control form-control-sm rounded-4">
                         </div>
+
+                        <!-- If the user wants to book before the installation opens, a message will be displayed. -->
                         <span
                           class="book_form_error start_time_error text-danger text-center mx-auto">La
                           instalación no abre hasta las <%=element.horario_apertura%>.</span>
+
+                        <!-- If the user wants to bookin the current day but in an hour that has already passed, a message will be diplayed. -->
                           <span
                           class="book_form_error start_act_error text-danger text-center mx-auto">La
                           hora de inicio de la reserva debe ser mayor a la hora
@@ -138,6 +156,7 @@
 
                     <div class="row justify-content-center">
                       <div class="form-group row justify-content-center my-2">
+                        <!-- Book's end time. -->
                         <label for="book_inst_to_<%=element.id%>"
                           class="col-form-label col-sm-2 text-truncate "><strong>Hora
                             de fin:</strong></label>
@@ -167,15 +186,19 @@
                           name="book_inst_how_many"
                           class="inst_how_many book_inst_input form-control form-control-sm rounded-4">
                         </div>
+                        
+                        <!-- If the user wants to book after the installation has closed, a message will be displayed. -->
                         <span
                           class="book_form_error end_time_error text-danger text-center mx-auto">La
                           instalación cierra a las <%=element.horario_cierre%>.</span>
 
+                        <!-- If the user wants to book and finish before starting, a message will be displayed. -->
                         <span
                           class="book_form_error total_time_error text-danger text-center mx-auto">La
                           hora de inicio de la reserva debe ser anterior a la de
                           fin.</span>
-
+                          
+                        <!-- If there is any empty field, a message will be displayed. -->
                         <span
                           class="book_form_error empty_error text-danger text-center mx-auto">Todos
                           los campos deben estar rellenos.</span>
@@ -203,6 +226,8 @@
           </div>
         </div>
 
+        
+        <!-- Modal that show the details of an installation (name, picture, type of booking, (individual/collective), capacity and opening/closing time). -->
         <div class="modal top fade" id="instalacion_detalles_<%=element.id%>"
           data-bs-backdrop="static">
           <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -220,18 +245,25 @@
                         alt="<%=element.nombre%>" class="img-fluid rounded-4">
                     </div>
                   </div>
+                  
+                  
                   <div
                     class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                    <!-- Installation's name. -->
                     <p><i class="fa fa-building"></i> Nombre Instalación:
                       <%=element.nombre%>
                     </p>
+                    <!-- Installation's opening name. -->
                     <p><i class="fa fa-hourglass-1"></i> Apertura:
                       <%=element.horario_apertura%>
                     </p>
+                    <!-- Installation's closing name. -->
                     <p><i class="fa fa-hourglass-3"></i> Cierre: <%=element.horario_cierre%>
                     </p>
+                    <!-- Installation's booking type (individual/collective). -->
                     <p><i class="fa fa-map-pin"></i> Tipo reserva: <%=element.tipo_reserva%>
                     </p>
+                    <!-- Installation's capacity. -->
                     <p><i class="fa fa-group"></i> Aforo: <%=element.aforo%>
                     </p>
                   </div>
@@ -246,6 +278,7 @@
         </div>
         <%})} %>
 
+        <!-- Booking calendar modal, in which an interactive calendar filled with all current bookigns will be displayed. -->
         <div class="modal top fade" id="calendar_modal"
           data-bs-backdrop="static">
           <div
@@ -267,6 +300,7 @@
           </div>
         </div>
 
+        <!-- If the user books an installation successfully, a message indicating where they can be managed will be shown. -->
         <div class="modal top fade" id="book_inst_ok"
           data-bs-backdrop="static">
           <div
@@ -290,6 +324,7 @@
           </div>
         </div>
 
+        <!-- If the user books an installation but it overlaps with a previous booking, it will be asked to join to the waiting list or not. -->
         <div class="modal top fade" id="book_inst_ko"
           data-bs-backdrop="static">
           <div
@@ -316,6 +351,7 @@
         </div>
       </div>
 
+      <!-- If the user accepts to join to the waiting list and does it successfully, a message will be shown. -->
       <div class="modal top fade" id="add_wait_list_ok"
         data-bs-backdrop="static">
         <div
@@ -339,6 +375,8 @@
         </div>
       </div>
 
+      <!-- If the user decides to cancel a booking, a message indicating that it will be assigned to another waiting user and a confirmation rewquest
+        will be displayed. -->
       <div class="modal top fade" id="del_res_modal"
         data-bs-backdrop="static">
         <div
@@ -368,6 +406,7 @@
         </div>
       </div>
 
+        <!-- If the user decides to cancel the booking even if it will be given to a waiting user, a message will be displayed. -->
       <div class="modal top fade" id="del_res_ok_modal"
         data-bs-backdrop="static">
         <div
@@ -389,6 +428,7 @@
         </div>
       </div>
 
+        <!-- Calendar booking form (similar to the previous one, but here the user has to specify the installation). -->
       <div class="modal top fade"
         id="reservar_instalacion_calendario"
         data-bs-backdrop="static">

@@ -1,3 +1,4 @@
+// App imports.
 var express = require("express");
 var path = require("path");
 const express_validator = require("express-validator");
@@ -6,7 +7,7 @@ const moment = require("moment");
 const pool = require("./pool.js");
 const dao = require("./dao.js");
 const multer = require("multer");
-const querystring = require("querystring")
+const querystring = require("querystring");
 const multerFactory = multer({ storage: multer.memoryStorage() });
 const port = 3000;
 const session = require("express-session");
@@ -26,8 +27,10 @@ const middlewareSession = session({
   store: sessionStore,
 });
 
+// Constant to indicate the main admin (to send validation mails and so on).
 const ID_ADMIN = 1;
 
+// Password hashing library.
 const bcrypt = require("bcrypt");
 
 const hashPassword = async (password) => {
@@ -37,26 +40,33 @@ const hashPassword = async (password) => {
   return await bcrypt.hash(password, salt);
 };
 
+// Allowed image formats that the user can submit.
 const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
+// Moment language setup.
 moment.locale("es");
 
+// Dao and pool initialization.
 var instPool = new pool("localhost", "root", "", "ucm_riu");
 var instDao = new dao(instPool.get_pool());
 
 var app = express();
 
-// view engine setup
+// View engine setup.
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// Body parsing options and public directory link, to look for static resources.
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
 
+// Session setup, stored in the database.
 app.use(middlewareSession);
 
+// Middelwares to set params that need to be refreshed every single time a page charges, such as user name, profile picture, 
+// system configuration or unread messages; among others.
 app.use((request, response, next) => {
   if (request.session.isLogged) {
     if (!request.session.profile) {
@@ -85,27 +95,31 @@ app.use((request, response, next) => {
   } else {
     response.locals.session = request.session;
     next();
-  }});
+  }
+});
 
 app.use((request, response, next) => {
-  if (typeof request.session.sysConfig === 'undefined') {
+  if (typeof request.session.sysConfig === "undefined") {
     instDao.get_config_info((err, res) => {
       if (err) {
-        next()
+        next();
       } else {
-        res[0]['url_instagram'] = res[0]['url_instagram'].replaceAll("&#x2F;", "/")
-        request.session.sysConfig = res[0]
+        res[0]["url_instagram"] = res[0]["url_instagram"].replaceAll(
+          "&#x2F;",
+          "/"
+        );
+        request.session.sysConfig = res[0];
         response.locals.session = request.session;
         next();
       }
-    })
+    });
   } else {
     response.locals.session = request.session;
     next();
   }
 });
 
-// Enrutamiento de las páginas principales de nuestra aplicación.
+// Main app pages enrouting.
 app.get("/", (request, response) => {
   instDao.buscarInstalacion("", (err, res) => {
     if (err) {
@@ -126,6 +140,11 @@ app.get("/index.html", (request, response) => {
   });
 });
 
+// Middleware to show a "You must log in" message.
+app.get("/no_logged", (request, response, next) => {
+  response.status(200).render("must_be_login.ejs");
+});
+
 app.get("/gestion_instalacion", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -137,14 +156,16 @@ app.get("/gestion_instalacion", (request, response) => {
         if (err) {
           response.status(400).end();
         } else {
-           res.map((element)=>{
-            var [horas, mins, segs] =element.horario_apertura.split(":");
-            element.horario_apertura =horas + ":" + mins;
+          res.map((element) => {
+            var [horas, mins, segs] = element.horario_apertura.split(":");
+            element.horario_apertura = horas + ":" + mins;
 
-            var [horas, mins, segs] =element.horario_cierre.split(":");
-            element.horario_cierre =horas + ":" + mins;
-          })
-          response.status(200).render("gestion_instalaciones.ejs", { dato: res });
+            var [horas, mins, segs] = element.horario_cierre.split(":");
+            element.horario_cierre = horas + ":" + mins;
+          });
+          response
+            .status(200)
+            .render("gestion_instalaciones.ejs", { dato: res });
         }
       });
     } else {
@@ -152,7 +173,7 @@ app.get("/gestion_instalacion", (request, response) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.post(
@@ -187,7 +208,7 @@ app.post(
       }
     } else {
       response.status(200).render("must_be_login.ejs");
-    };
+    }
   }
 );
 
@@ -196,7 +217,6 @@ app.put(
   multerFactory.single("instalacion_imagen"),
   body("m_instalacion_nombre").escape(),
   (request, response) => {
-
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var imagen = request.params.imagen == "true" ? true : false;
@@ -228,7 +248,7 @@ app.put(
       }
     } else {
       response.status(200).render("must_be_login.ejs");
-    };
+    }
   }
 );
 
@@ -250,7 +270,7 @@ app.delete("/delete_instalacion/:id", (request, response) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.get("/validar_registro", (request, response, next) => {
@@ -268,7 +288,7 @@ app.get("/validar_registro", (request, response, next) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.patch("/validar_registro/:id", (request, response, next) => {
@@ -278,7 +298,9 @@ app.patch("/validar_registro/:id", (request, response, next) => {
       id = querystring.escape(id);
       instDao.validarUsuario(id, (err, res) => {
         if (err) {
-          response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
+          response
+            .status(400)
+            .end("Ha ocurrido un error en el acceso interno de la BD.");
         } else {
           var datos = [
             ID_ADMIN,
@@ -288,14 +310,13 @@ app.patch("/validar_registro/:id", (request, response, next) => {
             false,
             new Date(),
           ];
-          instDao.enviarMensaje(datos, (err, res)=>{
-            if(err){
+          instDao.enviarMensaje(datos, (err, res) => {
+            if (err) {
               response.status(400).end();
-            }
-            else{
+            } else {
               response.status(200).json({ msg: "Usuario validado con exito" });
             }
-          })
+          });
         }
       });
     } else {
@@ -303,7 +324,7 @@ app.patch("/validar_registro/:id", (request, response, next) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.patch("/hacer_admin/:id", (request, response, next) => {
@@ -313,7 +334,9 @@ app.patch("/hacer_admin/:id", (request, response, next) => {
       id = querystring.escape(id);
       instDao.updateToAdminUser(id, (err, res) => {
         if (err) {
-          response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
+          response
+            .status(400)
+            .end("Ha ocurrido un error en el acceso interno de la BD.");
         } else {
           var datos = [
             ID_ADMIN,
@@ -323,14 +346,15 @@ app.patch("/hacer_admin/:id", (request, response, next) => {
             false,
             new Date(),
           ];
-          instDao.enviarMensaje(datos, (err, res)=>{
-            if(err){
+          instDao.enviarMensaje(datos, (err, res) => {
+            if (err) {
               response.status(402).end();
+            } else {
+              response
+                .status(200)
+                .json({ msg: "Usuario convertido en admin." });
             }
-            else{
-              response.status(200).json({ msg: "Usuario convertido en admin." });
-            }
-          })
+          });
         }
       });
     } else {
@@ -338,32 +362,30 @@ app.patch("/hacer_admin/:id", (request, response, next) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.delete("/eliminar_registro/:id", (request, response, next) => {
-
   if (request.session.isLogged) {
     if (request.session.is_admin) {
       var id = request.params.id;
       id = querystring.escape(id);
       instDao.eliminarUsuario(id, (err, res) => {
         if (err) {
-          console.log(err)
           response.status(400).end();
         } else {
           response.status(200).json({ msg: "Usuario eliminado con exito" });
         }
       });
-
     } else {
       response.status(200).render("no_tienes_permiso.ejs");
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
+// User's inbox (all messages received, ordered by date from most recent to oldest).
 app.get("/inbox", (request, response, next) => {
   if (!request.session.isLogged) {
     response.status(400).end();
@@ -388,6 +410,7 @@ app.get("/inbox", (request, response, next) => {
   }
 });
 
+// User's messages filtered by a text given by the user.
 app.get("/get_filtered_mail", (request, response, next) => {
   if (!request.session.isLogged) {
     response.status(400).end();
@@ -439,7 +462,7 @@ app.get("/config_system", (request, response) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.get("/facultad_usuarios/:id", (request, response) => {
@@ -451,15 +474,15 @@ app.get("/facultad_usuarios/:id", (request, response) => {
         if (err) {
           response.status(404).end();
         } else {
-          response.status(200).json({ "usuarios": result });
+          response.status(200).json({ usuarios: result });
         }
-      })
+      });
     } else {
       response.status(200).render("no_tienes_permiso.ejs");
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.get("/facultad_historial_usuario/:id", (request, response) => {
@@ -471,15 +494,15 @@ app.get("/facultad_historial_usuario/:id", (request, response) => {
         if (err) {
           response.status(404).end();
         } else {
-          response.status(200).json({ "historial": result });
+          response.status(200).json({ historial: result });
         }
-      })
+      });
     } else {
       response.status(200).render("no_tienes_permiso.ejs");
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.get("/facultad_historial_instalacion/:id", (request, response) => {
@@ -491,15 +514,15 @@ app.get("/facultad_historial_instalacion/:id", (request, response) => {
         if (err) {
           response.status(404).end();
         } else {
-          response.status(200).json({ "historial": result });
+          response.status(200).json({ historial: result });
         }
-      })
+      });
     } else {
       response.status(200).render("no_tienes_permiso.ejs");
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.get("/estadistica_usuario/:id", (request, response) => {
@@ -511,7 +534,7 @@ app.get("/estadistica_usuario/:id", (request, response) => {
         if (err) {
           response.status(404).end();
         } else {
-          response.status(200).json({ "estadistica": result });
+          response.status(200).json({ estadistica: result });
         }
       });
     } else {
@@ -519,7 +542,7 @@ app.get("/estadistica_usuario/:id", (request, response) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.get("/estadistica_facultad/:id", (request, response) => {
@@ -531,15 +554,15 @@ app.get("/estadistica_facultad/:id", (request, response) => {
         if (err) {
           response.status(404).end();
         } else {
-          response.status(200).json({ "estadistica": result });
+          response.status(200).json({ estadistica: result });
         }
-      })
+      });
     } else {
       response.status(200).render("no_tienes_permiso.ejs");
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.get("/busquedaAvanzada", (request, response, next) => {
@@ -557,32 +580,40 @@ app.get("/busquedaAvanzada", (request, response, next) => {
       }
       var usuario_callback = (err, res_usuario) => {
         if (err) {
-          next()
+          next();
         } else {
-          response.status(200).render("busquedaAvanzada.ejs", { "usuarios": res_usuario });
+          response
+            .status(200)
+            .render("busquedaAvanzada.ejs", { usuarios: res_usuario });
         }
-      }
+      };
       var reservas_callback = (err, res_reservas) => {
         if (err) {
-          next()
+          next();
         } else {
-          response.status(200).render("busquedaAvanzada.ejs", { "reservas": res_reservas });
+          response
+            .status(200)
+            .render("busquedaAvanzada.ejs", { reservas: res_reservas });
         }
-      }
+      };
       var facultad_callback = (err, res_facultad) => {
         if (err) {
-          next()
+          next();
         } else {
-          response.status(200).render("busquedaAvanzada.ejs", { "facultades": res_facultad });
+          response
+            .status(200)
+            .render("busquedaAvanzada.ejs", { facultades: res_facultad });
         }
-      }
+      };
       var instalacion_callback = (err, res_instalacion) => {
         if (err) {
-          next()
+          next();
         } else {
-          response.status(200).render("busquedaAvanzada.ejs", { "instalaciones": res_instalacion });
+          response
+            .status(200)
+            .render("busquedaAvanzada.ejs", { instalaciones: res_instalacion });
         }
-      }
+      };
       switch (tipo_busqueda) {
         case "Usuario":
           switch (filtrar_por) {
@@ -606,16 +637,28 @@ app.get("/busquedaAvanzada", (request, response, next) => {
               instDao.obtenerReservaPorNombreUsuario(search, reservas_callback);
               break;
             case "Apellido Usuario":
-              instDao.obtenerReservaPorApellidoUsuario(search, reservas_callback);
+              instDao.obtenerReservaPorApellidoUsuario(
+                search,
+                reservas_callback
+              );
               break;
             case "Nombre Facultad":
-              instDao.obtenerReservaPorNombreFacultad(search, reservas_callback);
+              instDao.obtenerReservaPorNombreFacultad(
+                search,
+                reservas_callback
+              );
               break;
             case "Nombre Instalacion":
-              instDao.obtenerReservaPorNombreInstalacion(search, reservas_callback);
+              instDao.obtenerReservaPorNombreInstalacion(
+                search,
+                reservas_callback
+              );
               break;
             case "Fecha Inicio - Fecha Fin":
-              instDao.obtenerReservaPorRangoTemporal([date_init, date_end], reservas_callback);
+              instDao.obtenerReservaPorRangoTemporal(
+                [date_init, date_end],
+                reservas_callback
+              );
               break;
           }
           break;
@@ -625,10 +668,16 @@ app.get("/busquedaAvanzada", (request, response, next) => {
               instDao.obtenerFacultadesPorNombre(search, facultad_callback);
               break;
             case "Nombre Usuario":
-              instDao.obtenerFacultadesPorUsuarioNombre(search, facultad_callback);
+              instDao.obtenerFacultadesPorUsuarioNombre(
+                search,
+                facultad_callback
+              );
               break;
             case "Apellido Usuario":
-              instDao.obtenerFacultadesPorUsuarioApellido(search, facultad_callback);
+              instDao.obtenerFacultadesPorUsuarioApellido(
+                search,
+                facultad_callback
+              );
               break;
           }
           break;
@@ -643,7 +692,7 @@ app.get("/busquedaAvanzada", (request, response, next) => {
     }
   } else {
     response.status(200).render("must_be_login.ejs");
-  };
+  }
 });
 
 app.put(
@@ -657,51 +706,65 @@ app.put(
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var imagen = request.params.imagen == "true" ? true : false;
-        var body = request.body
-        var dato = [body["org_name"], body["org_dir"], body["org_ig"], body["org_mail"]];
+        var body = request.body;
+        var dato = [
+          body["org_name"],
+          body["org_dir"],
+          body["org_ig"],
+          body["org_mail"],
+        ];
         if (imagen) {
-          dato.push(request.file.buffer)
-          dato.push(request.file['mimetype'])
+          dato.push(request.file.buffer);
+          dato.push(request.file["mimetype"]);
         }
         instDao.update_config(imagen, dato, (err) => {
           if (err) {
-            response.status(400)
+            response.status(400);
           } else {
-            request.session.sysConfig['nombre'] = dato[0]
-            request.session.sysConfig['direccion'] = dato[1]
-            request.session.sysConfig['url_instagram'] = dato[2].replaceAll("&#x2F;", "/")
-            request.session.sysConfig['correo'] = dato[3]
+            request.session.sysConfig["nombre"] = dato[0];
+            request.session.sysConfig["direccion"] = dato[1];
+            request.session.sysConfig["url_instagram"] = dato[2].replaceAll(
+              "&#x2F;",
+              "/"
+            );
+            request.session.sysConfig["correo"] = dato[3];
             if (imagen) {
-              request.session.sysConfig['icono'] = dato[4]
-              request.session.sysConfig['icono_type'] = dato[5]
+              request.session.sysConfig["icono"] = dato[4];
+              request.session.sysConfig["icono_type"] = dato[5];
             }
-            response.status(201).json({ msg: "Se ha actualizado correctamente" })
+            response
+              .status(201)
+              .json({ msg: "Se ha actualizado correctamente" });
           }
-          response.end()
-        })
+          response.end();
+        });
       } else {
         response.status(200).render("no_tienes_permiso.ejs");
       }
     } else {
       response.status(200).render("must_be_login.ejs");
-    };
-  });
+    }
+  }
+);
 
+// Route to mark a message as read (set the boolean to "True").
 app.patch("/marcar_leido/:id", (request, response, next) => {
   if (!request.session.isLogged) {
     response.status(400).end();
   } else {
     instDao.marcarComoLeido(request.params.id, (err, res) => {
       if (err) {
-        response.status(400).end("Ha ocurrido un error en el acceso interno de la BD.");
-      }
-      else{
+        response
+          .status(400)
+          .end("Ha ocurrido un error en el acceso interno de la BD.");
+      } else {
         response.status(200).end();
       }
     });
   }
 });
 
+// Route to send a message from a user to another one. It also ensures implied users belong to the same faculty, or at least one of them is admin.
 app.post(
   "/write_mail",
   body("mail").escape(),
@@ -721,6 +784,7 @@ app.post(
             if (err) {
               response.status(400).end();
             } else {
+              // Remitent does not exist.
               if (res.length == 0) {
                 response.status(400).end("No receiver found");
               } else {
@@ -728,7 +792,9 @@ app.post(
                   res[0].facultad != emisor.facultad &&
                   !emisor.es_admin &&
                   !res[0].es_admin
-                ) {
+                ) 
+                // Different faculty.
+                {
                   response.status(400).end("Faculty does not match");
                 } else {
                   var idReceptor = res[0].id;
@@ -758,14 +824,14 @@ app.post(
   }
 );
 
+// Route to book an installation. If it overlaps with an already booking, throws an erorr to the user indicating that, so that it can decide whether to be
+// added to the wait list or not..
 app.post("/reservar_instalacion", (request, response, next) => {
   if (!request.session.isLogged) {
-   
-    response.status(400).end(); //TODO: hacer página de redirección a login
+    response.status(405).end("No logged");
   } else {
     instDao.buscarUsuario(request.session.mail, (err, res) => {
       if (err) {
-        console.log(err)
         response.status(400).end();
       } else {
         var user_id = res[0].id,
@@ -782,7 +848,6 @@ app.post("/reservar_instalacion", (request, response, next) => {
           inst_to,
           (err, res) => {
             if (err) {
-              console.log(err)
               response.status(400).end();
             } else {
               if (res[0].solapes != 0) {
@@ -798,7 +863,6 @@ app.post("/reservar_instalacion", (request, response, next) => {
                 ];
                 instDao.reservarInstalacion(datos, (err, res) => {
                   if (err) {
-                    console.log(err)
                     response.status(400).end();
                   } else {
                     response.status(201).end();
@@ -813,9 +877,10 @@ app.post("/reservar_instalacion", (request, response, next) => {
   }
 });
 
+// Request made to get all the bookings of a certain user, so that a list of them can be built.
 app.get("/obtener_reservas", (request, response, next) => {
   if (!request.session.isLogged) {
-    response.status(400).end(); // TODO: redirigir a página de "debes loguearte..."
+    response.status(405).end("No logged");
   } else {
     instDao.buscarUsuario(request.session.mail, (err, res) => {
       if (err) {
@@ -842,9 +907,10 @@ app.get("/obtener_reservas", (request, response, next) => {
   }
 });
 
+// Route to add a booking request to the wait list.
 app.post("/lista_espera", (request, response, next) => {
   if (!request.session.isLogged) {
-    response.status(400).end(); //TODO: hacer página de redirección a login
+    response.status(400).end();
   } else {
     instDao.buscarUsuario(request.session.mail, (err, res) => {
       if (err) {
@@ -876,153 +942,236 @@ app.post("/lista_espera", (request, response, next) => {
   }
 });
 
+// Route to get all bookings made, and also the installations information, so that a dynamic interactive calendar can be displayed.
 app.get("/obtener_reservas_inst", (request, response, next) => {
   if (!request.session.isLogged) {
-    response.status(400).end(); // TODO: redirigir a página de "debes loguearte..."
+    response.status(405).end("No logged");
   } else {
+    instDao.obtenerReservas((err, res) => {
+      if (err) {
+        response
+          .status(400)
+          .end("Se ha producido un error interno en el acceso a la BD.");
+      } else {
+        res.forEach((r) => {
+          var date = new Date(r.fecha_reserva);
+          r.fecha_reserva =
+            date.getFullYear() +
+            "-" +
+            (date.getMonth() + 1) +
+            "-" +
+            date.getDate();
+        });
+        var reservas = res;
 
-        instDao.obtenerReservas((err, res) => {
+        instDao.obtenerInstalacionPorNombre("", (err, res) => {
           if (err) {
-            response.status(400).end("Se ha producido un error interno en el acceso a la BD.");
+            response.status(400).end();
           } else {
-            res.forEach((r)=>{
-              var date=new Date(r.fecha_reserva);
-              r.fecha_reserva=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
-            })
-            var reservas=res;
-
-            instDao.obtenerInstalacionPorNombre("", (err,res)=>{
-              if(err){
-                response.status(400).end();
-              }
-              else{
-                response.status(200).json({ reservas: reservas, instalaciones:res });
-              }
-            })
-           
+            response
+              .status(200)
+              .json({ reservas: reservas, instalaciones: res });
           }
         });
-      
+      }
+    });
   }
 });
 
+// Route to manage a booking deletion.
 app.delete("/eliminar_reserva/:id", (request, response, next) => {
   var id_res = request.params.id;
+  // First, it gets the booking itself, given the id.
   instDao.obtenerReservasId(id_res, (err, res) => {
     if (err) {
       response.status(400).end();
     } else {
       var reserva = res[0];
+      // Then, it deletes it from the wait list.
       instDao.eliminarReserva(id_res, (err, res) => {
         if (err) {
           response.status(400).end();
         } else {
-          instDao.obtenerListaEspera(reserva.id_instalacion,reserva.fecha_reserva,reserva.hora_inicio, reserva.hora_fin,
+          // Also, the wait list is got and stored for future purposes.
+          instDao.obtenerListaEspera(
+            reserva.id_instalacion,
+            reserva.fecha_reserva,
+            reserva.hora_inicio,
+            reserva.hora_fin,
             (err, res) => {
               if (err) {
                 response.status(400).end();
               } else {
                 var res_lista = res;
                 if (res_lista.length > 0) {
+                  // After that, the effective bookings made are got.
                   instDao.obtenerReservasInstalacion(
                     reserva.id_instalacion,
                     reserva.fecha_reserva,
-                    (err, res) => {
+                    // The aim of this is to check if there is any waiting booking that does not overlap with already made bookings, so that the time the
+                    // deleted booking was catching can be given to another user(s).
+                    async (err, res) => {
                       if (err) {
                         response.status(400).end();
                       } else {
-                        var reservas=res;
-                        var candidato = undefined;
-                       
-                          for (var i = 0; i < res_lista.length; i++) {
-                            var actI = res_lista[i];
-                            var no_solapes = true;
+                        var reservas = await res;
+                        var candidatos = [];
 
-                            for (var j = 0; j < reservas.length && no_solapes;j++) {
-                      
-                                var actJ = reservas[j];
-                                if (
-                                  (actJ.hora_inicio >= actI.hora_inicio &&
-                                    actJ.hora_inicio < actI.hora_fin) ||
-                                  (actJ.hora_inicio < actI.hora_inicio &&
-                                    actJ.hora_fin > actI.hora_inicio)
-                                ) {
-                                  no_solapes = false;
-                                }
-                              }
-                            
+                        for (var i = 0; i < res_lista.length; i++) {
+                          var actI = res_lista[i];
+                          var no_solapes = true;
 
-                            if (no_solapes) {
-                              candidato = actI;
-                              break;
+                          for (
+                            var j = 0;
+                            j < reservas.length && no_solapes;
+                            j++
+                          ) {
+                            var actJ = reservas[j];
+                            if (
+                              (actJ.hora_inicio >= actI.hora_inicio &&
+                                actJ.hora_inicio < actI.hora_fin) ||
+                              (actJ.hora_inicio < actI.hora_inicio &&
+                                actJ.hora_fin > actI.hora_inicio)
+                            ) {
+                              no_solapes = false;
                             }
                           }
-                      
-                        if (candidato) {
-                          instDao.eliminarReservaListaEspera(
-                            candidato.id,
-                            (err, res) => {
-                              if (err) {
-                                response.status(400).end();
-                              } else {
-                                var datos = [
-                                  candidato.id_reservante,
-                                  candidato.id_instalacion,
-                                  candidato.fecha_reserva,
-                                  candidato.hora_inicio,
-                                  candidato.hora_fin,
-                                  candidato.asistentes,
-                                ];
-                                instDao.reservarInstalacion(
-                                  datos,
-                                  (err, res) => {
-                                    if (err) {
-                                      response.status(400).end();
-                                    } else {
-                                      var [horas, mins, segs] =
-                                        candidato.hora_inicio.split(":");
-                                      candidato.hora_inicio =
-                                        horas + ":" + mins;
 
-                                      var [horas, mins, segs] =
-                                        candidato.hora_fin.split(":");
-                                      candidato.hora_fin = horas + ":" + mins;
+                          if (no_solapes) {
+                            candidatos.push(actI);
+                          }
+                        }
+                        // If there is any candidate that could take advantage of that time, another checks has to be done.
+                        // That is getting (by order of booking date) the maximum amount of possible users outof the wait list,
+                        // only if they do not overlap between them nor with the effective bookings made.
+                        if (candidatos.length > 0) {
+                          var cand_aux = [];
+                          cand_aux.push(candidatos[0]);
 
-                                      candidato.fecha_reserva=candidato.fecha_reserva.toLocaleDateString();
-                                    
+                          for (var i = 1; i < candidatos.length; i++) {
+                            var candI = candidatos[i],
+                              no_solape = true;
+                            for (
+                              var j = 0;
+                              j < cand_aux.length && no_solape;
+                              j++
+                            ) {
+                              var candJ = candidatos[j];
+                              if (candI === candJ) {
+                                no_solapes = false;
+                                break;
+                              }
 
-                                      var datos = [
-                                        ID_ADMIN,
-                                        candidato.id_reservante,
-                                        `Reserva en la instalación "${candidato.nombre}" el ${candidato.fecha_reserva} de ${candidato.hora_inicio} a ${candidato.hora_fin} `,
-                                        `Alguien ha cancelado su reserva, así que ahora es tuya. ¡Genial! Si deseas cancelarla, ve a la pestaña "Mis reservas" y haz click en "Cancelar reserva".`,
-                                        false,
-                                        new Date(),
-                                      ];
-                                      instDao.enviarMensaje(
-                                        datos,
-                                        (err, res) => {
-                                          if (err) {
-                                            response.status(400).end();
-                                          } else {
-                                            response.status(200).end();
-                                          }
-                                        }
-                                      );
-                                    }
-                                  }
-                                );
+                              if (
+                                (candI.hora_inicio >= candJ.hora_inicio &&
+                                  candI.hora_inicio < candJ.hora_fin) ||
+                                (candI.hora_inicio < candJ.hora_inicio &&
+                                  candI.hora_fin > candJ.hora_inicio)
+                              ) {
+                                no_solape = false;
                               }
                             }
-                          );
+                            if (no_solape) {
+                              cand_aux.push(candI);
+                            }
+                          }
+
+                          candidatos = cand_aux;
+
+                          // To ensure the check before mentioned, each candidate has to be checked, so an asynchronous control is vital to that.
+                          async function processCandidates() {
+                            try {
+                              for (const candidato of candidatos) {
+                                try {
+                                  // AFor every fittin candidate...
+                                  await new Promise((resolve, reject) => {
+                                    // The candidate is deleted from the wait list.
+                                    instDao.eliminarReservaListaEspera(
+                                      candidato.id,
+                                      async (err, res) => {
+                                        await res;
+                                        if (err) {
+                                          reject(err);
+                                        } else {
+                                          var datos = [
+                                            candidato.id_reservante,
+                                            candidato.id_instalacion,
+                                            candidato.fecha_reserva,
+                                            candidato.hora_inicio,
+                                            candidato.hora_fin,
+                                            candidato.asistentes,
+                                          ];
+                                          // Then, the candidate is added to the effective bookings list.
+                                          instDao.reservarInstalacion(
+                                            datos,
+                                            async (err, res) => {
+                                              await res;
+                                              if (err) {
+                                                reject(err);
+                                              } else {
+                                                var [horas, mins, segs] =
+                                                  candidato.hora_inicio.split(
+                                                    ":"
+                                                  );
+                                                candidato.hora_inicio =
+                                                  horas + ":" + mins;
+
+                                                var [horas, mins, segs] =
+                                                  candidato.hora_fin.split(":");
+                                                candidato.hora_fin =
+                                                  horas + ":" + mins;
+
+                                                candidato.fecha_reserva =
+                                                  new Date(
+                                                    candidato.fecha_reserva
+                                                  ).toLocaleDateString();
+
+                                                var datos = [
+                                                  ID_ADMIN,
+                                                  candidato.id_reservante,
+                                                  `Reserva en la instalación "${candidato.nombre}" el ${candidato.fecha_reserva} de ${candidato.hora_inicio} a ${candidato.hora_fin} `,
+                                                  `Alguien ha cancelado su reserva, así que ahora es tuya. ¡Genial! Si deseas cancelarla, ve a la pestaña "Mis reservas" y haz click en "Cancelar reserva".`,
+                                                  false,
+                                                  new Date(),
+                                                ];
+                                                // Finally, the user is sent a message (by the main admin) to confirm the booking is now him/her's, so 
+                                                // that he/she knows is out of the waiting list.
+                                                instDao.enviarMensaje(
+                                                  datos,
+                                                  async (err, res) => {
+                                                    await res;
+                                                    if (err) {
+                                                      reject(err);
+                                                    } else {
+                                                      resolve();
+                                                    }
+                                                  }
+                                                );
+                                              }
+                                            }
+                                          );
+                                        }
+                                      }
+                                    );
+                                  });
+                                } catch (error) {
+                                  throw error;
+                                }
+                              }
+                              response.status(200).end();
+                            } catch (error) {
+                              response.status(400).end(error);
+                              return;
+                            }
+                          }
+                          await processCandidates();
                         } else {
                           response.status(200).end();
                         }
                       }
                     }
                   );
-                }
-                else{
+                } else {
                   response.status(200).end();
                 }
               }
@@ -1034,6 +1183,7 @@ app.delete("/eliminar_reserva/:id", (request, response, next) => {
   });
 });
 
+// Register webpage load.
 app.get("/register", (request, response, next) => {
   if (request.session.isLogged) {
     response.status(400).end();
@@ -1053,6 +1203,7 @@ app.get("/register", (request, response, next) => {
   }
 });
 
+// Register validation, that ensures everything has the format it should and prevents code injection by escaping all the user has introduced.
 app.post(
   "/register",
   multerFactory.single("user_profile"),
@@ -1168,10 +1319,12 @@ app.post(
   }
 );
 
+// Login webpage load.
 app.get("/login", (request, response, next) => {
   response.status(200).render("login.ejs");
 });
 
+// Login validation, that ensures everything has the format it should and prevents code injection by escaping all the user has introduced.
 app.post(
   "/login",
   body("user_email")
@@ -1240,6 +1393,7 @@ app.post(
   }
 );
 
+// Logs the user out, so that it loses all the custom parameters it had before login.
 app.get("/logout", (request, response, next) => {
   request.session.isLogged = false;
   request.session.user = undefined;
@@ -1251,11 +1405,12 @@ app.get("/logout", (request, response, next) => {
   response.render("index.ejs");
 });
 
+// Route not found manage.
 app.use(function (req, res, next) {
   res.status(404).send("<h1>ERROR 404 </h1>");
 });
 
-// Función para iniciar el servidor, que espera las peticiones del usuario.
+// Function to start the server.
 app.listen(port, (err) => {
   if (err) {
     console.log("An error ocurred while listening to server");

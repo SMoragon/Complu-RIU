@@ -1,6 +1,7 @@
 "use strict";
 
-function validate() { // Function to validate the booking form.
+// Function to validate the booking form.
+function validate() {
   var user_email = $("#user_email");
   var user_password = $("#user_password");
 
@@ -51,6 +52,7 @@ function closeAndRedirect(newSite) {
   window.location.href = newSite;
 }
 
+// Toggles password's visibility so that the user could watch it if wanted to.
 function showPasswd() {
   console.log("a")
   var pass = $("#user_password");

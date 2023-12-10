@@ -1,3 +1,4 @@
+  <!-- Header structure, in which the user would watch a navbar if its admin, the login and register buttons or the personal inbox; among others. -->
 <div class="top-page" id="cabecera">
 
     <div id="header_cont" class="container-fluid col-12">
@@ -15,6 +16,7 @@
 
         <div class="col-md-3 col-sm-3 col-6">
             <h1 id="header_title">
+                <!-- Company's name. -->
                 <% if (typeof session !== 'undefined' && typeof session.sysConfig !=='undefined' && typeof session.sysConfig['nombre'] !=='undefined') { %>
                     <a class="text-break" href="/index.html"> <%= session.sysConfig['nombre'] %></a>
                 <%}else {%>
@@ -25,7 +27,8 @@
         </div>
         <div class=" col-md-4 col-sm-4 ">
             <div id="login_cont" class="mx-md-5">
-                <!-- JS code to show the login button only if user is logged. Otherwise, a login button will appear.. -->
+                <!-- JS code to show the login button only if user is not logged. Otherwise, a welcome text, the user profile picture and the inbox with the
+                 unread messages will be displayed. -->
                 <% if (typeof session !== 'undefined' && session.isLogged) { %>
                    
                     <div class="d-flex flex-row mx-2 my-1">
@@ -47,8 +50,7 @@
                             <a class="login_text" href="/logout">Logout</a>
                         </div>
                     </div>
-
-
+                    
                     <div class="d-flex flex-row justify-content-start my-3">
 
                         <div class="d-flex flex-column mx-3">
@@ -67,6 +69,7 @@
                     </div>
                 <% } else { %>
 
+                <!-- Login and register buttons. -->
                 <div class="offset-5" id="login_reg_disp_cont">
 
                     <a class="account_but d-flex " id="log_but" href="/login">Login</a>
@@ -76,6 +79,7 @@
                 <% } %>
             </div>
         </div>
+        <!-- If the user is admin, a navbar with admin tools wil be displayed. -->
         <% if (session.is_admin) { %>
             <!-- Navigation bar. -->
             <div class="container">

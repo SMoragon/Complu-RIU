@@ -1,3 +1,4 @@
+/*General body, main and links style config*/
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: white;
@@ -12,6 +13,8 @@ a {
   text-decoration: none;
   color: black;
 }
+
+/* Header display styles, including aspects such as login buttons and navbar items. */
 
 #header_cont {
   display: flex;
@@ -49,6 +52,11 @@ a {
   font-weight: bold;
 }
 
+.login_text {
+  font-weight: bold;
+  color: rgb(51, 51, 176) !important;
+}
+
 .nav-item {
   font-size: calc(0.8em + 0.75vw);
   padding-left: calc(1em + 0.58vw);
@@ -67,6 +75,8 @@ a {
   text-align: center;
 }
 
+/* Footer configuration, with aspects such as the elements organization or the colours used, among others.*/
+
 #footer_cont {
   display: flex;
   flex-wrap: wrap;
@@ -84,8 +94,19 @@ a {
   margin: 0.13em 1em;
 }
 
+img > footer {
+  margin-top: -1.5em;
+  max-width: 100%;
+}
+
+#footer_mail {
+  word-wrap: break-word;
+}
+/* User image config, to prevent it from being too big. */
+
 .user_img {
-  max-width: 3em;
+  max-width: 4em;
+  max-height: 4em;
   margin-right: 2em;
 }
 
@@ -101,14 +122,7 @@ a {
   background-color:  rgb(188, 180, 231) !important;
 }
 
-img > footer {
-  margin-top: -1.5em;
-  max-width: 100%;
-}
-
-#footer_mail {
-  word-wrap: break-word;
-}
+/* Register style, mainly colours and a certain size that makes them responsive. */
 
 .reg_field, .login_field {
   color: hsl(209, 50%, 32%);
@@ -128,6 +142,7 @@ img > footer {
   align-items: center;
 }
 
+/* Form errors config. */
 .popup_form_error, .book_form_error {
   display: none;
   font-weight: bold;
@@ -139,6 +154,7 @@ img > footer {
   font-weight: bold;
 }
 
+/* Mixed buttons styling. */
 .send_buttons_cont {
   display: flex;
   justify-content: center;
@@ -155,12 +171,8 @@ img > footer {
   font-weight: bold;
 }
 
-.user_img {
-  max-width: 4em;
-  max-height: 4em;
-  margin-right: 2em;
-}
 
+/* Inbox view sizing style, such as the badge where non-read messages are shown or the welcome message. */
 #hello_user {
   margin-bottom: 0.5em;
 }
@@ -182,11 +194,6 @@ img > footer {
 
 .inbox_buts{
   font-size: calc(0.7em + 0.5vw);
-}
-
-.login_text {
-  font-weight: bold;
-  color: rgb(51, 51, 176) !important;
 }
 
 .search_text{
@@ -216,6 +223,7 @@ img > footer {
   flex-direction: column;
 }
 
+/* last messages custom scrollbar */
 #last_messages_container::-webkit-scrollbar{
  width: 1.2em;
 }
@@ -231,6 +239,7 @@ img > footer {
   border-radius: 1em;
  }
 
+/* Inbox main content (the "focused mail" among selected in the "most recent" section. */
 #message_body_container{
   border:solid 0.20em rgb(102, 172, 225);
   border-radius: 5%;
@@ -251,7 +260,6 @@ img > footer {
   color: rgb(20, 118, 67);
 }
 
-
 .mail_card{
   border:solid 0.3em  rgb(28, 139, 147);
   border-radius: 5%;
@@ -269,6 +277,7 @@ img > footer {
   font-weight: bold;
 }
 
+/* General dialog color settings. */
 #write_email_dialog, #write_email_ok_dialog,#book_inst_ok_dialog, #add_wait_list_ok_dialog  {
   background-color:rgb(213, 235, 245);
 }
@@ -301,6 +310,7 @@ img > footer {
   font-size: calc(0.9em + 0.2vw);;
 }
 
+/* Index installation cards' style. */
 .booking_cards_body{
   display: flex;
   flex-direction: row;
@@ -315,16 +325,18 @@ img > footer {
   background-color: rgb(210, 152, 107);
 }
 
-#del_res_dialog{
-  background-color: rgb(113, 176, 147);;
-}
-
 #booking_cards_container{
   display: flex;
   flex-direction: column;
   overflow-y: auto;
 }
 
+/* Cancel cook style. */
+#del_res_dialog{
+  background-color: rgb(113, 176, 147);;
+}
+
+/* User's bookings list style. */
 .book_inst_list_content{
   background-color: transparent; 
   border: none;
@@ -335,6 +347,7 @@ img > footer {
   color: rgb(190, 196, 227);
 }
 
+/* Concrete media defined styles, to ensure an attractive design and responsiveness in our webpage. */
 @media (min-width: 768px) {
   #navbar-list {
     margin-left: auto;

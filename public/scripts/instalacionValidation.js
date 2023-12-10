@@ -65,7 +65,7 @@ function addErrMsg(any_empty, correct_time, checkType, checkAforoCorrect, image_
         $("#add_instalacion_aforo").append(msg_error_init + "El minimo aforo permitido debe ser mayor o igual a '1'." + msg_error_end)
     }
     if (!image_select) {
-        $("#add_instalacion_image").append(msg_error_init + "Seleccione una imagen para la instalación.'" + msg_error_end)
+        $("#add_instalacion_image").append(msg_error_init + "Seleccione una imagen para la instalación." + msg_error_end)
     }
     if (!image_prop) {
         $("#add_instalacion_image").append(msg_error_init + "La imagen seleccionada debe ser del tipo '*.jpg, *.jpeg, *.png', con tamaño maximo de 2mbs" + msg_error_end)

@@ -2,6 +2,7 @@
 
 var target,inst_date, inst_from, inst_to,how_many, open_date, close_date, now,inst_id,reservas;
 
+ // If the user submits the form, it is validated to check that every field is correct before sending it.
 $(".res_inst_form").on("submit", function (event) {
 
     closePopups();
@@ -24,9 +25,13 @@ $(".res_inst_form").on("submit", function (event) {
     var when_closes=String((target.find((".when_closes")).val())).trimStart();
     close_date=strToDate(when_closes);
 
+    
+    // If it is not valid, the request is not done to the server.
     if (!validate()) {
         event.preventDefault();
     }
+     // Else, if all is fine, the server manages the request and, depending how it goes, shows the user the
+     // all fine moda, the one that states there's already a booking that overlaps or just an alert if it fails.
     else {
         $.ajax({
             method:"POST",
@@ -47,7 +52,10 @@ $(".res_inst_form").on("submit", function (event) {
             error: function(jqHXR, textStatus, errorThrown){
                 target.closest(".book_inst_modal").modal('hide');
                 target[0].reset();
-                if(jqHXR.responseText==="Solape"){
+                if(jqHXR.responseText==="No logged"){
+                    window.location.href = "/no_logged";
+                }
+                else if(jqHXR.responseText==="Solape"){
                     $("#book_inst_ko").modal('show').slideDown(700);
                 }
                 else{
@@ -58,7 +66,10 @@ $(".res_inst_form").on("submit", function (event) {
     }
 });
 
+// If the user accepts to enter to the wait list (a booking was made, but overlapped with another one), a request is made to the server to do it.
+// Depending on how it goes, shows a modal reporting the operation was successful or an alert with the error.
 $("#wait_list_ok_but").on('click',function(event){
+    if(date||start||end){inst_date=date; inst_from=start; inst_to=end;}
     $.ajax({
         method:"POST",
         url:"/lista_espera/",
@@ -81,10 +92,13 @@ $("#wait_list_ok_but").on('click',function(event){
     })
 });
 
+// If the user decides not to send the form, the error messages are cleaned.
 $(".cancel_but").on("click", function(event){
     closePopups();
 });
 
+// If the user wants to watch its bookings from newest to oldest, a request is made to the server to bring all of them
+// and the view is dynamically built (in case there are none, a message stating that is displayed on its place).
 $("#list_all_books_but").on("click", function(event){
     $.ajax({
         method:"GET",
@@ -98,6 +112,8 @@ $("#list_all_books_but").on("click", function(event){
             }
             else{
               $("#no_books_msg").hide();
+              
+              // Dynamically gives format to the bookings and add it to the matching DOM element by using JQuery.
               reservas.forEach(inst => {
                 var card_book=$("<div>").addClass("card_book my-4");
 
@@ -135,13 +151,19 @@ $("#list_all_books_but").on("click", function(event){
             }
         },
         error: function(jqHXR, textStatus, errorThrown ){
-            alert(jqHXR.responseText)
+            
+            // If the user is not logged, it goes to the matching page that tells just that.
+            if(jqHXR.responseText==="No logged"){
+                window.location.href = "/no_logged";
+            }
+            else alert(jqHXR.responseText)
         }
 
     })
 });
 
-
+// If the user confirms the deletion of a booking, a request is made to the server to clear that entry from
+// the database and tries to give people of the wait list the chance of getting that booking time.
 $("#confirm_del_res_but").on("click", function(event){
 
     var id_res=$("#del_res_modal").attr("id_res")
@@ -153,13 +175,13 @@ $("#confirm_del_res_but").on("click", function(event){
         $("#del_res_ok_modal").modal('show').slideDown(700);
     },
     error: function(jqHXR, textStatus, errorThrown){
-        alert(errorThrown)
+        alert(jqHXR.responseText,textStatus,errorThrown)
     }
    })
 });
 
 
-
+// Function that checks that all fields are non empty and correct.
 function validate() {
 
     var aux_date= new Date();
@@ -169,22 +191,27 @@ function validate() {
         target.find(".empty_error").show();
         return false;
     }
+    // The user has selected a day that has passed.
     else if (inst_date < now) {
         target.find(".date_error").show();
         return false;
     }
+    // The user wants to book today, but in an hour that has passed.
     else if(inst_date===now && act_time>inst_from){
         $(".start_act_error").show();
         return false;
     }
+    // The user wants to book before the installation opens.
     else if(strToDate(inst_from)<open_date) {
         target.find(".start_time_error").show();
         return false;
     }
+    // The user wants to book after the installation closes.
     else if(strToDate(inst_to)>close_date) {
         target.find(".end_time_error").show();
         return false;
     }
+    // Booking end time is previous that start one.
     else if(strToDate(inst_from)>strToDate(inst_to)) {
         target.find(".total_time_error").show();
         return false;
@@ -221,6 +248,7 @@ function anyEmpty(){
 
 }
 
+// Changes the popups to not be visible.
 function closePopups() {
     $(".book_form_error").each(function() {
       $(this).hide() ;

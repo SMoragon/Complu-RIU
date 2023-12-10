@@ -2,9 +2,9 @@
 <html lang="en">
 
     <!-- Bootstrap, stylesheets, WP title and favicon load. -->
-
     <head>
         <%- include ('pieces/head')%>
+        <!-- Additional external script to show some icons. -->
         <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
@@ -14,23 +14,30 @@
         <header>
             <%- include ('pieces/header')%>
         </header>
+
         <main>
 
+            <!-- Main container. -->
             <div id="inbox_container">
 
+                <!-- Section where the user will see its messages order by receipton date (the earlier, the higher-left they are) . -->
                 <div id="last_messages_container"
                     class="overflow-auto col-sm-3 col-auto mx-sm-3 mx-1 p-sm-2 p-1">
 
+                    <!-- If there are no results within the search, a text is displayed indicating that. -->
                     <% if(locals.filtered && locals.filtered.length==0){%>
                         <h3 class="text-center text-success m-2 p-2">No se han encontrado resultados.</h3>
                         <%} else {%>
-                            
+
+                            <!-- Else, a card is built up for each message dynamically, thanks to the server side provided data. -->
                             <%if (locals.datos && locals.datos.length>0){%>
                                 <%datos.forEach((mensaje)=>{%>
 
+                                    <!-- Main card container. -->
                                     <div id ="<%=mensaje.id %>"
                                     class="mail_card d-flex flex-column flex-wrap border-round-3 mx-1 my-3 p-3">
             
+                                    <!-- Emitter's profile image and full name. -->
                                     <div
                                         class="user_info d-flex flex-wrap justify-content-center flex-row">
             
@@ -44,10 +51,12 @@
                                             <strong><%=mensaje.nombre%> <%=mensaje.apellidos%> </strong> </div>
                                     </div>
             
+                                    <!-- Message's subject. -->
                                     <div class="email_subject text-break mt-sm-4 mt-2">
                                         <strong>Asunto:</strong> <%=mensaje.asunto%> 
                                     </div>
 
+                                    <!-- Hidden fields to store data that will be displayed right in the center of the page when the user clicks the card. -->
                                     <input type="hidden" class="hidden_sent_date" value="<%=mensaje.fecha_envio%>">
                                     <input type="hidden" class="hidden_emitter_mail" value="<%=mensaje.correo%>">
                                     <input type="hidden" class="hidden_mail_content" value="<%=mensaje.contenido%>">
@@ -55,30 +64,28 @@
                                 </div>
 
                                 <%})%>
-
+                            <!-- If the user has no messages yet, a message indicates that. -->
                             <%}else{%>
                                 <h3 class="text-center text-success m-2 p-2">¡Vaya! <br>  Parece que todavía no tienes ningún mensaje...</h3>
                             <%}%>
                         <%}%>
                        
-
-                 
-                
-
                 </div>
 
+                <!-- Main inbox container, in which the search bar, the write email button and the detailed email previously selected are shown. -->
                 <div id="inbox_main"
                     class="d-flex flex-column offset-sm-1 flex-wrap col-sm-7 my-sm-3">
 
                     <div class="container d-flex flex-row">
-                        <div
-                            class="email_search_container rounded-5 col-12 text-center py-sm-3 py-1">
+                        <!-- Search bar and write email button container. -->
+                        <div class="email_search_container rounded-5 col-12 text-center py-sm-3 py-1">
 
                             <button id="write_mail_but" type="button"
                                 class="inbox_buts rounded-3 mx-2 p-2"
                                 data-bs-toggle="modal"
                                 data-bs-target="#write_email">Redactar</button>
 
+                            <!-- When the user searchs something (user name, surname, email content...), a request is made to the server as a form. -->
                             <div class="d-inline-block">
                                 <form class="m-2 d-inline-block" action="/get_filtered_mail"
                                       method="GET" id="mail_search_bar">
@@ -92,7 +99,7 @@
                             </div>
 
                         </div>
-
+                        <!-- Write mail modal, in which the user can send an emial to another user (only if they belong to the same faculty or one/both of them is/are admin). -->
                         <div class="modal top fade" id="write_email"
                             data-bs-backdrop="static">
                             <div
@@ -108,6 +115,7 @@
                                     <form id="send_mail_form">
                                         <div class="modal-body container">
 
+                                            <!-- Receiver field, in which a valid email should be introduced. -->
                                             <div
                                                 class="form-group row justify-content-center my-2">
                                                 <label for="sent_email_receiver"
@@ -119,6 +127,7 @@
 
                                                 </div>
 
+                                            <!-- If the email format is not correct, the error message will be toggled. -->
                                                 <span
                                                     class="mail_form_error text-danger my-2 text-center"
                                                     id="send_mail_email_error">El
@@ -128,6 +137,8 @@
                                                     ser "abcde@ucm.es".</span>
                                             </div>
 
+                                            
+                                            <!-- Subject field. -->
                                             <div
                                                 class="form-group row d-flex justify-content-center my-3">
                                                 <label for="sent_email_subject"
@@ -140,6 +151,8 @@
 
                                             </div>
 
+                                            
+                                            <!-- Email content field, styled as a non-resizable text area. -->
                                             <div
                                                 class="form-group row justify-content-center">
                                                 <!--label for="sent_email_content" class="my-1">Cuerpo del mensaje</!--label-->
@@ -152,6 +165,7 @@
                                                         style="resize: none;"></textarea>
                                                 </div>
 
+                                                <!-- If there is any empty field, the error message will be toggled. -->
                                                 <span
                                                     class="mail_form_error text-danger my-3 text-center"
                                                     id="send_mail_empty_error">Todos
@@ -165,6 +179,7 @@
 
                                         </div>
 
+                                        <!-- Submit/cancel buttons. -->
                                         <div class="modal-footer">
                                             <input type="button" value="Enviar"
                                                 class="btn btn-lg btn-outline-success"
@@ -178,6 +193,7 @@
                             </div>
                         </div>
 
+                        <!-- Modal message to tell the user the message has successfully been sent. -->
                         <div class="modal top fade" id="write_email_ok"
                             data-bs-backdrop="static">
                             <div
@@ -203,6 +219,8 @@
 
                     </div>
 
+                    <!-- Container in which the detailed email will be displayed when the user clicks in any of the las recevied. If no message is clicked,
+                    a default message with the instructions will be displayed. -->
                     <div id="message_body_container" class="my-sm-5 my-3 p-3">
 
                         <h3 id="focused_email_subject"

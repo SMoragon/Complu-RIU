@@ -1,7 +1,8 @@
 "use strict";
 
+// Function to validate the booking form.
 function validate() {
-  // Function to validate the booking form.
+
   const MAX_KB_FILE_SIZE = 2048;
   const allowedFormats = ["image/jpg", "image/jpeg", "image/png"];
 
@@ -31,6 +32,7 @@ function validate() {
     user_password.val() === user_password_again.val();
   var faculty_ok = user_faculty.val()>0;
 
+  // If the user introudces a file, MIME type and size check is mandatory.
   var file = user_profile[0] ? user_profile[0].files[0] : undefined;
   var file_size_ok = file ? file.size / 1024 < MAX_KB_FILE_SIZE : true;
   var file_type_ok = file ? allowedFormats.includes(file.type) : true;
@@ -104,6 +106,8 @@ function closeAndRedirect(newSite) {
   window.location.href = newSite;
 }
 
+
+// Toggles password's visibility so that the user could watch it if wanted to.
 function showPasswd() {
   console.log("a")
   var pass = $("#user_password");
@@ -114,6 +118,8 @@ function showPasswd() {
   }
 }
 
+
+// Toggles repaeated password's visibility so that the user could watch it if wanted to.
 function showAgainPasswd() {
   console.log("a")
   var pass = $("#user_password_again");
