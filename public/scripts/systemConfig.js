@@ -1,14 +1,13 @@
 "use strict";
-
 $(document).ready((e) => {
+    // ajax put request to update system configuration
     $("#config_form").on('submit',(event)=>{
         event.preventDefault();
         var formData=new FormData($("#config_form")[0]);
+        // check if each field it´s fill correctly
         var ok = validationSystemForm();
-        console.log(ok)
         var image = have_image();
         if(ok){
-            console.log(formData)
             $.ajax({
                 type: 'PUT',
                 url: '/update_system/'+image,
@@ -21,18 +20,19 @@ $(document).ready((e) => {
                 },
                 success: (message) => {
                     alert(message['msg'])
+                    // reload the page
                     location.reload();
                     $("#org_submit_button").removeAttr("disabled");
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     alert("Se ha producido un error: Intentelo mas tarde."+ errorThrown)
-                    $("#add_instalacion_submit_button").removeAttr("disabled");
                 }
             });
         }
     })
 });
 
+// validate each field of the form it´s fill correctly
 function validationSystemForm(){
     closeErrMsg()
     var nombre = $("#org_name").prop("value")
@@ -50,6 +50,7 @@ function validationSystemForm(){
     return !any_empty && image_prop;
 }
 
+// add an error message to the form
 function addErrMsg(any_empty, image_select, image_prop) {
     var msg_error_init = "<div class='form-group row justify-content-center msg_error'><div class='col-10'><span class='text-danger popup_form_error d-inline-block'>"
     var msg_error_end = "</span></div></div>"
@@ -61,24 +62,29 @@ function addErrMsg(any_empty, image_select, image_prop) {
     }
 }
 
+// delete the error message to the form
 function closeErrMsg() {
     $("#config_form_body .msg_error").remove()
 }
 
+// check if the user have put some image
 function have_image(){
     var imagen = $("#org_img").prop('files')[0]
     var image_select = checkSelectImage(imagen)
     return image_select;
 }
 
+// check if there are some field empty
 function checkEmptyFields(nombre, dir, ig, mail) {
     return nombre === "" || dir === "" || ig === "" || mail === "";
 }
 
+// check if the user select some image
 function checkSelectImage(image) {
     return image !== undefined;
 }
 
+// check the selected image have the correct property
 function checkImageProp(image) {
     var match = ["image/jpeg", "image/png", "image/jpg"];
     var img_type = image['type']

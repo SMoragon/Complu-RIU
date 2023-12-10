@@ -16,8 +16,10 @@
     </header>
     <main>
         <div class="container-fluid" id="form_container">
+            <!-- search form -->
             <form class="row justify-content-center col-12" method="get" action="/busquedaAvanzada"
                 id="busqueda_avanzada">
+                <!-- types of search -->
                 <div class="form-group col-md-3 col-sm-5 col-10 d-inline-block m-md-1 m-2">
                     <Select name="tipo_busqueda" id="tipo_busqueda"
                         class="form-select form-select-sm rounded-4 text-center text-truncate">
@@ -28,12 +30,14 @@
                         <option value="Instalacion">Instalación</option>
                     </Select>
                 </div>
+                <!-- search by some params like user name, range of date ...etc -->
                 <div class="form-group col-md-3 col-sm-5 col-10 d-inline-block m-md-1 m-2">
                     <Select name="filtrar_por" id="filtrar_por"
                         class="form-select form-select-sm rounded-4 text-center text-truncate">
                         <option value="None">Filtrar Por ...</option>
                     </Select>
                 </div>
+                <!-- input text to search -->
                 <div class="form-group col-md-4 col-10 d-inline-block m-md-1 m-2">
                     <div class="col-auto offset-md-0 offset-2" id="search_box">
                         <input class="search_text rounded-3 search_text_mine" type="text" placeholder="Search.."
@@ -43,6 +47,7 @@
                 </div>
             </form>
         </div>
+        <!-- includes pieces, It´s depends on what the user search. -->
         <% if (locals.facultades) { %>
             <%- include ('pieces/busquedaAvanzada_facultad')%>
         <% }else if (locals.usuarios) {%>
@@ -59,6 +64,6 @@
         <%- include ('pieces/footer')%>
     </footer>
 </body>
+<!-- script of the page -->
 <script src="/scripts/busquedaAvanzada.js"></script>
-
 </html>

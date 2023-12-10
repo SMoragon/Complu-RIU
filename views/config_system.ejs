@@ -16,9 +16,11 @@
     <main>
         <div class="container-fluid">
             <div class="row justify-content-center">
+                <!-- page tittle -->
                 <div class="col-auto">
                     <h2 class="text-info">Configuracion del Sistema</h2>
                 </div>
+                <!-- form to update system configuration like name, instagram, mail etc... -->
                 <div class="col-md-9 col-sm-10 col-12 border border-3 border-success bg-success-subtle rounded-5">
                     <form id="config_form" method="put" action="/update_system" class="my-3">
                         <div class="container" id="config_form_body">
@@ -87,6 +89,7 @@
         <%- include ('pieces/footer')%>
     </footer>
 </body>
+<!-- scripts of the page -->
 <script src="/scripts/systemConfig.js"></script>
 
 </html>

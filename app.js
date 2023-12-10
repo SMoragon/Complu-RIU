@@ -145,6 +145,7 @@ app.get("/no_logged", (request, response, next) => {
   response.status(200).render("must_be_login.ejs");
 });
 
+// Installation management page enrouting.
 app.get("/gestion_instalacion", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -169,13 +170,14 @@ app.get("/gestion_instalacion", (request, response) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to add new instalacion 
 app.post(
   "/add_instalacion",
   multerFactory.single("instalacion_imagen"),
@@ -204,14 +206,15 @@ app.post(
           response.end();
         });
       } else {
-        response.status(200).render("no_tienes_permiso.ejs");
+        response.status(403).render("no_tienes_permiso.ejs");
       }
     } else {
-      response.status(200).render("must_be_login.ejs");
+      response.status(403).render("must_be_login.ejs");
     }
   }
 );
 
+// enrouting request to modify an existing installation
 app.put(
   "/modificar_instalacion/:imagen",
   multerFactory.single("instalacion_imagen"),
@@ -244,14 +247,15 @@ app.put(
           response.end();
         });
       } else {
-        response.status(200).render("no_tienes_permiso.ejs");
+        response.status(403).render("no_tienes_permiso.ejs");
       }
     } else {
-      response.status(200).render("must_be_login.ejs");
+      response.status(403).render("must_be_login.ejs");
     }
   }
 );
 
+// enrouting request to delete an existing installation
 app.delete("/delete_instalacion/:id", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -266,13 +270,14 @@ app.delete("/delete_instalacion/:id", (request, response) => {
         response.end();
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// validate user page enrouting 
 app.get("/validar_registro", (request, response, next) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -284,13 +289,14 @@ app.get("/validar_registro", (request, response, next) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to validate user with the id giving as params.
 app.patch("/validar_registro/:id", (request, response, next) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -320,13 +326,14 @@ app.patch("/validar_registro/:id", (request, response, next) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to convert a user with the id giving as params to admin.
 app.patch("/hacer_admin/:id", (request, response, next) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -358,13 +365,14 @@ app.patch("/hacer_admin/:id", (request, response, next) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to delete user with the id giving as params.
 app.delete("/eliminar_registro/:id", (request, response, next) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -378,10 +386,10 @@ app.delete("/eliminar_registro/:id", (request, response, next) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
@@ -453,18 +461,20 @@ app.get("/get_filtered_mail", (request, response, next) => {
   }
 });
 
+// system configuration page enrouting.
 app.get("/config_system", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
       response.status(200).render("config_system.ejs");
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to get list of users with the faculty id giving as params.
 app.get("/facultad_usuarios/:id", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -478,14 +488,15 @@ app.get("/facultad_usuarios/:id", (request, response) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
-app.get("/facultad_historial_usuario/:id", (request, response) => {
+// enrouting request to get a list of user history with user id as parameters.
+app.get("/historial_usuario/:id", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
       var id = request.params.id;
@@ -498,14 +509,15 @@ app.get("/facultad_historial_usuario/:id", (request, response) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
-app.get("/facultad_historial_instalacion/:id", (request, response) => {
+// enrouting request to get a list of reservation history by providing a facility id as parameters.
+app.get("/historial_instalacion/:id", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
       var id = request.params.id;
@@ -518,13 +530,14 @@ app.get("/facultad_historial_instalacion/:id", (request, response) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to get user statistics providing user id as parameters.
 app.get("/estadistica_usuario/:id", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -538,13 +551,14 @@ app.get("/estadistica_usuario/:id", (request, response) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to get faculty statistics providing faculty id as parameters.
 app.get("/estadistica_facultad/:id", (request, response) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
@@ -558,16 +572,18 @@ app.get("/estadistica_facultad/:id", (request, response) => {
         }
       });
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// advanced search page enrouting.
 app.get("/busquedaAvanzada", (request, response, next) => {
   if (request.session.isLogged) {
     if (request.session.is_admin) {
+      // get search querys
       var tipo_busqueda = request.query["tipo_busqueda"];
       var filtrar_por = request.query["filtrar_por"];
       var search = request.query["search"];
@@ -578,6 +594,7 @@ app.get("/busquedaAvanzada", (request, response, next) => {
         search = search.replaceAll("%40", "@");
         search = search.replaceAll("%20", " ");
       }
+      //callback for each search type.
       var usuario_callback = (err, res_usuario) => {
         if (err) {
           next();
@@ -614,6 +631,7 @@ app.get("/busquedaAvanzada", (request, response, next) => {
             .render("busquedaAvanzada.ejs", { instalaciones: res_instalacion });
         }
       };
+      //case of search
       switch (tipo_busqueda) {
         case "Usuario":
           switch (filtrar_por) {
@@ -688,13 +706,14 @@ app.get("/busquedaAvanzada", (request, response, next) => {
           response.status(200).render("busquedaAvanzada.ejs");
       }
     } else {
-      response.status(200).render("no_tienes_permiso.ejs");
+      response.status(403).render("no_tienes_permiso.ejs");
     }
   } else {
-    response.status(200).render("must_be_login.ejs");
+    response.status(403).render("must_be_login.ejs");
   }
 });
 
+// enrouting request to update system configuration.
 app.put(
   "/update_system/:imagen",
   multerFactory.single("org_img"),
@@ -739,10 +758,10 @@ app.put(
           response.end();
         });
       } else {
-        response.status(200).render("no_tienes_permiso.ejs");
+        response.status(403).render("no_tienes_permiso.ejs");
       }
     } else {
-      response.status(200).render("must_be_login.ejs");
+      response.status(403).render("must_be_login.ejs");
     }
   }
 );

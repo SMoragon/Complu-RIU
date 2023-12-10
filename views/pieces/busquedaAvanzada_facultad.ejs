@@ -1,4 +1,6 @@
+<!-- piece that it´s use on advanced search page -->
 <div class="container-fluid">
+    <!-- list of faculties -->
     <div id="facultad_container" class="row justify-content-center">
         <% facultades.forEach(element=> { %>
             <div class="col-10 row bg-info-subtle border border-3 rounded-4 border-info my-3">
@@ -9,6 +11,7 @@
                         <%=element.nombre%>
                     </p>
                 </div>
+                <!-- buttons to see list of user and statistic -->
                 <div
                     class="d-inline-block col-sm-6 col-12 d-flex justify-content-sm-end justify-content-center my-auto">
                     <button type="button" id="user_list_button_<%=element.id%>"
@@ -21,6 +24,7 @@
                         Estadistica</button>
                 </div>
             </div>
+            <!-- modal with an list of users belongs to each faculty -->
             <div class="modal top fade" id="user_list_<%=element.id%>" data-bs-backdrop="static">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">
@@ -60,6 +64,7 @@
                     </div>
                 </div>
             </div>
+            <!-- modal with the faculty statistic -->
             <div class="modal top fade" id="estadistica_facultad_<%=element.id%>" data-bs-backdrop="static">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">

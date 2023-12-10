@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Bootstrap, stylesheets, WP title and favicon load. -->
-
+<!-- Bootstrap, stylesheets, WP title and favicon load to avoid copy and paster.-->
 <head>
     <%- include ('pieces/head')%>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -15,6 +14,7 @@
     </header>
     <main>
         <div class="container-fluid">
+            <!-- tittle of page -->
             <div class="row justify-content-center">
                 <div class="col-auto">
                     <h2 class="text-primary">Gestion de instalaciones</h2>
@@ -22,15 +22,18 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-auto">
+                    <!-- search bar and button -->
                     <form class="p-0 d-inline-block" method="get" action="/gestion_instalacion.ejs"
                         id="find_instalacion_form">
                         <input class="search_text rounded-3" type="text" placeholder="Search.." name="search">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
                     </form>
+                    <!-- add installation button -->
                     <button type="button" class="btn btn-info" data-bs-toggle="modal"
                         data-bs-target="#add_instalaciones">
                         Añadir
                     </button>
+                    <!-- modal with form to add new installation -->
                     <div class="modal top fade" id="add_instalaciones" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
@@ -39,7 +42,6 @@
                                 </div>
                                 <form id="instalacion_form" method="post" action="/add_instalacion">
                                     <div class="modal-body container" id="add_instalacion_body">
-
                                         <!-- Nombre instalacion -->
                                         <div class="form-group row justify-content-center">
                                             <label for="instalacion_nombre"
@@ -122,6 +124,7 @@
                 </div>
             </div>
         </div>
+        <!-- list of installations -->
         <% if (locals.dato) { %>
             <div class="container-fluid">
                 <div class="row justify-content-center" id="instalacion_list">
@@ -139,6 +142,7 @@
                                                 alt="<%=element.nombre%>" class="img-fluid rounded-4 instalacion_img">
                                         </div>
                                     </div>
+                                    <!-- buttons -->
                                     <div
                                         class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                                         <button type="button"
@@ -159,6 +163,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- modals that contains each installation info and image -->
                         <div class="modal top fade" id="instalacion_detalles_<%=element.id%>" data-bs-backdrop="static">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
@@ -200,6 +205,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- modal that have a form to update installation data -->
                         <div class="modal top fade" id="instalaciones_modificar_<%=element.id%>"
                             data-bs-backdrop="static">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -316,6 +322,7 @@
         <%- include ('pieces/footer')%>
     </footer>
 </body>
+<!-- scripts of the page -->
 <script src="/scripts/instalacionValidation.js"></script>
 <script src="/scripts/instalaciones.js"></script>
 

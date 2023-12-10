@@ -2,7 +2,6 @@
 <html lang="en">
 
 <!-- Bootstrap, stylesheets, WP title and favicon load. -->
-
 <head>
     <%- include ('pieces/head')%>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -14,6 +13,7 @@
         <%- include ('pieces/header')%>
     </header>
     <main>
+        <!-- tittle -->
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-auto">
@@ -21,6 +21,7 @@
                 </div>
             </div>
         </div>
+        <!-- list of users that is non-validate -->
         <% if (locals.datos) { %>
             <div class="container-fluid">
                 <div class="row justify-content-center" id="instalacion_list">
@@ -43,6 +44,7 @@
                                             <%};%>
                                         </div>
                                     </div>
+                                    <!-- buttons -->
                                     <div
                                         class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                                         <button type="button"
@@ -61,6 +63,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- modals that contains user´s details -->
                         <div class="modal top fade" id="usuario_detalles_<%=element.id%>" data-bs-backdrop="static">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content modal-destiny-container">

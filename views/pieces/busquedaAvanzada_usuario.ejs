@@ -1,4 +1,6 @@
+<!-- piece that it´s use on advanced search page -->
 <div class="container-fluid">
+    <!-- list of users -->
     <div class="row justify-content-center" id="usuario_list">
         <% usuarios.forEach(element=> { %>
             <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0">
@@ -20,6 +22,7 @@
                                 <%};%>
                             </div>
                         </div>
+                        <!-- buttons with see details, statistics, become admin if the user not are admin and history options -->
                         <div
                             class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                             <% if (element.es_admin===0) { %>
@@ -64,6 +67,7 @@
                     </div>
                 </div>
             </div>
+            <!-- modal with user details suck like user´s data and profile etc... -->
             <div class="modal top fade" id="usuario_detalles_<%=element.id%>" data-bs-backdrop="static">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
@@ -111,6 +115,7 @@
                     </div>
                 </div>
             </div>
+            <!-- modal with user book installation statistic -->
             <div class="modal top fade" id="estadistica_usuario_<%=element.id%>" data-bs-backdrop="static">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">
@@ -137,6 +142,7 @@
                     </div>
                 </div>
             </div>
+            <!-- modal with user history -->
             <div class="modal top fade" id="historial_usuario_<%=element.id%>" data-bs-backdrop="static">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">

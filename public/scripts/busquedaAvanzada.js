@@ -3,6 +3,7 @@
 $(document).ready((e) => {
     var charts = {}
     var previosSelect = "None"
+    // on change type of search, change the search options
     $("#tipo_busqueda").on('change', (e) => {
         var optionDict = {
             "None": [],
@@ -20,7 +21,6 @@ $(document).ready((e) => {
         }
         previosSelect = "None"
     });
-
     $("#filtrar_por").on('change', (e) => {
         if (e.target.value === "Fecha Inicio - Fecha Fin") {
             changeToDateInput()
@@ -30,18 +30,23 @@ $(document).ready((e) => {
         previosSelect = e.target.value
     });
 
+    // on submit the form of advanced search
     $("#busqueda_avanzada").on('submit', (event) => {
+        // delete err msg
         deleteErrMsg();
+        // get form values
         var formDatos = new FormData(event.target)
         var buscar = $("#tipo_busqueda").prop("value")
         var filtrar = $("#filtrar_por").prop("value")
         var dato;
+        // checking
         if (filtrar === "Fecha Inicio - Fecha Fin") {
             dato = [$("#date_init").prop("value"), $("#date_end").prop("value")];
         } else {
             dato = [$("#search_input").prop("value")]
         }
         var checkTime = correctTimeSelect(dato);
+        // if there are some error like incorrect time or empty field, then prevent the submit event
         if (!checkTime) {
             event.preventDefault();
             addErrMsg("Por favor introduzca las fechas en el orden correcto, el de inicio debe de ser anteriol o igual al del fin.");
@@ -51,6 +56,7 @@ $(document).ready((e) => {
         }
     });
 
+    // ajax get request to get an list of users belongs to the faculty and update the table, lazy implementation
     $("#facultad_container .user_list_button").on('click', (event) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
@@ -69,11 +75,12 @@ $(document).ready((e) => {
         });
     });
 
+    // ajax get request to get an user history and update the table to showing the user, lazy implementation
     $("#usuario_list .historial_usuario").on('click', (event) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'GET',
-            url: '/facultad_historial_usuario/' + id,
+            url: '/historial_usuario/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -87,11 +94,12 @@ $(document).ready((e) => {
         });
     });
 
+    // ajax get request to get an installation history and update the table to showing the user, lazy implementation
     $("#instalacion_list .historial_instalacion").on('click', (event) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'GET',
-            url: '/facultad_historial_instalacion/' + id,
+            url: '/historial_instalacion/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -105,6 +113,7 @@ $(document).ready((e) => {
         });
     });
 
+    // ajax patch request to update the user to admin
     $("#usuario_list button.hacer_admin_button").on('click', (event) => {
         event.preventDefault();
         var id = event.target.id.split("_")[3]
@@ -125,6 +134,7 @@ $(document).ready((e) => {
 
     })
 
+    // ajax get request to get an user books installation statistic and update the charts to showing the user, lazy implementation
     $("#usuario_list .estadistica_usuario").on('click', (event) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
@@ -146,6 +156,7 @@ $(document).ready((e) => {
         });
     });
 
+    // ajax get request to get an faculty statistic and update the cahrts to showing the user, lazy implementation
     $("#facultad_container .estadistica_facultad").on('click', (event) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
@@ -168,19 +179,23 @@ $(document).ready((e) => {
     });
 });
 
+// add error message to the page
 function addErrMsg(msg) {
     var message = `<div class="row justify-content-center" id="err_msg"><div class="col-auto"><span class="h4 text-danger">${msg}</span></div></div>`;
     $("#form_container").prepend(message);
 }
 
+// delete error message
 function deleteErrMsg() {
     $("#form_container #err_msg").remove();
 }
 
+// check if the data it´s not empty
 function notEmpty(dato) {
     return dato !== "None" && dato !== ""
 }
 
+// check the range of date it´s in correct order
 function correctTimeSelect(dato) {
     var check = true;
     if (dato.length === 2) {
@@ -190,33 +205,40 @@ function correctTimeSelect(dato) {
     return check;
 }
 
+// delete date input
 function deleteTempOption() {
     $("#filtrar_por .tempOption").remove()
 }
 
+// create an option to the search option
 function createOption(value) {
     $("#filtrar_por").append(`<option value="${value}" class="tempOption">${value}</option>`)
 }
 
+// change the search input to text input
 function changeToSearchInput() {
     deleteDateInput();
     createSearchInput();
 }
 
+// change the search input to date input
 function changeToDateInput() {
     deleteSearchInput();
     createDateInput();
 }
 
+// create a search text input
 function createSearchInput() {
     var searchInput = '<input class="search_text rounded-3 search_text_mine" type="text" placeholder="Search.." name="search" id="search_input">';
     $("#search_box").prepend(searchInput)
 }
 
+// delete a search text input
 function deleteSearchInput() {
     $("#search_box .search_text").remove()
 }
 
+// create a date input
 function createDateInput() {
     var today = new Date();
     var day = today.getDate();
@@ -239,11 +261,13 @@ function createDateInput() {
     search_box.prepend(firstDateInput);
 }
 
+// delete date input
 function deleteDateInput() {
     $("#search_box div").remove();
     $("#search_box span").remove();
 }
 
+// update the table that contains an lists of users
 function updateRowToTableUserList(id, usuarios) {
     deleteRowToTable(id);
     var row_container = $(`#table_row_${id}`);
@@ -252,6 +276,7 @@ function updateRowToTableUserList(id, usuarios) {
     });
 }
 
+// return a text to create one row to append to the table user list
 function addRowToTableTextUserList(data) {
     return `<tr>
         <th scope="row">${data.id}</th>
@@ -263,6 +288,7 @@ function addRowToTableTextUserList(data) {
     </tr>`
 }
 
+// update the table that contains history
 function updateRowToTableHistory(id, historiales) {
     deleteRowToTable(id);
     var row_container = $(`#table_row_${id}`);
@@ -271,6 +297,7 @@ function updateRowToTableHistory(id, historiales) {
     });
 }
 
+// return the text that´s contains one row to append to the table history 
 function addRowToTableTextHistory(data) {
     return `<tr>
         <th scope="row">${data.nombre}</th>
@@ -281,10 +308,12 @@ function addRowToTableTextHistory(data) {
     </tr>`
 }
 
+// delete table
 function deleteRowToTable(id) {
     $(`#table_row_${id} tr`).remove()
 }
 
+// paint chart with the datasets and return the new chart that´s create
 function paintChart(id, datasets, title) {
     var ctx = $(`#chart_${id}`);
     var tam = datasets.length;
@@ -322,6 +351,7 @@ function paintChart(id, datasets, title) {
     });
 }
 
+// get a list of color providing the list length
 function getListColor(length) {
     var color_list = [];
     if (length < 6) {

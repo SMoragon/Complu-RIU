@@ -1,4 +1,6 @@
+<!-- piece that it´s use on advanced search page -->
 <div class="container-fluid">
+    <!-- list of installations -->
     <div class="row justify-content-center" id="instalacion_list">
         <% instalaciones.forEach(element=> { %>
             <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0" id="instalacion_<%=element.id%>">
@@ -13,6 +15,7 @@
                                     alt="<%=element.nombre%>" class="img-fluid rounded-4 instalacion_img">
                             </div>
                         </div>
+                        <!-- buttons with the option to see details, history -->
                         <div
                             class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                             <button type="button" class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
@@ -26,6 +29,7 @@
                     </div>
                 </div>
             </div>
+            <!-- modal that contains a installation details -->
             <div class="modal top fade" id="instalacion_detalles_<%=element.id%>" data-bs-backdrop="static">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
@@ -70,6 +74,7 @@
                     </div>
                 </div>
             </div>
+            <!-- modal that contains an installation history -->
             <div class="modal top fade" id="historial_instalacion_<%=element.id%>" data-bs-backdrop="static">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">

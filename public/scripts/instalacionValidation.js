@@ -1,4 +1,5 @@
 "use strict";
+// validate each field of the form add a new installation and return if all it´s ok
 function add_instalacion() {
     closeErrMsg()
     var nombre = $("#instalacion_nombre").prop("value")
@@ -20,6 +21,7 @@ function add_instalacion() {
     return !any_empty && correct_time && checkType && checkAforoCorrect && image_select && image_prop;
 }
 
+// validate each field of the form update installation and return if all it´s ok
 function mod_instalacion(id) {
     modCloseErrMsg(id)
     var nombre = $("#m_instalacion_nombre_"+id).prop("value")
@@ -39,16 +41,19 @@ function mod_instalacion(id) {
     return !any_empty && correct_time && checkAforoCorrect && image_prop;
 }
 
+// check if the user have put image to the form
 function putImage(id){
     var imagen = $("#m_instalacion_imagen_"+id).prop('files')[0]
     var image_select = checkSelectImage(imagen)
     return image_select;
 }
 
+// delete the error message to the view
 function closeErrMsg() {
     $("#add_instalacion_body .msg_error").remove()
 }
 
+// add error message in the view on add new installation form
 function addErrMsg(any_empty, correct_time, checkType, checkAforoCorrect, image_select, image_prop) {
     var msg_error_init = "<div class='form-group row justify-content-center msg_error'><div class='col-10'><span class='text-danger popup_form_error d-inline-block'>"
     var msg_error_end = "</span></div></div>"
@@ -72,6 +77,7 @@ function addErrMsg(any_empty, correct_time, checkType, checkAforoCorrect, image_
     }
 }
 
+// add error message in the view on update installation form
 function modAddErrMsg(id, any_empty, correct_time, checkAforoCorrect, image_select, image_prop) {
     var msg_error_init = "<div class='form-group row justify-content-center msg_error'><div class='col-10'><span class='text-danger popup_form_error d-inline-block'>"
     var msg_error_end = "</span></div></div>"
@@ -89,18 +95,22 @@ function modAddErrMsg(id, any_empty, correct_time, checkAforoCorrect, image_sele
     }
 }
 
+// delete the error message in the view update installation form
 function modCloseErrMsg(id) {
     $("#modificar_instalacion_form_"+id+" .msg_error").remove()
 }
 
+// check if any field it´s empty
 function checkEmptyFields(nombre, apertura, cierre, aforo) {
     return nombre === "" || apertura === "" || cierre === "" || aforo === "";
 }
 
+// check if the user select any option
 function checkTypeSelect(tipo) {
     return tipo !== "None";
 }
 
+// check if the user select an correct time in correct order
 function checkTime(apertura, cierre) {
     var apertura_value = apertura.split(":")
     var cierre_value = cierre.split(":")
@@ -110,10 +120,12 @@ function checkTime(apertura, cierre) {
             || apertura_value[0] === cierre_value[0] && apertura_value[1] < cierre_value[1]));
 }
 
+// check if the user select any image
 function checkSelectImage(image) {
     return image !== undefined;
 }
 
+// check the select image property
 function checkImageProp(image) {
     var match = ["image/jpeg", "image/png", "image/jpg"];
     var img_type = image['type']
@@ -124,6 +136,7 @@ function checkImageProp(image) {
     return img_type_correct && img_size_correct;
 }
 
+// check the number of aforo to be not empty and it´s greather than 0.
 function checkAforo(aforo){
     var aforo_val = aforo
     return aforo_val=== "" ? false : aforo_val>0;

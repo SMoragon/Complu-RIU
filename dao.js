@@ -8,6 +8,7 @@ class DAO {
     this.pool = pool;
   }
 
+  //update system configuration.
   update_config(icono, config, callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -25,6 +26,7 @@ class DAO {
     })
   }
 
+  //get system configuration.
   get_config_info(callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -51,6 +53,7 @@ class DAO {
     })
   }
 
+  // search installation function
   buscarInstalacion(dato, callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -68,6 +71,7 @@ class DAO {
     });
   }
 
+  //update installation params.
   modificarInstalacion(id, imagen, dato, callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -78,13 +82,14 @@ class DAO {
           sql = "UPDATE Instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=?, imagen=?, imagen_tipo=? WHERE id=" + id + ";"
         } else {
           sql = "UPDATE Instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=? WHERE id=" + id + ";"
-        }
+        } 
         connection.query(sql, dato, callback);
         connection.release();
       }
     });
   }
 
+  // delete installation
   eliminarInstalacion(id, callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -97,6 +102,7 @@ class DAO {
     });
   }
 
+  // get an lists of installations names
   obtenerNombreInstalacion(callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -141,6 +147,7 @@ class DAO {
     });
   }
 
+  // update user to validate user
   validarUsuario(id, callback){
     this.pool.getConnection((err, connection)=>{
       if(err){
@@ -153,6 +160,7 @@ class DAO {
     })
   }
 
+  // delete user
   eliminarUsuario(id, callback){
     this.pool.getConnection((err, connection)=>{
       if(err){
@@ -164,6 +172,8 @@ class DAO {
       }
     })
   }
+
+  // get list of non-validate users
   obtenerUsuariosNoValidatos(callback){
     this.pool.getConnection((err, connection)=>{
       if(err){
@@ -176,6 +186,7 @@ class DAO {
     })
   }
 
+  // get a list of faculties
   obtenerFacultades(callback) {
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -189,6 +200,7 @@ class DAO {
     })
   }
 
+  // get a list of faculties by their name
   obtenerFacultadesPorNombre(name, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -203,6 +215,7 @@ class DAO {
     })
   }
 
+  // get a list of faculties by their user name
   obtenerFacultadesPorUsuarioNombre(user, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -217,6 +230,7 @@ class DAO {
     })
   }
 
+  // get a list of faculties by their user last name
   obtenerFacultadesPorUsuarioApellido(user, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -231,6 +245,7 @@ class DAO {
     })
   }
 
+  // get a list of users that belongs a faculty providing faculty id
   obtenerFacultadesListaUsuario(id, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -244,6 +259,7 @@ class DAO {
     })
   }
 
+  // obtains a faculty statistics
   obtenerEstadisticaFacultad(id,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -257,6 +273,7 @@ class DAO {
     })
   }
 
+  // obtains a list of user by faculty name.
   obtenerListaUsuarioPorFaculdad(facultad, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -271,6 +288,7 @@ class DAO {
     })
   }
 
+  // get a list of users by their email
   obtenerListaUsuarioPorCorreo(correo, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -285,6 +303,7 @@ class DAO {
     })
   }
 
+  // get a list of users by their name
   obtenerListaUsuarioPorNombre(nombre, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -299,6 +318,7 @@ class DAO {
     })
   }
 
+  // get a list of users by their last name
   obtenerListaUsuarioPorApellido(apellido, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -313,6 +333,7 @@ class DAO {
     })
   }
 
+  // get history of the user giving an user id as params.
   obtenerHistorialUsuario(id,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -326,6 +347,7 @@ class DAO {
     })
   }
 
+  // get statistic of users giving an user id as params.
   obtenerEstadisticaUsuario(id,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -339,6 +361,7 @@ class DAO {
     })
   }
 
+  // update the user to admin user.
   updateToAdminUser(id, callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -352,6 +375,7 @@ class DAO {
     })
   }
 
+  // get a list of installation by their name
   obtenerInstalacionPorNombre(nombre,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -366,6 +390,7 @@ class DAO {
     })
   }
 
+  // get list of installation history.
   obtenerHistorialInstalacion(id,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -379,6 +404,7 @@ class DAO {
     })
   }
 
+  // get list of books by user name
   obtenerReservaPorNombreUsuario(nombre,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -393,6 +419,7 @@ class DAO {
     })
   }
 
+  // get list of books by user last name
   obtenerReservaPorApellidoUsuario(apellido,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -407,6 +434,7 @@ class DAO {
     })
   }
 
+  // get list of book by installation name.
   obtenerReservaPorNombreInstalacion(nombre,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -421,6 +449,7 @@ class DAO {
     })
   }
 
+  // get list of book by faculty´s name
   obtenerReservaPorNombreFacultad(nombre,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -435,6 +464,7 @@ class DAO {
     })
   }
 
+  // get list of book in the giving time ranges.
   obtenerReservaPorRangoTemporal(fechas,callback){
     this.pool.getConnection((err, connection) => {
       if (err) {
@@ -448,7 +478,7 @@ class DAO {
     })
   }
 
-
+  // send message
   enviarMensaje(datos, callback){
     this.pool.getConnection((err, connection)=>{
       if (err) {
@@ -462,6 +492,7 @@ class DAO {
     })
   }
 
+  // get menssage
   obtenerMensajes(idReceptor, callback){
     this.pool.getConnection((err, connection)=>{
       if (err) {
