@@ -22,7 +22,7 @@ $('#send_email_submit_button').on('click', function (event) {
         console.log(receiver_value, subject_value, content_value)
         $.ajax({
             method:"POST",
-            url: "/write_mail/",
+            url: "/correo/write_mail/",
             contentType: "application/json",
             data: JSON.stringify({
                 "receptor":receiver_value,
@@ -100,7 +100,7 @@ function closePopups() {
 
     $.ajax({
         method:"PATCH",
-        url: "/marcar_leido/"+id,
+        url: "/correo/marcar_leido/"+id,
         // If successful, we do not do anything, because it's only marking it up as read.
         success: function(data, textStatus, jqHXR){
         },

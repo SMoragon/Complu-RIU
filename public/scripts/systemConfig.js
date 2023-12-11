@@ -10,7 +10,7 @@ $(document).ready((e) => {
         if(ok){
             $.ajax({
                 type: 'PUT',
-                url: '/update_system/'+image,
+                url: '/system/update_system/'+image,
                 data: formData,
                 contentType: false,
                 cache: false,

@@ -9,7 +9,7 @@ $(document).ready((e) => {
             var datos = $("#instalacion_form")[0]
             $.ajax({
                 type: 'POST',
-                url: '/add_instalacion',
+                url: '/instalaciones/add_instalacion',
                 data: new FormData(datos),
                 contentType: false,
                 cache: false,
@@ -48,7 +48,7 @@ $(document).ready((e) => {
             console.log(formData)
             $.ajax({
                 type: 'PUT',
-                url: '/modificar_instalacion/'+imagen,
+                url: '/instalaciones/modificar_instalacion/'+imagen,
                 data: formData,
                 contentType: false,
                 cache: false,
@@ -79,7 +79,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[2]
         $.ajax({
             type: 'DELETE',
-            url: '/delete_instalacion/'+id,
+            url: '/instalaciones/delete_instalacion/'+id,
             contentType: false,
             cache: false,
             processData: false,

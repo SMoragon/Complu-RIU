@@ -23,7 +23,7 @@
             <div class="row justify-content-center">
                 <div class="col-auto">
                     <!-- search bar and button -->
-                    <form class="p-0 d-inline-block" method="get" action="/gestion_instalacion.ejs"
+                    <form class="p-0 d-inline-block" method="get" action="/instalaciones/gestion_instalacion.ejs"
                         id="find_instalacion_form">
                         <input class="search_text rounded-3" type="text" placeholder="Search.." name="search">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-search" alt="Search icon"></i></button>
@@ -40,7 +40,7 @@
                                 <div class="modal-header">
                                     Añadir Instalacion
                                 </div>
-                                <form id="instalacion_form" method="post" action="/add_instalacion">
+                                <form id="instalacion_form" method="post" action="/instalaciones/add_instalacion">
                                     <div class="modal-body container" id="add_instalacion_body">
                                         <!-- Nombre instalacion -->
                                         <div class="form-group row justify-content-center">
@@ -213,7 +213,7 @@
                                     <div class="modal-header">
                                         Modificar <%=element.nombre%>
                                     </div>
-                                    <form method="post" action="/modificar_instalacion"
+                                    <form method="post" action="/instalaciones/modificar_instalacion"
                                         id="modificar_instalacion_form_<%= element.id %>">
                                         <div class="modal-body container mod_instalacion_body">
                                             <input type="text" name="instalacion_id" style="display:none;"
