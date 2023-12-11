@@ -15,7 +15,7 @@ class DAO {
         callback(err);
       } else {
         var sql =
-          "UPDATE sistema SET nombre=?, direccion=?, url_instagram=?, correo=?";
+          "UPDATE ucm_aw_riu_s_sistema SET nombre=?, direccion=?, url_instagram=?, correo=?";
         if(icono){
           sql += ", icono=?, icono_type=?";
         }
@@ -32,7 +32,7 @@ class DAO {
       if (err) {
         callback(err);
       } else {
-        const sql = "SELECT * FROM sistema WHERE id = 1";
+        const sql = "SELECT * FROM ucm_aw_riu_s_sistema WHERE id = 1";
         connection.query(sql, callback);
         connection.release();
       }
@@ -46,7 +46,7 @@ class DAO {
         callback(err);
       } else {
         const sql =
-          "Insert Into Instalaciones (nombre, horario_apertura, horario_cierre, tipo_reserva, aforo, imagen, imagen_tipo) VALUES (?,?,?,?,?,?,?)";
+          "Insert Into ucm_aw_riu_i_instalaciones (nombre, horario_apertura, horario_cierre, tipo_reserva, aforo, imagen, imagen_tipo) VALUES (?,?,?,?,?,?,?)";
         connection.query(sql, instalacion, callback);
         connection.release();
       }
@@ -61,9 +61,9 @@ class DAO {
       } else {
         var sql;
         if (dato === "") {
-          sql = "SELECT * FROM Instalaciones ORDER BY nombre";
+          sql = "SELECT * FROM ucm_aw_riu_i_instalaciones ORDER BY nombre";
         } else {
-          sql = "SELECT * FROM Instalaciones WHERE nombre LIKE '%" + dato + "%' OR tipo_reserva LIKE '%" + dato + "%' OR aforo LIKE '%" + dato + "%' ORDER BY nombre;";
+          sql = "SELECT * FROM ucm_aw_riu_i_instalaciones WHERE nombre LIKE '%" + dato + "%' OR tipo_reserva LIKE '%" + dato + "%' OR aforo LIKE '%" + dato + "%' ORDER BY nombre;";
         }
         connection.query(sql, callback);
         connection.release();
@@ -79,9 +79,9 @@ class DAO {
       } else {
         var sql;
         if (imagen) {
-          sql = "UPDATE Instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=?, imagen=?, imagen_tipo=? WHERE id=" + id + ";"
+          sql = "UPDATE ucm_aw_riu_i_instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=?, imagen=?, imagen_tipo=? WHERE id=" + id + ";"
         } else {
-          sql = "UPDATE Instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=? WHERE id=" + id + ";"
+          sql = "UPDATE ucm_aw_riu_i_instalaciones SET nombre=?, horario_apertura=?, horario_cierre=?, tipo_reserva=?, aforo=? WHERE id=" + id + ";"
         } 
         connection.query(sql, dato, callback);
         connection.release();
@@ -95,7 +95,7 @@ class DAO {
       if (err) {
         callback(err);
       } else {
-        const sql = "DELETE FROM Instalaciones WHERE id=?"
+        const sql = "DELETE FROM ucm_aw_riu_i_instalaciones WHERE id=?"
         connection.query(sql, [id], callback);
         connection.release();
       }
@@ -108,7 +108,7 @@ class DAO {
       if (err) {
         callback(err);
       } else {
-        const sql = "SELECT nombre FROM Instalaciones"
+        const sql = "SELECT nombre FROM ucm_aw_riu_i_instalaciones"
         connection.query(sql, callback);
         connection.release();
       }
@@ -123,7 +123,7 @@ class DAO {
         callback(err);
       } else {
         const sql =
-          "Insert Into usuarios (nombre, apellidos, correo, contrasenia, facultad, curso, grupo, imagen_perfil, es_admin, validado) VALUES (?,?,?,?,?,?,?,?,?,?)";
+          "Insert Into ucm_aw_riu_u_usuarios (nombre, apellidos, correo, contrasenia, facultad, curso, grupo, imagen_perfil, es_admin, validado) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
         connection.query(sql, datos, callback);
         connection.release();
@@ -140,7 +140,7 @@ class DAO {
       if (err) {
         callback(err);
       } else {
-        const sql = "Select * From usuarios Where correo=?";
+        const sql = "Select * From ucm_aw_riu_u_usuarios Where correo=?";
         connection.query(sql, correo, callback);
         connection.release();
       }
@@ -153,7 +153,7 @@ class DAO {
       if(err){
         callback(err);
       }else{
-        const sql = "UPDATE usuarios SET validado = 1 WHERE id = ?"
+        const sql = "UPDATE ucm_aw_riu_u_usuarios SET validado = 1 WHERE id = ?"
         connection.query(sql, id, callback);
         connection.release();
       }
@@ -166,7 +166,7 @@ class DAO {
       if(err){
         callback(err);
       }else{
-        const sql = "DELETE FROM usuarios WHERE id = ?"
+        const sql = "DELETE FROM ucm_aw_riu_u_usuarios WHERE id = ?"
         connection.query(sql, id, callback);
         connection.release();
       }
@@ -179,7 +179,7 @@ class DAO {
       if(err){
         callback(err);
       }else{
-        const sql = "SELECT u.id, u.nombre, apellidos, correo, f.nombre as facultadUser, curso, grupo, imagen_perfil FROM usuarios u JOIN facultades f ON f.id=u.facultad WHERE validado=0"
+        const sql = "SELECT u.id, u.nombre, apellidos, correo, f.nombre as facultadUser, curso, grupo, imagen_perfil FROM ucm_aw_riu_u_usuarios u JOIN ucm_aw_riu_f_facultades f ON f.id=u.facultad WHERE validado=0"
         connection.query(sql, callback);
         connection.release();
       }
@@ -193,7 +193,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "Select * From facultades";
+        const sql = "Select * From ucm_aw_riu_f_facultades";
         connection.query(sql, callback);
         connection.release();
       }
@@ -208,7 +208,7 @@ class DAO {
       }
       else {
         name = `%${name}%`;
-        const sql = "SELECT DISTINCT * FROM facultades WHERE nombre LIKE ?";
+        const sql = "SELECT DISTINCT * FROM ucm_aw_riu_f_facultades WHERE nombre LIKE ?";
         connection.query(sql, [name], callback);
         connection.release();
       }
@@ -223,7 +223,7 @@ class DAO {
       }
       else {
         user = `%${user}%`;
-        const sql = "SELECT DISTINCT f.id as id, f.nombre as nombre FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.nombre LIKE ?";
+        const sql = "SELECT DISTINCT f.id as id, f.nombre as nombre FROM ucm_aw_riu_f_facultades f JOIN ucm_aw_riu_u_usuarios u ON u.facultad=f.id WHERE u.nombre LIKE ?";
         connection.query(sql, [user], callback);
         connection.release();
       }
@@ -238,7 +238,7 @@ class DAO {
       }
       else {
         user = `%${user}%`;
-        const sql = "SELECT DISTINCT f.id as id, f.nombre as nombre FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.apellidos LIKE ?";
+        const sql = "SELECT DISTINCT f.id as id, f.nombre as nombre FROM ucm_aw_riu_f_facultades f JOIN ucm_aw_riu_u_usuarios u ON u.facultad=f.id WHERE u.apellidos LIKE ?";
         connection.query(sql, [user], callback);
         connection.release();
       }
@@ -252,7 +252,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE f.id = ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo FROM ucm_aw_riu_f_facultades f JOIN ucm_aw_riu_u_usuarios u ON u.facultad=f.id WHERE f.id = ?";
         connection.query(sql, [id], callback);
         connection.release();
       }
@@ -266,7 +266,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT i.nombre as label ,COUNT(i.id) as counter FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN facultades f ON f.id = u.facultad JOIN instalaciones i ON r.id_instalacion = i.id WHERE f.id = ? GROUP BY i.id";
+        const sql = "SELECT i.nombre as label ,COUNT(i.id) as counter FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id JOIN ucm_aw_riu_f_facultades f ON f.id = u.facultad JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion = i.id WHERE f.id = ? GROUP BY i.id";
         connection.query(sql, [id], callback);
         connection.release();
       }
@@ -281,7 +281,7 @@ class DAO {
       }
       else {
         facultad = `%${facultad}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE f.nombre like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM ucm_aw_riu_f_facultades f JOIN ucm_aw_riu_u_usuarios u ON u.facultad=f.id WHERE f.nombre like ?";
         connection.query(sql, [facultad], callback);
         connection.release();
       }
@@ -296,7 +296,7 @@ class DAO {
       }
       else {
         correo = `%${correo}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE correo like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM ucm_aw_riu_f_facultades f JOIN ucm_aw_riu_u_usuarios u ON u.facultad=f.id WHERE correo like ?";
         connection.query(sql, [correo], callback);
         connection.release();
       }
@@ -311,7 +311,7 @@ class DAO {
       }
       else {
         nombre = `%${nombre}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE u.nombre like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM ucm_aw_riu_f_facultades f JOIN ucm_aw_riu_u_usuarios u ON u.facultad=f.id WHERE u.nombre like ?";
         connection.query(sql, [nombre], callback);
         connection.release();
       }
@@ -326,7 +326,7 @@ class DAO {
       }
       else {
         apellido = `%${apellido}%`
-        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM facultades f JOIN usuarios u ON u.facultad=f.id WHERE apellidos like ?";
+        const sql = "SELECT u.id as id, u.nombre as nombre, apellidos, correo, curso, grupo, imagen_perfil, f.nombre as facultadUser, es_admin FROM ucm_aw_riu_f_facultades f JOIN ucm_aw_riu_u_usuarios u ON u.facultad=f.id WHERE apellidos like ?";
         connection.query(sql, [apellido], callback);
         connection.release();
       }
@@ -340,7 +340,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT i.nombre as nombre, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN instalaciones i ON r.id_instalacion=i.id WHERE id_reservante = ?";
+        const sql = "SELECT i.nombre as nombre, fecha_reserva, hora_inicio, hora_fin, asistentes FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion=i.id WHERE id_reservante = ?";
         connection.query(sql, [id], callback);
         connection.release();
       }
@@ -354,7 +354,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT i.nombre as label ,COUNT(i.id) as counter FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE u.id = ? GROUP BY i.id";
+        const sql = "SELECT i.nombre as label ,COUNT(i.id) as counter FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion = i.id WHERE u.id = ? GROUP BY i.id";
         connection.query(sql, [id], callback);
         connection.release();
       }
@@ -368,7 +368,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "UPDATE usuarios SET es_admin = 1 WHERE id = ?";
+        const sql = "UPDATE ucm_aw_riu_u_usuarios SET es_admin = 1 WHERE id = ?";
         connection.query(sql, id, callback);
         connection.release();
       }
@@ -383,7 +383,7 @@ class DAO {
       }
       else {
         nombre = `%${nombre}%`
-        const sql = "SELECT * FROM instalaciones WHERE nombre LIKE ?";
+        const sql = "SELECT * FROM ucm_aw_riu_i_instalaciones WHERE nombre LIKE ?";
         connection.query(sql, [nombre], callback);
         connection.release();
       }
@@ -397,7 +397,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT u.nombre as nombre, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id WHERE r.id_instalacion = ?";
+        const sql = "SELECT u.nombre as nombre, fecha_reserva, hora_inicio, hora_fin, asistentes FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id WHERE r.id_instalacion = ?";
         connection.query(sql, [id], callback);
         connection.release();
       }
@@ -411,7 +411,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE u.nombre like ?";
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion = i.id WHERE u.nombre like ?";
         nombre = `%${nombre}%`
         connection.query(sql, [nombre], callback);
         connection.release();
@@ -426,7 +426,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE u.apellidos like ?";
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion = i.id WHERE u.apellidos like ?";
         apellido = `%${apellido}%`
         connection.query(sql, [apellido], callback);
         connection.release();
@@ -441,7 +441,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE i.nombre like ?";
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion = i.id WHERE i.nombre like ?";
         nombre = `%${nombre}%`
         connection.query(sql, [nombre], callback);
         connection.release();
@@ -456,7 +456,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN facultades f ON u.facultad = f.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE f.nombre like ?";
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id JOIN ucm_aw_riu_f_facultades f ON u.facultad = f.id JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion = i.id WHERE f.nombre like ?";
         nombre = `%${nombre}%`
         connection.query(sql, [nombre], callback);
         connection.release();
@@ -471,7 +471,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM reservas r JOIN usuarios u ON r.id_reservante=u.id JOIN instalaciones i ON r.id_instalacion = i.id WHERE fecha_reserva >= ? AND fecha_reserva <= ?";
+        const sql = "SELECT r.id as id, CONCAT(u.nombre, ' ', u.apellidos) as usuario, correo, i.nombre as instalacion, fecha_reserva, hora_inicio, hora_fin, asistentes FROM ucm_aw_riu_r_reservas r JOIN ucm_aw_riu_u_usuarios u ON r.id_reservante=u.id JOIN ucm_aw_riu_i_instalaciones i ON r.id_instalacion = i.id WHERE fecha_reserva >= ? AND fecha_reserva <= ?";
         connection.query(sql, fechas, callback);
         connection.release();
       }
@@ -485,7 +485,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Insert into correos (id_emisor, id_receptor, asunto, contenido, leido, fecha_envio) VALUES (?,?,?,?,?,?)"
+        const sql= "Insert into ucm_aw_riu_c_correos (id_emisor, id_receptor, asunto, contenido, leido, fecha_envio) VALUES (?,?,?,?,?,?)"
         connection.query(sql, datos, callback);
         connection.release();
       }
@@ -499,7 +499,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.nombre, u.apellidos, u.correo, u.imagen_perfil from correos c join usuarios u on c.id_emisor=u.id Where id_receptor=? order by c.fecha_envio Desc"
+        const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.nombre, u.apellidos, u.correo, u.imagen_perfil from ucm_aw_riu_c_correos c join ucm_aw_riu_u_usuarios u on c.id_emisor=u.id Where id_receptor=? order by c.fecha_envio Desc"
         connection.query(sql, idReceptor, callback);
         connection.release();
       }
@@ -512,7 +512,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.apellidos, u.correo, u.imagen_perfil from correos c join usuarios u on c.id_emisor=u.id Where id_receptor=? AND (c.asunto LIKE ? OR c.contenido LIKE ? OR c.fecha_envio LIKE ? OR u.nombre LIKE ? OR u.apellidos LIKE ? OR  u.correo LIKE ?) order by c.fecha_envio Desc"
+        const sql= "Select c.id, c.id_emisor, c.id_receptor, c.asunto, c.contenido, c.leido, c.fecha_envio, u.nombre, u.apellidos, u.correo, u.imagen_perfil from ucm_aw_riu_c_correos c join ucm_aw_riu_u_usuarios u on c.id_emisor=u.id Where id_receptor=? AND (c.asunto LIKE ? OR c.contenido LIKE ? OR c.fecha_envio LIKE ? OR u.nombre LIKE ? OR u.apellidos LIKE ? OR  u.correo LIKE ?) order by c.fecha_envio Desc"
         filter_by="%"+filter_by+"%"
         connection.query(sql,[idReceptor,filter_by,filter_by,filter_by,filter_by,filter_by,filter_by],callback);
         connection.release();
@@ -526,7 +526,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select Count(*) As sinLeer from correos Where id_receptor=? AND leido=0"
+        const sql= "Select Count(*) As sinLeer from ucm_aw_riu_c_correos Where id_receptor=? AND leido=0"
         connection.query(sql, idReceptor, callback);
         connection.release();
       }
@@ -539,7 +539,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Update correos Set leido=1 Where id=?"
+        const sql= "Update ucm_aw_riu_c_correos Set leido=1 Where id=?"
         connection.query(sql, idMensaje, callback);
         connection.release();
       }
@@ -552,7 +552,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Insert into reservas (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin,asistentes) VALUES (?,?,?,?,?,?)"
+        const sql= "Insert into ucm_aw_riu_r_reservas (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin,asistentes) VALUES (?,?,?,?,?,?)"
         connection.query(sql, datos, callback);
         connection.release();
       }
@@ -565,7 +565,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Insert into lista_espera (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin,fecha_envio_reserva,asistentes) VALUES (?,?,?,?,?,?,?)"
+        const sql= "Insert into ucm_aw_riu_l_listaespera (id_reservante, id_instalacion, fecha_reserva, hora_inicio, hora_fin,fecha_envio_reserva,asistentes) VALUES (?,?,?,?,?,?,?)"
         connection.query(sql, datos, callback);
         connection.release();
       }
@@ -578,7 +578,7 @@ class DAO {
         callback(err)
       }
       else {                                                                
-        const sql= "Select COUNT(*) as solapes From reservas Where id_instalacion=? And fecha_reserva=? And ((hora_inicio>=? And hora_inicio <?) Or (hora_inicio<? And hora_fin>?))"
+        const sql= "Select COUNT(*) as solapes From ucm_aw_riu_r_reservas Where id_instalacion=? And fecha_reserva=? And ((hora_inicio>=? And hora_inicio <?) Or (hora_inicio<? And hora_fin>?))"
         connection.query(sql, [idInst, fechaRes,horaIni,horaFin,horaIni,horaIni ], callback);
         connection.release();
       }
@@ -591,7 +591,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select r.id as id_reserva, r.fecha_reserva, r.hora_inicio, r.hora_fin, r.asistentes, i.nombre, i.imagen, i.imagen_tipo from reservas r Join instalaciones i On r.id_instalacion=i.id  Where r.id_reservante=? Order By r.fecha_reserva Desc"
+        const sql= "Select r.id as id_reserva, r.fecha_reserva, r.hora_inicio, r.hora_fin, r.asistentes, i.nombre, i.imagen, i.imagen_tipo from ucm_aw_riu_r_reservas r Join ucm_aw_riu_i_instalaciones i On r.id_instalacion=i.id  Where r.id_reservante=? Order By r.fecha_reserva Desc"
         connection.query(sql, id_reservante, callback);
         connection.release();
       }
@@ -604,7 +604,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select * from reservas Where id=?"
+        const sql= "Select * from ucm_aw_riu_r_reservas Where id=?"
         connection.query(sql, id_reserva, callback);
         connection.release();
       }
@@ -617,7 +617,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select * from reservas Where id_instalacion=? And fecha_reserva=?"
+        const sql= "Select * from ucm_aw_riu_r_reservas Where id_instalacion=? And fecha_reserva=?"
         connection.query(sql, [id_instalacion,fecha_res], callback);
         connection.release();
       }
@@ -630,7 +630,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select r.fecha_reserva, r.hora_inicio, r.hora_fin,r.id_instalacion, i.nombre from reservas r Join instalaciones i On r.id_instalacion=i.id"
+        const sql= "Select r.fecha_reserva, r.hora_inicio, r.hora_fin,r.id_instalacion, i.nombre from ucm_aw_riu_r_reservas r Join ucm_aw_riu_i_instalaciones i On r.id_instalacion=i.id"
         connection.query(sql, callback);
         connection.release();
       }
@@ -643,7 +643,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Select l.id,l.id_reservante, l.id_instalacion, l.fecha_reserva, l.hora_inicio, l.hora_fin, l.asistentes, i.nombre From lista_espera l Join instalaciones i On l.id_instalacion=i.id where l.id_instalacion=? And l.fecha_reserva=? And ((l.hora_inicio>=? And l.hora_inicio <?) Or (l.hora_inicio<? And l.hora_fin>?)) Order By l.fecha_envio_reserva Asc"
+        const sql= "Select l.id,l.id_reservante, l.id_instalacion, l.fecha_reserva, l.hora_inicio, l.hora_fin, l.asistentes, i.nombre From ucm_aw_riu_l_listaespera l Join ucm_aw_riu_i_instalaciones i On l.id_instalacion=i.id where l.id_instalacion=? And l.fecha_reserva=? And ((l.hora_inicio>=? And l.hora_inicio <?) Or (l.hora_inicio<? And l.hora_fin>?)) Order By l.fecha_envio_reserva Asc"
         connection.query(sql,[idInst, fechaRes,horaIni,horaFin,horaIni,horaIni ], callback);
         connection.release();
       }
@@ -656,7 +656,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Delete from reservas Where id=?"
+        const sql= "Delete from ucm_aw_riu_r_reservas Where id=?"
         connection.query(sql, id_reserva, callback);
         connection.release();
       }
@@ -669,7 +669,7 @@ class DAO {
         callback(err)
       }
       else {
-        const sql= "Delete from lista_espera Where id=?"
+        const sql= "Delete from ucm_aw_riu_l_listaespera Where id=?"
         connection.query(sql, id, callback);
         connection.release();
       }
