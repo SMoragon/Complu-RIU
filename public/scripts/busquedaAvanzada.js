@@ -61,7 +61,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'GET',
-            url: '/facultad_usuarios/' + id,
+            url: '/busqueda/facultad_usuarios/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -80,7 +80,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'GET',
-            url: '/historial_usuario/' + id,
+            url: '/busqueda/historial_usuario/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -99,7 +99,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'GET',
-            url: '/historial_instalacion/' + id,
+            url: '/busqueda/historial_instalacion/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -119,7 +119,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'PATCH',
-            url: '/hacer_admin/' + id,
+            url: '/busqueda/hacer_admin/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -139,7 +139,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'GET',
-            url: '/estadistica_usuario/' + id,
+            url: '/busqueda/estadistica_usuario/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -161,7 +161,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'GET',
-            url: '/estadistica_facultad/' + id,
+            url: '/busqueda/estadistica_facultad/' + id,
             contentType: false,
             cache: false,
             processData: false,
