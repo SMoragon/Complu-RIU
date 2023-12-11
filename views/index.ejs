@@ -70,7 +70,7 @@
                     <!--  Installation's picture. -->
                     <img
                       src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
-                      alt="<%=element.nombre%>"
+                      alt="Installation called <%=element.nombre%> picture"
                       class="img-fluid rounded-4 instalacion_img">
                   </div>
                 </div>
@@ -81,12 +81,12 @@
                     class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
                     data-bs-toggle="modal"
                     data-bs-target="#instalacion_detalles_<%=element.id%>">
-                    <i class="fa fa-eye"></i> Detalles</button>
+                    <i class="fa fa-eye" alt="Eye icon"></i> Detalles</button>
                   <button type="button"
                     class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate"
                     data-bs-toggle="modal"
                     data-bs-target="#instalacion_reservar_<%=element.id%>"><i
-                      class="fa fa-calendar-check-o"></i> Reservar</button>
+                      class="fa fa-calendar-check-o" alt="Check icon"></i> Reservar</button>
                 </div>
               </div>
             </div>
@@ -250,21 +250,21 @@
                   <div
                     class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                     <!-- Installation's name. -->
-                    <p><i class="fa fa-building"></i> Nombre Instalación:
+                    <p><i class="fa fa-building" alt="Building icon"></i> Nombre Instalación:
                       <%=element.nombre%>
                     </p>
                     <!-- Installation's opening name. -->
-                    <p><i class="fa fa-hourglass-1"></i> Apertura:
+                    <p><i class="fa fa-hourglass-1" alt="Hourglass with the sand at the top icon"></i> Apertura:
                       <%=element.horario_apertura%>
                     </p>
                     <!-- Installation's closing name. -->
-                    <p><i class="fa fa-hourglass-3"></i> Cierre: <%=element.horario_cierre%>
+                    <p><i class="fa fa-hourglass-3" alt="Hourglass with the sand at the bottom icon"></i> Cierre: <%=element.horario_cierre%>
                     </p>
                     <!-- Installation's booking type (individual/collective). -->
-                    <p><i class="fa fa-map-pin"></i> Tipo reserva: <%=element.tipo_reserva%>
+                    <p><i class="fa fa-map-pin" alt="Pin icon"></i> Tipo reserva: <%=element.tipo_reserva%>
                     </p>
                     <!-- Installation's capacity. -->
-                    <p><i class="fa fa-group"></i> Aforo: <%=element.aforo%>
+                    <p><i class="fa fa-group" alt="Group of people icon"></i> Aforo: <%=element.aforo%>
                     </p>
                   </div>
                 </div>
