@@ -2,9 +2,11 @@
 <html lang="en">
 
 <!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
 <head>
     <%- include ('pieces/head')%>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -34,14 +36,18 @@
                                     <div class="col-sm-7 col-11 p-0">
                                         <div
                                             class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
-                                            <span class="row justify-content-center mb-2 mt-1"><%=element.nombre%></span>
+                                            <span class="row justify-content-center mb-2 mt-1">
+                                                <%=element.nombre%>
+                                            </span>
                                             <% if (element.imagen_perfil===null) { %>
-                                                <img src="/images/default_picture.jpg" alt="foto de perfil por defecto"
-                                                class="img-fluid mb-2 list_usuario_img">
-                                            <%}else{ %>
-                                                <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>" alt="foto de perfil de <%=element.nombre%>"
-                                                class="img-fluid mb-2 list_usuario_img">
-                                            <%};%>
+                                                <img src="/images/default_picture.jpg"
+                                                    alt="Default user profile picture"
+                                                    class="img-fluid mb-2 list_usuario_img">
+                                                <%}else{ %>
+                                                    <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
+                                                        alt="User named <%=element.nombre%> profile picture"
+                                                        class="img-fluid mb-2 list_usuario_img">
+                                                    <%};%>
                                         </div>
                                     </div>
                                     <!-- buttons -->
@@ -53,8 +59,8 @@
                                                 class="fa fa-eye"></i> Detalles</button>
                                         <button type="button"
                                             class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate validar_usuario"
-                                            id="validar_usuario_<%=element.id%>"><i
-                                                class="fa fa-check"></i> Aceptar</button>
+                                            id="validar_usuario_<%=element.id%>"><i class="fa fa-check"></i>
+                                            Aceptar</button>
                                         <button type="button"
                                             class="btn btn-sm btn-danger mb-sm-auto mb-2 text-truncate eliminar_usuario"
                                             id="eliminar_usuario_<%=element.id%>">
@@ -76,22 +82,36 @@
                                                 <div
                                                     class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
                                                     <% if (element.imagen_perfil===null) { %>
-                                                        <img src="/images/default_picture.jpg" alt="foto de perfil por defecto"
-                                                        class="img-fluid">
-                                                    <%}else{ %>
-                                                        <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>" alt="foto de perfil de <%=element.nombre%>"
-                                                        class="img-fluid">
-                                                    <%};%>
+                                                        <img src="/images/default_picture.jpg"
+                                                            alt="Default profile picture" class="img-fluid">
+                                                        <%}else{ %>
+                                                            <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
+                                                                alt="User named <%=element.nombre%> profile picture"
+                                                                class="img-fluid">
+                                                            <%};%>
                                                 </div>
                                             </div>
                                             <div
                                                 class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
-                                                <p><i class="fa fa-user-secret"></i> Nombre: <%=element.nombre%></p>
-                                                <p><i class="fa fa-user-plus"></i> Apellido: <%=element.apellidos%></p>
-                                                <p><i class="fa fa-envelope"></i> Correo: <%=element.correo%></p>
-                                                <p><i class="fa fa-building"></i> Facultad: <%=element.facultadUser%></p>
-                                                <p><i class="fa fa-book"></i> Curso: <%=element.curso%></p>
-                                                <p><i class="fa fa-group"></i> Grupo: <%=element.grupo%></p>
+                                                <p><i class="fa fa-user-secret"
+                                                        alt="Icon of a guy disguised as a secret agent"></i> Nombre:
+                                                    <%=element.nombre%>
+                                                </p>
+                                                <p><i class="fa fa-user-plus"
+                                                        alt="Icon of a person with a plus symbol"></i> Apellido:
+                                                    <%=element.apellidos%>
+                                                </p>
+                                                <p><i class="fa fa-envelope" alt="Envelope icon"></i> Correo:
+                                                    <%=element.correo%>
+                                                </p>
+                                                <p><i class="fa fa-building" alt="Building icon"></i> Facultad:
+                                                    <%=element.facultadUser%>
+                                                </p>
+                                                <p><i class="fa fa-book" alt="Book icon"></i> Curso: <%=element.curso%>
+                                                </p>
+                                                <p><i class="fa fa-group" alt="Group of people icon"></i> Grupo:
+                                                    <%=element.grupo%>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

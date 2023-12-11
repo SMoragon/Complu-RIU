@@ -13,56 +13,53 @@
                                     <%=element.nombre%>
                                 </span>
                                 <% if (element.imagen_perfil===null) { %>
-                                    <img src="/images/default_picture.jpg" alt="foto de perfil por defecto"
+                                    <img src="/images/default_picture.jpg" alt="Default profile picture"
                                         class="img-fluid mb-2 list_usuario_img">
-                                <%}else{ %>
-                                    <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
-                                        alt="foto de perfil de <%=element.nombre%>"
-                                        class="img-fluid mb-2 list_usuario_img">
-                                <%};%>
+                                    <%}else{ %>
+                                        <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
+                                            alt="User named <%=element.nombre%> profile picture"
+                                            class="img-fluid mb-2 list_usuario_img">
+                                        <%};%>
                             </div>
                         </div>
                         <!-- buttons with see details, statistics, become admin if the user not are admin and history options -->
                         <div
                             class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                             <% if (element.es_admin===0) { %>
-                                <button type="button"
-                                    class="btn btn-sm btn-success mt-sm-auto my-1 text-truncate"
+                                <button type="button" class="btn btn-sm btn-success mt-sm-auto my-1 text-truncate"
                                     data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
-                                    class="fa fa-eye"></i> Detalles</button>
+                                        class="fa fa-eye" alt="Eye icon"></i> Detalles</button>
                                 <button type="button"
                                     class="btn btn-sm btn-primary my-1 text-truncate estadistica_usuario"
                                     id="estadistica_usuario_button_<%=element.id%>" data-bs-toggle="modal"
-                                    data-bs-target="#estadistica_usuario_<%=element.id%>"><i
-                                    class="fa fa-bar-chart"></i>
+                                    data-bs-target="#estadistica_usuario_<%=element.id%>"><i class="fa fa-bar-chart"
+                                        alt="Bar chart icon"></i>
                                     Ver
                                     Estadistica</button>
-                                <button type="button"
-                                    class="btn btn-sm btn-info my-1 text-truncate hacer_admin_button"
+                                <button type="button" class="btn btn-sm btn-info my-1 text-truncate hacer_admin_button"
                                     id="hacer_admin_button_<%=element.id%>"><i class="fa fa-rocket"></i>
                                     Hacer Admin</button>
                                 <button type="button" id="historial_usuario_btn_<%=element.id%>"
                                     class="btn btn-sm btn-warning mb-sm-auto my-1 text-truncate historial_usuario"
                                     data-bs-toggle="modal" data-bs-target="#historial_usuario_<%=element.id%>">
-                                    <i class="fa fa-history"></i> Historial</button>
-                            <%}else{ %>
-                                <button type="button"
-                                    class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
-                                    data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
-                                    class="fa fa-eye"></i> Detalles</button>
-                                <button type="button"
-                                    class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate estadistica_usuario"
-                                    id="estadistica_usuario_button_<%=element.id%>" data-bs-toggle="modal"
-                                    data-bs-target="#estadistica_usuario_<%=element.id%>"><i
-                                    class="fa fa-bar-chart"></i>
-                                    Ver
-                                    Estadistica</button>
-                                <button type="button" id="historial_usuario_btn_<%=element.id%>"
-                                    class="btn btn-sm btn-warning mb-sm-auto mb-2 text-truncate historial_usuario"
-                                    data-bs-toggle="modal" data-bs-target="#historial_usuario_<%=element.id%>">
-                                    <i class="fa fa-history"></i> Historial</button>
-                            <%};%>
-                                        
+                                    <i class="fa fa-history" alt="History icon"></i> Historial</button>
+                                <%}else{ %>
+                                    <button type="button" class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                                        data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
+                                            class="fa fa-eye" alt="Eye icon"></i> Detalles</button>
+                                    <button type="button"
+                                        class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate estadistica_usuario"
+                                        id="estadistica_usuario_button_<%=element.id%>" data-bs-toggle="modal"
+                                        data-bs-target="#estadistica_usuario_<%=element.id%>"><i class="fa fa-bar-chart"
+                                            alt="Bar chart icon"></i>
+                                        Ver
+                                        Estadistica</button>
+                                    <button type="button" id="historial_usuario_btn_<%=element.id%>"
+                                        class="btn btn-sm btn-warning mb-sm-auto mb-2 text-truncate historial_usuario"
+                                        data-bs-toggle="modal" data-bs-target="#historial_usuario_<%=element.id%>">
+                                        <i class="fa fa-history" alt="History icon"></i> Historial</button>
+                                    <%};%>
+
                         </div>
                     </div>
                 </div>
@@ -79,27 +76,31 @@
                                 <div class="col-sm-7 col-12 p-0">
                                     <div class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
                                         <% if (element.imagen_perfil===null) { %>
-                                            <img src="/images/default_picture.jpg" alt="foto de perfil por defecto"
+                                            <img src="/images/default_picture.jpg" alt="Default profile picture"
                                                 class="img-fluid">
                                             <%}else{ %>
                                                 <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
-                                                    alt="foto de perfil de <%=element.nombre%>" class="img-fluid">
+                                                    alt="User named <%=element.nombre%> profile picture"
+                                                    class="img-fluid">
                                                 <%};%>
                                     </div>
                                 </div>
                                 <div
                                     class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
-                                    <p><i class="fa fa-user-secret"></i> Nombre: <%=element.nombre%>
+                                    <p><i class="fa fa-user-secret" alt="Guy disguised as a detective icon"></i> Nombre:
+                                        <%=element.nombre%>
                                     </p>
-                                    <p><i class="fa fa-user-plus"></i> Apellido: <%=element.apellidos%>
+                                    <p><i class="fa fa-user-plus" alt="Icon of a person with a plus symbol"></i>
+                                        Apellido: <%=element.apellidos%>
                                     </p>
-                                    <p><i class="fa fa-envelope"></i> Correo: <%=element.correo%>
+                                    <p><i class="fa fa-envelope" alt="Envelope icon"></i> Correo: <%=element.correo%>
                                     </p>
-                                    <p><i class="fa fa-building"></i> Facultad: <%=element.facultadUser%>
+                                    <p><i class="fa fa-building" alt="Building icon"></i> Facultad:
+                                        <%=element.facultadUser%>
                                     </p>
-                                    <p><i class="fa fa-book"></i> Curso: <%=element.curso%>
+                                    <p><i class="fa fa-book" alt="Book icon"></i> Curso: <%=element.curso%>
                                     </p>
-                                    <p><i class="fa fa-group"></i> Grupo: <%=element.grupo%>
+                                    <p><i class="fa fa-group" alt="Group of people icon"></i> Grupo: <%=element.grupo%>
                                     </p>
                                 </div>
                             </div>

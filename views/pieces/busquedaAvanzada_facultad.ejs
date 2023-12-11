@@ -5,9 +5,9 @@
         <% facultades.forEach(element=> { %>
             <div class="col-10 row bg-info-subtle border border-3 rounded-4 border-info my-3">
                 <div class="d-inline-block col-sm-6 col-12 mt-2">
-                    <p><i class="fa fa-key"></i> Id: <%=element.id%>
+                    <p><i class="fa fa-key" alt="Key icon"></i> Id: <%=element.id%>
                     </p>
-                    <p><i class="fa fa-building"></i> Nombre Facultad:
+                    <p><i class="fa fa-building" alt="Building icon"></i> Nombre Facultad:
                         <%=element.nombre%>
                     </p>
                 </div>
@@ -16,11 +16,12 @@
                     class="d-inline-block col-sm-6 col-12 d-flex justify-content-sm-end justify-content-center my-auto">
                     <button type="button" id="user_list_button_<%=element.id%>"
                         class="user_list_button btn btn-sm btn-success text-truncate mx-2 mb-2" data-bs-toggle="modal"
-                        data-bs-target="#user_list_<%=element.id%>"><i class="fa fa-group"></i> Listar Usuario</button>
+                        data-bs-target="#user_list_<%=element.id%>"><i class="fa fa-group"
+                            alt="Group of people icon"></i> Listar Usuario</button>
                     <button type="button" id="estadistica_facultad_button_<%=element.id%>"
                         class="btn btn-sm btn-primary text-truncate mx-2 mb-2 estadistica_facultad"
                         data-bs-toggle="modal" data-bs-target="#estadistica_facultad_<%=element.id%>"><i
-                            class="fa fa-bar-chart"></i> Ver
+                            class="fa fa-bar-chart" - alt="Bar chart icon"></i> Ver
                         Estadistica</button>
                 </div>
             </div>

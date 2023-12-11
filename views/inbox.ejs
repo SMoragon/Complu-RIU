@@ -42,9 +42,9 @@
                                         class="user_info d-flex flex-wrap justify-content-center flex-row">
             
                                         <%if (mensaje.imagen_perfil){%>
-                                            <img class="remitent_img rounded-5 col-md-4" src="data:image/*;base64, <%= new Buffer(mensaje.imagen_perfil).toString('base64'); %>" alt=""> 
+                                            <img class="remitent_img rounded-5 col-md-4" src="data:image/*;base64, <%= new Buffer(mensaje.imagen_perfil).toString('base64'); %>" alt="Sender profile picture."> 
                                         <%}else {%>    
-                                            <img class="remitent_img rounded-5 col-md-4" src="/images/default_picture.jpg" class= alt>
+                                            <img class="remitent_img rounded-5 col-md-4" src="/images/default_picture.jpg" alt="Default sender profile picture.">
                                         <%}%>
                                         <div
                                             class="remitent_text text-center my-sm-auto my-1 mx-md-2 col-md-7">
@@ -94,7 +94,7 @@
                                         placeholder="Buscar correo por nombre, contenido..."
                                         name="filter_by">
                                     <button id="get_filtered_mail" type="submit"
-                                        class="btn btn-primary mx-1 fa fa-search"></button>
+                                        class="btn btn-primary mx-1 fa fa-search" alt="Search icon"></button>
                                 </form>
                             </div>
 
