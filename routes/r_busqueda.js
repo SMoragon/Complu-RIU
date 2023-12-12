@@ -1,8 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
+const querystring = require("querystring");
+const pool = require("../pool.js");
+const dao = require("../dao.js");
+
+// Dao and pool initialization.
+var instPool = pool.get_pool();
+var instDao = new dao(instPool.get_pool());
+
 // enrouting request to get list of users with the faculty id giving as params.
-app.get("/facultad_usuarios/:id", (request, response) => {
+router.get("/facultad_usuarios/:id", (request, response) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
@@ -23,7 +31,7 @@ app.get("/facultad_usuarios/:id", (request, response) => {
   });
   
   // enrouting request to get a list of user history with user id as parameters.
-  app.get("/historial_usuario/:id", (request, response) => {
+  router.get("/historial_usuario/:id", (request, response) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
@@ -44,7 +52,7 @@ app.get("/facultad_usuarios/:id", (request, response) => {
   });
   
   // enrouting request to get a list of reservation history by providing a facility id as parameters.
-  app.get("/historial_instalacion/:id", (request, response) => {
+  router.get("/historial_instalacion/:id", (request, response) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
@@ -65,7 +73,7 @@ app.get("/facultad_usuarios/:id", (request, response) => {
   });
   
   // enrouting request to get user statistics providing user id as parameters.
-  app.get("/estadistica_usuario/:id", (request, response) => {
+  router.get("/estadistica_usuario/:id", (request, response) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
@@ -86,7 +94,7 @@ app.get("/facultad_usuarios/:id", (request, response) => {
   });
   
   // enrouting request to get faculty statistics providing faculty id as parameters.
-  app.get("/estadistica_facultad/:id", (request, response) => {
+  router.get("/estadistica_facultad/:id", (request, response) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
@@ -107,7 +115,7 @@ app.get("/facultad_usuarios/:id", (request, response) => {
   });
   
   // advanced search page enrouting.
-  app.get("/busquedaAvanzada", (request, response, next) => {
+  router.get("/busquedaAvanzada", (request, response, next) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         // get search querys

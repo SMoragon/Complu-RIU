@@ -1,8 +1,18 @@
 var express = require('express');
 var router = express.Router();
 
+const multer = require("multer");
+const multerFactory = multer({ storage: multer.memoryStorage() });
+
+const pool = require("../pool.js");
+const dao = require("../dao.js");
+
+// Dao and pool initialization.
+var instPool = pool.get_pool();
+var instDao = new dao(instPool);
+
 // system configuration page enrouting.
-app.get("/config_system", (request, response) => {
+router.get("/config_system", (request, response) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         response.status(200).render("config_system.ejs");
@@ -16,7 +26,7 @@ app.get("/config_system", (request, response) => {
   
   
   // enrouting request to update system configuration.
-  app.put(
+  router.put(
     "/update_system/:imagen",
     multerFactory.single("org_img"),
     body("org_name").escape(),

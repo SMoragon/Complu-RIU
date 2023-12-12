@@ -1,5 +1,14 @@
 var express = require('express');
 var router = express.Router();
+const multer = require("multer");
+const multerFactory = multer({ storage: multer.memoryStorage() });
+
+const pool = require("../pool.js");
+const dao = require("../dao.js");
+
+// Dao and pool initialization.
+var instPool = pool.get_pool();
+var instDao = new dao(instPool);
 
 // Installation management page enrouting.
 router.get("/gestion_instalacion", (request, response) => {

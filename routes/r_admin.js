@@ -1,8 +1,19 @@
 var express = require('express');
 var router = express.Router();
 
+const querystring = require("querystring");
+const pool = require("../pool.js");
+const dao = require("../dao.js");
+
+// Dao and pool initialization.
+var instPool = pool.get_pool();
+var instDao = new dao(instPool.get_pool());
+
+// Constant to indicate the main admin (to send validation mails and so on).
+const ID_ADMIN = 1;
+
 // validate user page enrouting 
-router.get("/admin/validar_registro", (request, response, next) => {
+router.get("/validar_registro", (request, response, next) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         instDao.obtenerUsuariosNoValidatos((err, res) => {
@@ -21,7 +32,7 @@ router.get("/admin/validar_registro", (request, response, next) => {
   });
   
   // enrouting request to validate user with the id giving as params.
-  router.patch("/admin/validar_registro/:id", (request, response, next) => {
+  router.patch("/validar_registro/:id", (request, response, next) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
@@ -58,7 +69,7 @@ router.get("/admin/validar_registro", (request, response, next) => {
   });
   
   // enrouting request to convert a user with the id giving as params to admin.
-  router.patch("/admin/hacer_admin/:id", (request, response, next) => {
+  router.patch("/hacer_admin/:id", (request, response, next) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
@@ -97,7 +108,7 @@ router.get("/admin/validar_registro", (request, response, next) => {
   });
   
   // enrouting request to delete user with the id giving as params.
-  router.delete("/admin/eliminar_registro/:id", (request, response, next) => {
+  router.delete("/eliminar_registro/:id", (request, response, next) => {
     if (request.session.isLogged) {
       if (request.session.is_admin) {
         var id = request.params.id;
