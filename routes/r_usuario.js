@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+const { validationResult } = require("express-validator");
+
 const multer = require("multer");
 const multerFactory = multer({ storage: multer.memoryStorage() });
 
@@ -261,7 +263,7 @@ router.get("/inbox", (request, response, next) => {
                 request.session.is_admin = context.es_admin;
                 request.session.validated = context.validado;
                 request.session.sinLeer = 0;
-                response.status(200).redirect("index.html");
+                response.status(200).redirect("/index.html");
               }
             }
           }
