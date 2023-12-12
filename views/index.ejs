@@ -15,9 +15,9 @@
     </header>
     <main>
 
-      <!-- If the user is logged, a couple of buttons to check the bookings made and open a calendar to show all bookings (and even make some if wanted) will
+      <!-- If the user is logged, is not admin and its validated, a couple of buttons to check the bookings made and open a calendar to show all bookings (and even make some if wanted) will
       be displayed. -->
-      <%if (session.isLogged && !session.isAdmin){%>
+      <%if (session.isLogged && !session.isAdmin && session.validated){%>
       <button class="btn btn-secondary mx-3" type="button"
         data-bs-toggle="modal"
         data-bs-target="#book_inst_list_modal" id="list_all_books_but">
@@ -78,15 +78,17 @@
                 <div
                   class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                   <button type="button"
-                    class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                    class="btn btn-sm btn-success mt-sm-auto mt-2 my-auto text-truncate"
                     data-bs-toggle="modal"
                     data-bs-target="#instalacion_detalles_<%=element.id%>">
                     <i class="fa fa-eye" alt="Eye icon"></i> Detalles</button>
+                    <%if (session.isLogged && !session.isAdmin && session.validated){%>
                   <button type="button"
                     class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate"
                     data-bs-toggle="modal"
                     data-bs-target="#instalacion_reservar_<%=element.id%>"><i
                       class="fa fa-calendar-check-o" alt="Check icon"></i> Reservar</button>
+                    <%}%>
                 </div>
               </div>
             </div>

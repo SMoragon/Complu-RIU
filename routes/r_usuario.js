@@ -259,6 +259,7 @@ router.get("/inbox", (request, response, next) => {
                 request.session.user = context.nombre;
                 request.session.mail = context.correo;
                 request.session.is_admin = context.es_admin;
+                request.session.validated = context.validado;
                 request.session.sinLeer = 0;
                 response.status(200).redirect("index.html");
               }
@@ -278,6 +279,7 @@ router.get("/inbox", (request, response, next) => {
     request.session.defaultProfile = undefined;
     request.session.sinLeer = undefined;
     request.session.is_admin = undefined;
+    request.session.validated=undefined;
     response.render("index.ejs");
   });
 

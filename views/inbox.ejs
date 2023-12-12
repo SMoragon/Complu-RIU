@@ -80,10 +80,12 @@
                         <!-- Search bar and write email button container. -->
                         <div class="email_search_container rounded-5 col-12 text-center py-sm-3 py-1">
 
+                            <%if ( session.validated){%>
                             <button id="write_mail_but" type="button"
                                 class="inbox_buts rounded-3 mx-2 p-2"
                                 data-bs-toggle="modal"
                                 data-bs-target="#write_email">Redactar</button>
+                                <%}%>
 
                             <!-- When the user searchs something (user name, surname, email content...), a request is made to the server as a form. -->
                             <div class="d-inline-block">
