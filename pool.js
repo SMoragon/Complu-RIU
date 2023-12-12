@@ -13,7 +13,6 @@ class Pool {
         database: database,
       });
     }
-
   }
 
   static get_pool() {

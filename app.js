@@ -22,7 +22,7 @@ const middlewareSession = session({
 
 // Dao and pool initialization.
 var instPool = new pool("localhost", "root", "", "ucm_riu");
-var instDao = new dao(instPool.get_pool());
+var instDao = new dao(pool.get_pool());
 
 // Routers import
 const inst_router = require("./routes/r_instalaciones.js");

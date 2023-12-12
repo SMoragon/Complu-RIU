@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 const multer = require("multer");
 const multerFactory = multer({ storage: multer.memoryStorage() });
+const express_validator = require("express-validator");
+const body = express_validator.body;
 
 const pool = require("../pool.js");
 const dao = require("../dao.js");

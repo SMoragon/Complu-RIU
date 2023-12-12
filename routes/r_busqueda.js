@@ -7,7 +7,7 @@ const dao = require("../dao.js");
 
 // Dao and pool initialization.
 var instPool = pool.get_pool();
-var instDao = new dao(instPool.get_pool());
+var instDao = new dao(instPool);
 
 // enrouting request to get list of users with the faculty id giving as params.
 router.get("/facultad_usuarios/:id", (request, response) => {

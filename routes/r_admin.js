@@ -7,7 +7,7 @@ const dao = require("../dao.js");
 
 // Dao and pool initialization.
 var instPool = pool.get_pool();
-var instDao = new dao(instPool.get_pool());
+var instDao = new dao(instPool);
 
 // Constant to indicate the main admin (to send validation mails and so on).
 const ID_ADMIN = 1;

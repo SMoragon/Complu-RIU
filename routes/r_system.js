@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+const express_validator = require("express-validator");
+const body = express_validator.body;
+
 const multer = require("multer");
 const multerFactory = multer({ storage: multer.memoryStorage() });
 
