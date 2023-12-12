@@ -9,7 +9,7 @@ var bg_colours=["lightblue","lightcoral","lightgreen", "lightsalmon", "orange","
 $("#watch_calendar_but").on("click", function (event) {
   $.ajax({
     method: "GET",
-    url: "/obtener_reservas_inst/",
+    url: "/reservas/obtener_reservas_inst/",
     success: function (data, textStatus, jqHXR) {
     
       // If successful, we get the bookings and the installations information for future purposes.
@@ -155,7 +155,7 @@ $("#reservar_instalacion_calendario").on("submit", function (event) {
     else {
         $.ajax({
             method:"POST",
-            url:"/reservar_instalacion/",
+            url:"/reservas/reservar_instalacion/",
             contentType:"application/json",
             data:JSON.stringify({
                 "inst_id":inst_id,

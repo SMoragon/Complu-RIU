@@ -6,7 +6,7 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[2]
         $.ajax({
             type: 'PATCH',
-            url: '/validar_registro/' + id,
+            url: '/admin/validar_registro/' + id,
             contentType: false,
             cache: false,
             processData: false,
@@ -32,7 +32,7 @@ $(document).ready((e) => {
         console.log(id)
         $.ajax({
             type: 'DELETE',
-            url: '/eliminar_registro/' + id,
+            url: '/admin/eliminar_registro/' + id,
             contentType: false,
             cache: false,
             processData: false,

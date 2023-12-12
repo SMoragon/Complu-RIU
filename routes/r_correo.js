@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
+
 const express_validator = require("express-validator");
 const body = express_validator.body;
+
 const moment = require("moment");
 // Moment language setup.
 moment.locale("es");

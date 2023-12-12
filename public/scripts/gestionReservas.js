@@ -35,7 +35,7 @@ $(".res_inst_form").on("submit", function (event) {
     else {
         $.ajax({
             method:"POST",
-            url:"/reservar_instalacion/",
+            url:"/reservas/reservar_instalacion/",
             contentType:"application/json",
             data:JSON.stringify({
                 "inst_id":inst_id,
@@ -72,7 +72,7 @@ $("#wait_list_ok_but").on('click',function(event){
     if(date||start||end){inst_date=date; inst_from=start; inst_to=end;}
     $.ajax({
         method:"POST",
-        url:"/lista_espera/",
+        url:"/reservas/lista_espera/",
         contentType:"application/json",
         data:JSON.stringify({
             "inst_id":inst_id,
@@ -102,7 +102,7 @@ $(".cancel_but").on("click", function(event){
 $("#list_all_books_but").on("click", function(event){
     $.ajax({
         method:"GET",
-        url: "/obtener_reservas/",
+        url: "/reservas/obtener_reservas/",
         success: function(data, textStatus, jqHXR){
             var reservas= data.reservas;
             $("#booking_cards_container").replaceWith($("<div>").prop("id","booking_cards_container"))
@@ -170,7 +170,7 @@ $("#confirm_del_res_but").on("click", function(event){
 
    $.ajax({
     method:"DELETE",
-    url: "/eliminar_reserva/"+id_res,
+    url: "/reservas/eliminar_reserva/"+id_res,
     success: function(data, textStatus, jqHXR){
         $("#del_res_ok_modal").modal('show').slideDown(700);
     },
