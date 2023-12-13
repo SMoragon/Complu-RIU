@@ -75,246 +75,373 @@
                   </div>
                 </div>
                 <!-- Watch details and book buttons, so that a logged user (again, external validation ensures this) can benefit from it. -->
+                <%if (session.isLogged && !session.isAdmin &&
+                session.validated){%>
                 <div
                   class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
                   <button type="button"
-                    class="btn btn-sm btn-success mt-sm-auto mt-2 my-auto text-truncate"
+                    class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
                     data-bs-toggle="modal"
                     data-bs-target="#instalacion_detalles_<%=element.id%>">
                     <i class="fa fa-eye" alt="Eye icon"></i> Detalles</button>
-                    <%if (session.isLogged && !session.isAdmin && session.validated){%>
+
                   <button type="button"
                     class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate"
                     data-bs-toggle="modal"
                     data-bs-target="#instalacion_reservar_<%=element.id%>"><i
-                      class="fa fa-calendar-check-o" alt="Check icon"></i> Reservar</button>
-                    <%}%>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Booking installation's form. -->
-          <div class="modal top fade book_inst_modal"
-            id="instalacion_reservar_<%=element.id%>"
-            data-bs-backdrop="static">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-              <div class="modal-content book_inst_content">
-                <div class="modal-header">
-                  Reservar una instalación
-                </div>
-                <form method="POST" action="/reservas/reservar_instalacion"
-                  id="instalacion_reservar_form_<%=element.id%>"
-                  class="res_inst_form">
-
-                  <div class="modal-body container">
-
-                    <div class="row justify-content-center">
-
-                      <div class="form-group row justify-content-center my-2">
-
-                        <!-- Book's date. -->
-                        <label for="book_inst_date_<%=element.id%>"
-                          class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
-                        <div class="col-sm-7">
-                          <input type="date" id="book_inst_date_<%=element.id%>"
-                            onkeydown="return false" name="book_inst_date"
-                            class="inst_date book_inst_input form-control form-control-sm rounded-4">
-                        </div>
-
-                        <!-- If the user books in a date previous than current one, a message will be displayed. -->
-                        <span
-                          class="book_form_error date_error text-danger text-center mx-auto">La
-                          fecha introducida debe ser igual o posterior a la
-                          actual.</span>
-
-                      </div>
-                    </div>
-
-                    <div class="row justify-content-center">
-                      <div class="form-group row justify-content-center my-2">
-                        <!-- Book's start time. -->
-                        <label for="book_inst_from_<%=element.id%>"
-                          class="col-form-label col-sm-2 text-truncate "><strong>Hora
-                            de inicio:</strong></label>
-                        <div class="col-sm-7">
-                          <input type="time" id="book_inst_from_<%=element.id%>"
-                            onkeydown="return false" name="book_inst_from"
-                            class="inst_from book_inst_input form-control form-control-sm rounded-4">
-                        </div>
-
-                        <!-- If the user wants to book before the installation opens, a message will be displayed. -->
-                        <span
-                          class="book_form_error start_time_error text-danger text-center mx-auto">La
-                          instalación no abre hasta las <%=element.horario_apertura%>.</span>
-
-                        <!-- If the user wants to bookin the current day but in an hour that has already passed, a message will be diplayed. -->
-                          <span
-                          class="book_form_error start_act_error text-danger text-center mx-auto">La
-                          hora de inicio de la reserva debe ser mayor a la hora
-                          actual</span>
-                      </div>
-                    </div>
-
-                    <div class="row justify-content-center">
-                      <div class="form-group row justify-content-center my-2">
-                        <!-- Book's end time. -->
-                        <label for="book_inst_to_<%=element.id%>"
-                          class="col-form-label col-sm-2 text-truncate "><strong>Hora
-                            de fin:</strong></label>
-                        <div class="col-sm-7">
-                          <input type="time" id="book_inst_to_<%=element.id%>"
-                            onkeydown="return false" name="book_inst_to"
-                            class="inst_to book_inst_input form-control form-control-sm rounded-4">
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                    <div class="row justify-content-center">
-                      <div class="form-group row justify-content-center my-2">
-                        <label for="book_inst_how_many_<%=element.id%>"
-                          class="col-form-label col-sm-2 text-truncate "><strong>Asistentes</strong></label>
-                        <div class="col-sm-7">
-                          <input type="number"
-                            id="book_inst_how_many_<%=element.id%>"
-                            onkeydown="return false" min="1"
-                            <%if (element.tipo_reserva==="colectivo"){%>
-                          max="<%=element.aforo%>"
-                          <%}else{%>
-                          max="1"
-                          <%}%>
-                          name="book_inst_how_many"
-                          class="inst_how_many book_inst_input form-control form-control-sm rounded-4">
-                        </div>
-                        
-                        <!-- If the user wants to book after the installation has closed, a message will be displayed. -->
-                        <span
-                          class="book_form_error end_time_error text-danger text-center mx-auto">La
-                          instalación cierra a las <%=element.horario_cierre%>.</span>
-
-                        <!-- If the user wants to book and finish before starting, a message will be displayed. -->
-                        <span
-                          class="book_form_error total_time_error text-danger text-center mx-auto">La
-                          hora de inicio de la reserva debe ser anterior a la de
-                          fin.</span>
-                          
-                        <!-- If there is any empty field, a message will be displayed. -->
-                        <span
-                          class="book_form_error empty_error text-danger text-center mx-auto">Todos
-                          los campos deben estar rellenos.</span>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <input class="when_opens" type="hidden"
-                    value="<%=element.horario_apertura%>">
-                  <input class="when_closes" type="hidden"
-                    value="<%=element.horario_cierre%>">
-                  <input class="inst_id" type="hidden"
-                    value="<%=element.id%>">
-
-                  <div class="modal-footer">
-                    <input type="submit" class="btn btn-lg btn-success"></input>
-                  <button type="reset" class="cancel_but btn btn-lg btn-info"
-                    data-bs-dismiss="modal">Cancelar</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        
-        <!-- Modal that show the details of an installation (name, picture, type of booking, (individual/collective), capacity and opening/closing time). -->
-        <div class="modal top fade" id="instalacion_detalles_<%=element.id%>"
-          data-bs-backdrop="static">
-          <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                Detalles
-              </div>
-              <div class="modal-body container">
-                <div class="row justify-content-center">
-                  <div class="col-sm-7 col-12 p-0">
-                    <div
-                      class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
-                      <img
-                        src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
-                        alt="<%=element.nombre%>" class="img-fluid rounded-4">
-                    </div>
-                  </div>
-                  
-                  
+                      class="fa fa-calendar-check-o" alt="Check icon"></i>
+                    Reservar</button>
+                  <%}else{%>
                   <div
                     class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
-                    <!-- Installation's name. -->
-                    <p><i class="fa fa-building" alt="Building icon"></i> Nombre Instalación:
-                      <%=element.nombre%>
-                    </p>
-                    <!-- Installation's opening name. -->
-                    <p><i class="fa fa-hourglass-1" alt="Hourglass with the sand at the top icon"></i> Apertura:
-                      <%=element.horario_apertura%>
-                    </p>
-                    <!-- Installation's closing name. -->
-                    <p><i class="fa fa-hourglass-3" alt="Hourglass with the sand at the bottom icon"></i> Cierre: <%=element.horario_cierre%>
-                    </p>
-                    <!-- Installation's booking type (individual/collective). -->
-                    <p><i class="fa fa-map-pin" alt="Pin icon"></i> Tipo reserva: <%=element.tipo_reserva%>
-                    </p>
-                    <!-- Installation's capacity. -->
-                    <p><i class="fa fa-group" alt="Group of people icon"></i> Aforo: <%=element.aforo%>
-                    </p>
+                    <button type="button"
+                      class="btn btn-sm btn-success mt-sm-auto mt-2 my-auto text-truncate"
+                      data-bs-toggle="modal"
+                      data-bs-target="#instalacion_detalles_<%=element.id%>">
+                      <i class="fa fa-eye" alt="Eye icon"></i> Detalles</button>
+
+                    <%}%>
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-lg btn-outline-success"
-                  data-bs-dismiss="modal">Aceptar</button>
+            </div>
+
+            <!-- Booking installation's form. -->
+            <div class="modal top fade book_inst_modal"
+              id="instalacion_reservar_<%=element.id%>"
+              data-bs-backdrop="static">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content book_inst_content">
+                  <div class="modal-header">
+                    Reservar una instalación
+                  </div>
+                  <form method="POST" action="/reservas/reservar_instalacion"
+                    id="instalacion_reservar_form_<%=element.id%>"
+                    class="res_inst_form">
+
+                    <div class="modal-body container">
+
+                      <div class="row justify-content-center">
+
+                        <div class="form-group row justify-content-center my-2">
+
+                          <!-- Book's date. -->
+                          <label for="book_inst_date_<%=element.id%>"
+                            class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
+                          <div class="col-sm-7">
+                            <input type="date"
+                              id="book_inst_date_<%=element.id%>"
+                              onkeydown="return false" name="book_inst_date"
+                              class="inst_date book_inst_input form-control form-control-sm rounded-4">
+                          </div>
+
+                          <!-- If the user books in a date previous than current one, a message will be displayed. -->
+                          <span
+                            class="book_form_error date_error text-danger text-center mx-auto">La
+                            fecha introducida debe ser igual o posterior a la
+                            actual.</span>
+
+                        </div>
+                      </div>
+
+                      <div class="row justify-content-center">
+                        <div class="form-group row justify-content-center my-2">
+                          <!-- Book's start time. -->
+                          <label for="book_inst_from_<%=element.id%>"
+                            class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                              de inicio:</strong></label>
+                          <div class="col-sm-7">
+                            <input type="time"
+                              id="book_inst_from_<%=element.id%>"
+                              onkeydown="return false" name="book_inst_from"
+                              class="inst_from book_inst_input form-control form-control-sm rounded-4">
+                          </div>
+
+                          <!-- If the user wants to book before the installation opens, a message will be displayed. -->
+                          <span
+                            class="book_form_error start_time_error text-danger text-center mx-auto">La
+                            instalación no abre hasta las <%=element.horario_apertura%>.</span>
+
+                          <!-- If the user wants to bookin the current day but in an hour that has already passed, a message will be diplayed. -->
+                          <span
+                            class="book_form_error start_act_error text-danger text-center mx-auto">La
+                            hora de inicio de la reserva debe ser mayor a la
+                            hora
+                            actual</span>
+                        </div>
+                      </div>
+
+                      <div class="row justify-content-center">
+                        <div class="form-group row justify-content-center my-2">
+                          <!-- Book's end time. -->
+                          <label for="book_inst_to_<%=element.id%>"
+                            class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                              de fin:</strong></label>
+                          <div class="col-sm-7">
+                            <input type="time" id="book_inst_to_<%=element.id%>"
+                              onkeydown="return false" name="book_inst_to"
+                              class="inst_to book_inst_input form-control form-control-sm rounded-4">
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <div class="row justify-content-center">
+                        <div class="form-group row justify-content-center my-2">
+                          <label for="book_inst_how_many_<%=element.id%>"
+                            class="col-form-label col-sm-2 text-truncate "><strong>Asistentes</strong></label>
+                          <div class="col-sm-7">
+                            <input type="number"
+                              id="book_inst_how_many_<%=element.id%>"
+                              onkeydown="return false" min="1"
+                              <%if (element.tipo_reserva==="colectivo"){%>
+                            max="<%=element.aforo%>"
+                            <%}else{%>
+                            max="1"
+                            <%}%>
+                            name="book_inst_how_many"
+                            class="inst_how_many book_inst_input form-control form-control-sm rounded-4">
+                          </div>
+
+                          <!-- If the user wants to book after the installation has closed, a message will be displayed. -->
+                          <span
+                            class="book_form_error end_time_error text-danger text-center mx-auto">La
+                            instalación cierra a las <%=element.horario_cierre%>.</span>
+
+                          <!-- If the user wants to book and finish before starting, a message will be displayed. -->
+                          <span
+                            class="book_form_error total_time_error text-danger text-center mx-auto">La
+                            hora de inicio de la reserva debe ser anterior a la
+                            de
+                            fin.</span>
+
+                          <!-- If there is any empty field, a message will be displayed. -->
+                          <span
+                            class="book_form_error empty_error text-danger text-center mx-auto">Todos
+                            los campos deben estar rellenos.</span>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <input class="when_opens" type="hidden"
+                      value="<%=element.horario_apertura%>">
+                    <input class="when_closes" type="hidden"
+                      value="<%=element.horario_cierre%>">
+                    <input class="inst_id" type="hidden"
+                      value="<%=element.id%>">
+
+                    <div class="modal-footer">
+                      <input type="submit" class="btn btn-lg btn-success"></input>
+                    <button type="reset" class="cancel_but btn btn-lg btn-info"
+                      data-bs-dismiss="modal">Cancelar</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-        </div>
-        <%})} %>
 
-        <!-- Booking calendar modal, in which an interactive calendar filled with all current bookigns will be displayed. -->
-        <div class="modal top fade" id="calendar_modal"
-          data-bs-backdrop="static">
-          <div
-            class="modal-dialog modal-fullscreen ">
-            <div id="calendar_modal_dialog"
-              class="modal-content">
-              <div class="modal-header">
-                <h3><strong>Calendario de reservas</strong></h3>
-                <button type="button" class="btn-close mx-3"
-                  data-bs-dismiss="modal"></button>
+          <!-- Modal that show the details of an installation (name, picture, type of booking, (individual/collective), capacity and opening/closing time). -->
+          <div class="modal top fade" id="instalacion_detalles_<%=element.id%>"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  Detalles
+                </div>
+                <div class="modal-body container">
+                  <div class="row justify-content-center">
+                    <div class="col-sm-7 col-12 p-0">
+                      <div
+                        class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
+                        <img
+                          src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
+                          alt="<%=element.nombre%>" class="img-fluid rounded-4">
+                      </div>
+                    </div>
+
+                    <div
+                      class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                      <!-- Installation's name. -->
+                      <p><i class="fa fa-building" alt="Building icon"></i>
+                        Nombre Instalación:
+                        <%=element.nombre%>
+                      </p>
+                      <!-- Installation's opening name. -->
+                      <p><i class="fa fa-hourglass-1"
+                          alt="Hourglass with the sand at the top icon"></i>
+                        Apertura:
+                        <%=element.horario_apertura%>
+                      </p>
+                      <!-- Installation's closing name. -->
+                      <p><i class="fa fa-hourglass-3"
+                          alt="Hourglass with the sand at the bottom icon"></i>
+                        Cierre: <%=element.horario_cierre%>
+                      </p>
+                      <!-- Installation's booking type (individual/collective). -->
+                      <p><i class="fa fa-map-pin" alt="Pin icon"></i> Tipo
+                        reserva: <%=element.tipo_reserva%>
+                      </p>
+                      <!-- Installation's capacity. -->
+                      <p><i class="fa fa-group" alt="Group of people icon"></i>
+                        Aforo: <%=element.aforo%>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-lg btn-outline-success"
+                    data-bs-dismiss="modal">Aceptar</button>
+                </div>
               </div>
-              <div
-                class="modal-body ">
+            </div>
+          </div>
+          <%})} %>
 
-                <div class="text-truncate" id="res_calendar"></div>
+          <!-- Booking calendar modal, in which an interactive calendar filled with all current bookigns will be displayed. -->
+          <div class="modal top fade" id="calendar_modal"
+            data-bs-backdrop="static">
+            <div
+              class="modal-dialog modal-fullscreen ">
+              <div id="calendar_modal_dialog"
+                class="modal-content">
+                <div class="modal-header">
+                  <h3><strong>Calendario de reservas</strong></h3>
+                  <button type="button" class="btn-close mx-3"
+                    data-bs-dismiss="modal"></button>
+                </div>
+                <div
+                  class="modal-body ">
+
+                  <div class="text-truncate" id="res_calendar"></div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- If the user books an installation successfully, a message indicating where they can be managed will be shown. -->
+          <div class="modal top fade" id="book_inst_ok"
+            data-bs-backdrop="static">
+            <div
+              class="modal-dialog modal-sm modal-dialog-centered">
+              <div id="book_inst_ok_dialog"
+                class="modal-content">
+
+                <div
+                  class="modal-body container text-center my-2 mx-auto p-3">
+
+                  <div><strong>Su reserva se ha efectuado correctamente.<br>
+                      Puede
+                      ver el estado de sus reservas en la pestaña <i>"Mis reservas"</i>.</strong></div>
+                  <div>
+                    <button
+                      data-bs-dismiss="modal"
+                      class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- If the user books an installation but it overlaps with a previous booking, it will be asked to join to the waiting list or not. -->
+          <div class="modal top fade" id="book_inst_ko"
+            data-bs-backdrop="static">
+            <div
+              class="modal-dialog modal-sm modal-dialog-centered">
+              <div id="book_inst_ko_dialog"
+                class="modal-content">
+
+                <div
+                  class="modal-body container text-center my-2 mx-auto p-3">
+
+                  <div>Actualmente, no existe disponibilidad en el horario que
+                    ha
+                    fijado. ¿Desea apuntarse en la lista de espera y recibir un
+                    mail en caso de cancelación?</div>
+                </div>
+
+                <div class="modal-footer">
+                  <input id="wait_list_ok_but" type="button"
+                    class="btn btn-lg btn-success" value="Aceptar"></input>
+                <button type="button" class="cancel_but btn btn-lg btn-info"
+                  data-bs-dismiss="modal">Cancelar</button>
               </div>
 
             </div>
           </div>
         </div>
 
-        <!-- If the user books an installation successfully, a message indicating where they can be managed will be shown. -->
-        <div class="modal top fade" id="book_inst_ok"
+        <!-- If the user accepts to join to the waiting list and does it successfully, a message will be shown. -->
+        <div class="modal top fade" id="add_wait_list_ok"
           data-bs-backdrop="static">
           <div
             class="modal-dialog modal-sm modal-dialog-centered">
-            <div id="book_inst_ok_dialog"
+            <div id="add_wait_list_ok_dialog"
               class="modal-content">
 
               <div
                 class="modal-body container text-center my-2 mx-auto p-3">
 
-                <div><strong>Su reserva se ha efectuado correctamente.<br> Puede
-                    ver el estado de sus reservas en la pestaña <i>"Mis reservas"</i>.</strong></div>
+                <div><strong>Su reserva se ha añadido con éxito a la lista de
+                    espera.</strong></div>
+                <div>
+                  <button type="reset"
+                    data-bs-dismiss="modal"
+                    class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- If the user decides to cancel a booking, a message indicating that it will be assigned to another waiting user and a confirmation rewquest
+        will be displayed. -->
+        <div class="modal top fade" id="del_res_modal"
+          data-bs-backdrop="static">
+          <div
+            class="modal-dialog modal-sm modal-dialog-centered">
+            <div id="del_res_dialog"
+              class="modal-content">
+              <div class="modal-header">
+                <h3><strong>ATENCIÓN</strong></h3>
+              </div>
+              <div
+                class="modal-body container text-center my-2 mx-auto p-3">
+
+                <div><strong>Si elimina su reserva, ésta será asignada a otro
+                    usuario en caso de haber lista de espera.<br> ¿Desea
+                    continuar? </strong></div>
+                <div>
+                  <button data-bs-dismiss="modal"
+                    class="btn btn-lg btn-outline-warning mt-4 mx-2">Cancelar</button>
+
+                  <button id="confirm_del_res_but"
+                    data-bs-dismiss="modal"
+                    class="btn btn-lg btn-outline-success mt-4">Aceptar</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- If the user decides to cancel the booking even if it will be given to a waiting user, a message will be displayed. -->
+        <div class="modal top fade" id="del_res_ok_modal"
+          data-bs-backdrop="static">
+          <div
+            class="modal-dialog modal-sm modal-dialog-centered">
+            <div id="del_res_ok_dialog"
+              class="modal-content">
+              <div
+                class="modal-body container text-center my-2 mx-auto p-3">
+
+                <div><strong>Su reserva se ha eliminado con éxito.</strong></div>
                 <div>
                   <button
                     data-bs-dismiss="modal"
@@ -326,240 +453,136 @@
           </div>
         </div>
 
-        <!-- If the user books an installation but it overlaps with a previous booking, it will be asked to join to the waiting list or not. -->
-        <div class="modal top fade" id="book_inst_ko"
-          data-bs-backdrop="static">
-          <div
-            class="modal-dialog modal-sm modal-dialog-centered">
-            <div id="book_inst_ko_dialog"
-              class="modal-content">
-
-              <div
-                class="modal-body container text-center my-2 mx-auto p-3">
-
-                <div>Actualmente, no existe disponibilidad en el horario que ha
-                  fijado. ¿Desea apuntarse en la lista de espera y recibir un
-                  mail en caso de cancelación?</div>
-              </div>
-
-              <div class="modal-footer">
-                <input id="wait_list_ok_but" type="button"
-                  class="btn btn-lg btn-success" value="Aceptar"></input>
-              <button type="button" class="cancel_but btn btn-lg btn-info"
-                data-bs-dismiss="modal">Cancelar</button>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- If the user accepts to join to the waiting list and does it successfully, a message will be shown. -->
-      <div class="modal top fade" id="add_wait_list_ok"
-        data-bs-backdrop="static">
-        <div
-          class="modal-dialog modal-sm modal-dialog-centered">
-          <div id="add_wait_list_ok_dialog"
-            class="modal-content">
-
-            <div
-              class="modal-body container text-center my-2 mx-auto p-3">
-
-              <div><strong>Su reserva se ha añadido con éxito a la lista de
-                  espera.</strong></div>
-              <div>
-                <button type="reset"
-                  data-bs-dismiss="modal"
-                  class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- If the user decides to cancel a booking, a message indicating that it will be assigned to another waiting user and a confirmation rewquest
-        will be displayed. -->
-      <div class="modal top fade" id="del_res_modal"
-        data-bs-backdrop="static">
-        <div
-          class="modal-dialog modal-sm modal-dialog-centered">
-          <div id="del_res_dialog"
-            class="modal-content">
-            <div class="modal-header">
-              <h3><strong>ATENCIÓN</strong></h3>
-            </div>
-            <div
-              class="modal-body container text-center my-2 mx-auto p-3">
-
-              <div><strong>Si elimina su reserva, ésta será asignada a otro
-                  usuario en caso de haber lista de espera.<br> ¿Desea
-                  continuar? </strong></div>
-              <div>
-                <button data-bs-dismiss="modal"
-                  class="btn btn-lg btn-outline-warning mt-4 mx-2">Cancelar</button>
-
-                <button id="confirm_del_res_but"
-                  data-bs-dismiss="modal"
-                  class="btn btn-lg btn-outline-success mt-4">Aceptar</button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-        <!-- If the user decides to cancel the booking even if it will be given to a waiting user, a message will be displayed. -->
-      <div class="modal top fade" id="del_res_ok_modal"
-        data-bs-backdrop="static">
-        <div
-          class="modal-dialog modal-sm modal-dialog-centered">
-          <div id="del_res_ok_dialog"
-            class="modal-content">
-            <div
-              class="modal-body container text-center my-2 mx-auto p-3">
-
-              <div><strong>Su reserva se ha eliminado con éxito.</strong></div>
-              <div>
-                <button
-                  data-bs-dismiss="modal"
-                  class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
         <!-- Calendar booking form (similar to the previous one, but here the user has to specify the installation). -->
-      <div class="modal top fade"
-        id="reservar_instalacion_calendario"
-        data-bs-backdrop="static">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-          <div class="modal-content book_inst_content">
-            <div class="modal-header">
-              Reservar una instalación
-            </div>
-            <form method="POST" action="/reservas/reservar_instalacion"
-              id="reservar_instalacion_calendario_form"
-              class="res_inst_cal_form">
+        <div class="modal top fade"
+          id="reservar_instalacion_calendario"
+          data-bs-backdrop="static">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content book_inst_content">
+              <div class="modal-header">
+                Reservar una instalación
+              </div>
+              <form method="POST" action="/reservas/reservar_instalacion"
+                id="reservar_instalacion_calendario_form"
+                class="res_inst_cal_form">
 
-              <div class="modal-body container">
+                <div class="modal-body container">
 
-                <div class="form-group row justify-content-center">
+                  <div class="form-group row justify-content-center">
+
+                    <div class="row justify-content-center">
+                      <div class="form-group row justify-content-center my-2">
+                        <label for="book_inst_cal_name"
+                          class="col-form-label col-sm-2 text-truncate "><strong>Instalación:</strong></label>
+                        <div class="col-sm-7">
+                          <select name="book_inst_cal_name"
+                            id="book_inst_cal_name"
+                            class="book_inst_input form-control-plaintext form-control-sm rounded-4">
+                          </select>
+                        </div>
+                        <span
+                          class="book_form_error inst_cal_error text-danger text-center mx-auto">Por
+                          favor, selecciona una instalación válida.</span>
+
+                      </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center my-2">
+
+                      <label for="book_inst_cal_date"
+                        class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
+                      <div class="col-sm-7">
+                        <input type="date" id="book_inst_cal_date"
+                          onkeydown="return false" name="book_inst_cal_date"
+                          class="book_inst_input form-control form-control-sm rounded-4">
+                      </div>
+                      <span
+                        class="book_form_error date_cal_error text-danger text-center mx-auto">La
+                        fecha introducida debe ser igual o posterior a la
+                        actual.</span>
+                    </div>
+                  </div>
 
                   <div class="row justify-content-center">
                     <div class="form-group row justify-content-center my-2">
-                      <label for="book_inst_cal_name"
-                        class="col-form-label col-sm-2 text-truncate "><strong>Instalación:</strong></label>
+                      <label for="book_inst_cal_from"
+                        class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                          de inicio:</strong></label>
                       <div class="col-sm-7">
-                        <select name="book_inst_cal_name"
-                          id="book_inst_cal_name"
-                          class="book_inst_input form-control-plaintext form-control-sm rounded-4">
-                        </select>
+                        <input type="time" id="book_inst_cal_from"
+                          onkeydown="return false" name="book_inst_cal_from"
+                          class="book_inst_input form-control form-control-sm rounded-4">
                       </div>
                       <span
-                        class="book_form_error inst_cal_error text-danger text-center mx-auto">Por
-                        favor, selecciona una instalación válida.</span>
-
+                        class="book_form_error start_time_cal_error text-danger text-center mx-auto"></span>
+                      <span
+                        class="book_form_error start_act_cal_error text-danger text-center mx-auto">La
+                        hora de inicio de la reserva debe ser mayor a la hora
+                        actual</span>
                     </div>
                   </div>
 
-                  <div class="form-group row justify-content-center my-2">
+                  <div class="row justify-content-center">
+                    <div class="form-group row justify-content-center my-2">
+                      <label for="book_inst_cal_to"
+                        class="col-form-label col-sm-2 text-truncate "><strong>Hora
+                          de fin:</strong></label>
+                      <div class="col-sm-7">
+                        <input type="time" id="book_inst_cal_to"
+                          onkeydown="return false" name="book_inst_cal_to"
+                          class="book_inst_input form-control form-control-sm rounded-4">
+                      </div>
+                      <span
+                        class="book_form_error end_time_cal_error text-danger text-center mx-auto"></span>
 
-                    <label for="book_inst_cal_date"
-                      class="col-form-label col-sm-2 text-truncate "><strong>Fecha</strong></label>
-                    <div class="col-sm-7">
-                      <input type="date" id="book_inst_cal_date"
-                        onkeydown="return false" name="book_inst_cal_date"
-                        class="book_inst_input form-control form-control-sm rounded-4">
                     </div>
-                    <span
-                      class="book_form_error date_cal_error text-danger text-center mx-auto">La
-                      fecha introducida debe ser igual o posterior a la
-                      actual.</span>
+
                   </div>
-                </div>
 
-                <div class="row justify-content-center">
-                  <div class="form-group row justify-content-center my-2">
-                    <label for="book_inst_cal_from"
-                      class="col-form-label col-sm-2 text-truncate "><strong>Hora
-                        de inicio:</strong></label>
-                    <div class="col-sm-7">
-                      <input type="time" id="book_inst_cal_from"
-                        onkeydown="return false" name="book_inst_cal_from"
-                        class="book_inst_input form-control form-control-sm rounded-4">
-                    </div>
-                    <span
-                      class="book_form_error start_time_cal_error text-danger text-center mx-auto"></span>
-                    <span
-                      class="book_form_error start_act_cal_error text-danger text-center mx-auto">La
-                      hora de inicio de la reserva debe ser mayor a la hora
-                      actual</span>
-                  </div>
-                </div>
+                  <div class="row justify-content-center">
+                    <div class="form-group row justify-content-center my-2">
+                      <label for="book_inst_cal_how_many"
+                        class="col-form-label col-sm-2 text-truncate "><strong>Asistentes</strong></label>
+                      <div class="col-sm-7">
+                        <input type="number"
+                          id="book_inst_cal_how_many"
+                          onkeydown="return false" min="1"
+                          name="book_inst_cal_how_many"
+                          class="book_inst_input form-control form-control-sm rounded-4">
+                      </div>
 
-                <div class="row justify-content-center">
-                  <div class="form-group row justify-content-center my-2">
-                    <label for="book_inst_cal_to"
-                      class="col-form-label col-sm-2 text-truncate "><strong>Hora
-                        de fin:</strong></label>
-                    <div class="col-sm-7">
-                      <input type="time" id="book_inst_cal_to"
-                        onkeydown="return false" name="book_inst_cal_to"
-                        class="book_inst_input form-control form-control-sm rounded-4">
+                      <span
+                        class="book_form_error total_time_cal_error text-danger text-center mx-auto">La
+                        hora de inicio de la reserva debe ser anterior a la de
+                        fin.</span>
+
+                      <span
+                        class="book_form_error empty_cal_error text-danger text-center mx-auto">Todos
+                        los campos deben estar rellenos.</span>
+
                     </div>
-                    <span
-                      class="book_form_error end_time_cal_error text-danger text-center mx-auto"></span>
 
                   </div>
 
                 </div>
 
-                <div class="row justify-content-center">
-                  <div class="form-group row justify-content-center my-2">
-                    <label for="book_inst_cal_how_many"
-                      class="col-form-label col-sm-2 text-truncate "><strong>Asistentes</strong></label>
-                    <div class="col-sm-7">
-                      <input type="number"
-                        id="book_inst_cal_how_many"
-                        onkeydown="return false" min="1"
-                        name="book_inst_cal_how_many"
-                        class="book_inst_input form-control form-control-sm rounded-4">
-                    </div>
-
-                    <span
-                      class="book_form_error total_time_cal_error text-danger text-center mx-auto">La
-                      hora de inicio de la reserva debe ser anterior a la de
-                      fin.</span>
-
-                    <span
-                      class="book_form_error empty_cal_error text-danger text-center mx-auto">Todos
-                      los campos deben estar rellenos.</span>
-
-                  </div>
-
-                </div>
-
+                <div class="modal-footer">
+                  <input type="submit" class="btn btn-lg btn-success"></input>
+                <button type="reset" class="cancel_but btn btn-lg btn-info"
+                  data-bs-dismiss="modal">Cancelar</button>
               </div>
-
-              <div class="modal-footer">
-                <input type="submit" class="btn btn-lg btn-success"></input>
-              <button type="reset" class="cancel_but btn btn-lg btn-info"
-                data-bs-dismiss="modal">Cancelar</button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
 
-    </main>
-    <!-- Dynamically footer's inclusion. -->
-    <footer>
-      <%- include ('pieces/footer')%>
-    </footer>
-  </body>
-  <script
-    src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
-  <script src="/scripts/gestionReservas.js"></script>
-  <script src="/scripts/gestionCalendario.js"></script>
-</html>
+      </main>
+      <!-- Dynamically footer's inclusion. -->
+      <footer>
+        <%- include ('pieces/footer')%>
+      </footer>
+    </body>
+    <script
+      src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script src="/scripts/gestionReservas.js"></script>
+    <script src="/scripts/gestionCalendario.js"></script>
+  </html>

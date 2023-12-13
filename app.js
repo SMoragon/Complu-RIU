@@ -128,6 +128,11 @@ app.get("/no_logged", (request, response, next) => {
   response.status(200).render("must_be_login.ejs");
 });
 
+// Middleware to show a "You are not validated" message.
+app.get("/no_validated", (request, response, next) => {
+  response.status(200).render("must_be_validated.ejs");
+});
+
 // Installation management enrouting.
 app.use("/instalaciones", inst_router);
 

@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
 const pool = require("../pool.js");
@@ -14,159 +14,162 @@ const ID_ADMIN = 1;
 // Route to book an installation. If it overlaps with an already booking, throws an erorr to the user indicating that, so that it can decide whether to be
 // added to the wait list or not..
 router.post("/reservar_instalacion", (request, response, next) => {
-    if (!request.session.isLogged) {
-      response.status(405).end("No logged");
-    } else {
-      instDao.buscarUsuario(request.session.mail, (err, res) => {
-        if (err) {
-          response.status(400).end();
-        } else {
-          var user_id = res[0].id,
-            inst_id = Number(request.body["inst_id"]),
-            inst_date = request.body["book_inst_date"],
-            inst_from = request.body["book_inst_from"],
-            inst_to = request.body["book_inst_to"],
-            how_many = request.body["book_inst_how_many"];
-  
-          instDao.obtenerReservasSolape(
-            inst_id,
-            inst_date,
-            inst_from,
-            inst_to,
-            (err, res) => {
-              if (err) {
-                response.status(400).end();
+  if (!request.session.isLogged || !request.session.validated) {
+    response.status(403).end("Permission denied");
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var user_id = res[0].id,
+          inst_id = Number(request.body["inst_id"]),
+          inst_date = request.body["book_inst_date"],
+          inst_from = request.body["book_inst_from"],
+          inst_to = request.body["book_inst_to"],
+          how_many = request.body["book_inst_how_many"];
+
+        instDao.obtenerReservasSolape(
+          inst_id,
+          inst_date,
+          inst_from,
+          inst_to,
+          (err, res) => {
+            if (err) {
+              response.status(400).end();
+            } else {
+              if (res[0].solapes != 0) {
+                response.status(400).end("Solape");
               } else {
-                if (res[0].solapes != 0) {
-                  response.status(400).end("Solape");
-                } else {
-                  var datos = [
-                    user_id,
-                    inst_id,
-                    inst_date,
-                    inst_from,
-                    inst_to,
-                    how_many,
-                  ];
-                  instDao.reservarInstalacion(datos, (err, res) => {
-                    if (err) {
-                      response.status(400).end();
-                    } else {
-                      response.status(201).end();
-                    }
-                  });
-                }
+                var datos = [
+                  user_id,
+                  inst_id,
+                  inst_date,
+                  inst_from,
+                  inst_to,
+                  how_many,
+                ];
+                instDao.reservarInstalacion(datos, (err, res) => {
+                  if (err) {
+                    response.status(400).end();
+                  } else {
+                    response.status(201).end();
+                  }
+                });
               }
             }
-          );
-        }
-      });
-    }
-  });
-  
-  // Request made to get all the bookings of a certain user, so that a list of them can be built.
-  router.get("/obtener_reservas", (request, response, next) => {
-    if (!request.session.isLogged) {
-      response.status(405).end("No logged");
-    } else {
-      instDao.buscarUsuario(request.session.mail, (err, res) => {
-        if (err) {
-          response
-            .status(400)
-            .end("Se ha producido un error interno en el acceso a la BD.");
-        } else {
-          var id_reservante = res[0].id;
-          instDao.obtenerReservasUsuario(id_reservante, async (err, res) => {
-            if (err) {
-              response
-                .status(400)
-                .end("Se ha producido un error interno en el acceso a la BD.");
-            } else {
-              res.map((elem) => {
-                elem.imagen = elem.imagen.toString("base64");
-                elem.fecha_reserva = elem.fecha_reserva.toLocaleDateString();
-              });
-              response.status(200).json({ reservas: res });
-            }
-          });
-        }
-      });
-    }
-  });
-  
-  // Route to add a booking request to the wait list.
-  router.post("/lista_espera", (request, response, next) => {
-    if (!request.session.isLogged) {
-      response.status(400).end();
-    } else {
-      instDao.buscarUsuario(request.session.mail, (err, res) => {
-        if (err) {
-          response.status(400).end();
-        } else {
-          var inst_id = Number(request.body["inst_id"]),
-            inst_date = request.body["book_inst_date"],
-            inst_from = request.body["book_inst_from"],
-            inst_to = request.body["book_inst_to"],
-            how_many = request.body["book_inst_how_many"];
-          var datos = [
-            res[0].id,
-            inst_id,
-            inst_date,
-            inst_from,
-            inst_to,
-            new Date(),
-            how_many,
-          ];
-          instDao.reservarListaEspera(datos, (err, res) => {
-            if (err) {
-              response.status(400).end();
-            } else {
-              response.status(201).end();
-            }
-          });
-        }
-      });
-    }
-  });
-  
-  // Route to get all bookings made, and also the installations information, so that a dynamic interactive calendar can be displayed.
-  router.get("/obtener_reservas_inst", (request, response, next) => {
-    if (!request.session.isLogged) {
-      response.status(405).end("No logged");
-    } else {
-      instDao.obtenerReservas((err, res) => {
-        if (err) {
-          response
-            .status(400)
-            .end("Se ha producido un error interno en el acceso a la BD.");
-        } else {
-          res.forEach((r) => {
-            var date = new Date(r.fecha_reserva);
-            r.fecha_reserva =
-              date.getFullYear() +
-              "-" +
-              (date.getMonth() + 1) +
-              "-" +
-              date.getDate();
-          });
-          var reservas = res;
-  
-          instDao.obtenerInstalacionPorNombre("", (err, res) => {
-            if (err) {
-              response.status(400).end();
-            } else {
-              response
-                .status(200)
-                .json({ reservas: reservas, instalaciones: res });
-            }
-          });
-        }
-      });
-    }
-  });
-  
-  // Route to manage a booking deletion.
-  router.delete("/eliminar_reserva/:id", (request, response, next) => {
+          }
+        );
+      }
+    });
+  }
+});
+
+// Request made to get all the bookings of a certain user, so that a list of them can be built.
+router.get("/obtener_reservas", (request, response, next) => {
+  if (!request.session.isLogged || !request.session.validated) {
+    response.status(403).end("Permission denied");
+  }else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response
+          .status(400)
+          .end("Se ha producido un error interno en el acceso a la BD.");
+      } else {
+        var id_reservante = res[0].id;
+        instDao.obtenerReservasUsuario(id_reservante, async (err, res) => {
+          if (err) {
+            response
+              .status(400)
+              .end("Se ha producido un error interno en el acceso a la BD.");
+          } else {
+            res.map((elem) => {
+              elem.imagen = elem.imagen.toString("base64");
+              elem.fecha_reserva = elem.fecha_reserva.toLocaleDateString();
+            });
+            response.status(200).json({ reservas: res });
+          }
+        });
+      }
+    });
+  }
+});
+
+// Route to add a booking request to the wait list.
+router.post("/lista_espera", (request, response, next) => {
+  if (!request.session.isLogged || !request.session.validated) {
+    response.status(403).end("Permission denied");
+  } else {
+    instDao.buscarUsuario(request.session.mail, (err, res) => {
+      if (err) {
+        response.status(400).end();
+      } else {
+        var inst_id = Number(request.body["inst_id"]),
+          inst_date = request.body["book_inst_date"],
+          inst_from = request.body["book_inst_from"],
+          inst_to = request.body["book_inst_to"],
+          how_many = request.body["book_inst_how_many"];
+        var datos = [
+          res[0].id,
+          inst_id,
+          inst_date,
+          inst_from,
+          inst_to,
+          new Date(),
+          how_many,
+        ];
+        instDao.reservarListaEspera(datos, (err, res) => {
+          if (err) {
+            response.status(400).end();
+          } else {
+            response.status(201).end();
+          }
+        });
+      }
+    });
+  }
+});
+
+// Route to get all bookings made, and also the installations information, so that a dynamic interactive calendar can be displayed.
+router.get("/obtener_reservas_inst", (request, response, next) => {
+  if (!request.session.isLogged || !request.session.validated) {
+    response.status(403).end("Permission denied");
+  } else {
+    instDao.obtenerReservas((err, res) => {
+      if (err) {
+        response
+          .status(400)
+          .end("Se ha producido un error interno en el acceso a la BD.");
+      } else {
+        res.forEach((r) => {
+          var date = new Date(r.fecha_reserva);
+          r.fecha_reserva =
+            date.getFullYear() +
+            "-" +
+            (date.getMonth() + 1) +
+            "-" +
+            date.getDate();
+        });
+        var reservas = res;
+
+        instDao.obtenerInstalacionPorNombre("", (err, res) => {
+          if (err) {
+            response.status(400).end();
+          } else {
+            response
+              .status(200)
+              .json({ reservas: reservas, instalaciones: res });
+          }
+        });
+      }
+    });
+  }
+});
+
+// Route to manage a booking deletion.
+router.delete("/eliminar_reserva/:id", (request, response, next) => {
+  if (!request.session.isLogged || !request.session.validated) {
+    response.status(403).end("Permission denied");
+  } else {
     var id_res = request.params.id;
     // First, it gets the booking itself, given the id.
     instDao.obtenerReservasId(id_res, (err, res) => {
@@ -203,11 +206,11 @@ router.post("/reservar_instalacion", (request, response, next) => {
                         } else {
                           var reservas = await res;
                           var candidatos = [];
-  
+
                           for (var i = 0; i < res_lista.length; i++) {
                             var actI = res_lista[i];
                             var no_solapes = true;
-  
+
                             for (
                               var j = 0;
                               j < reservas.length && no_solapes;
@@ -223,7 +226,7 @@ router.post("/reservar_instalacion", (request, response, next) => {
                                 no_solapes = false;
                               }
                             }
-  
+
                             if (no_solapes) {
                               candidatos.push(actI);
                             }
@@ -234,7 +237,7 @@ router.post("/reservar_instalacion", (request, response, next) => {
                           if (candidatos.length > 0) {
                             var cand_aux = [];
                             cand_aux.push(candidatos[0]);
-  
+
                             for (var i = 1; i < candidatos.length; i++) {
                               var candI = candidatos[i],
                                 no_solape = true;
@@ -248,12 +251,12 @@ router.post("/reservar_instalacion", (request, response, next) => {
                                   no_solapes = false;
                                   break;
                                 }
-  
+
                                 if (
-                                  (candI.hora_inicio >= candJ.hora_inicio &&
-                                    candI.hora_inicio < candJ.hora_fin) ||
-                                  (candI.hora_inicio < candJ.hora_inicio &&
-                                    candI.hora_fin > candJ.hora_inicio)
+                                  (candJ.hora_inicio >= candI.hora_inicio &&
+                                    candJ.hora_inicio < candI.hora_fin) ||
+                                  (candJ.hora_inicio < candI.hora_inicio &&
+                                    candJ.hora_fin > candI.hora_inicio)
                                 ) {
                                   no_solape = false;
                                 }
@@ -262,9 +265,9 @@ router.post("/reservar_instalacion", (request, response, next) => {
                                 cand_aux.push(candI);
                               }
                             }
-  
+
                             candidatos = cand_aux;
-  
+
                             // To ensure the check before mentioned, each candidate has to be checked, so an asynchronous control is vital to that.
                             async function processCandidates() {
                               try {
@@ -302,17 +305,19 @@ router.post("/reservar_instalacion", (request, response, next) => {
                                                     );
                                                   candidato.hora_inicio =
                                                     horas + ":" + mins;
-  
+
                                                   var [horas, mins, segs] =
-                                                    candidato.hora_fin.split(":");
+                                                    candidato.hora_fin.split(
+                                                      ":"
+                                                    );
                                                   candidato.hora_fin =
                                                     horas + ":" + mins;
-  
+
                                                   candidato.fecha_reserva =
                                                     new Date(
                                                       candidato.fecha_reserva
                                                     ).toLocaleDateString();
-  
+
                                                   var datos = [
                                                     ID_ADMIN,
                                                     candidato.id_reservante,
@@ -321,7 +326,7 @@ router.post("/reservar_instalacion", (request, response, next) => {
                                                     false,
                                                     new Date(),
                                                   ];
-                                                  // Finally, the user is sent a message (by the main admin) to confirm the booking is now him/her's, so 
+                                                  // Finally, the user is sent a message (by the main admin) to confirm the booking is now him/her's, so
                                                   // that he/she knows is out of the waiting list.
                                                   instDao.enviarMensaje(
                                                     datos,
@@ -368,7 +373,7 @@ router.post("/reservar_instalacion", (request, response, next) => {
         });
       }
     });
-  });
-  
+  }
+});
 
-module.exports=router;
+module.exports = router;

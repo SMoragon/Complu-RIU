@@ -18,7 +18,10 @@ var instDao = new dao(instPool);
 // User's messages filtered by a text given by the user.
 router.get("/get_filtered_mail", (request, response, next) => {
   if (!request.session.isLogged) {
-    response.status(400).end();
+    response.status(403).render("must_be_login.ejs");
+  }
+  else if(!request.session.validated){
+    response.status(403).render("must_be_validated.ejs");
   } else {
     instDao.buscarUsuario(request.session.mail, (err, res) => {
       if (err) {
@@ -62,8 +65,8 @@ router.get("/get_filtered_mail", (request, response, next) => {
 
 // Route to mark a message as read (set the boolean to "True").
 router.patch("/marcar_leido/:id", (request, response, next) => {
-  if (!request.session.isLogged) {
-    response.status(400).end();
+  if (!request.session.isLogged || !request.session.validated) {
+    response.status(403).end("Permission denied");
   } else {
     instDao.marcarComoLeido(request.params.id, (err, res) => {
       if (err) {
@@ -84,8 +87,8 @@ router.post(
   body("receptor").escape(),
   body("asunto").escape(),
   (request, response, next) => {
-    if (!request.session.isLogged) {
-      response.status(400).end();
+    if (!request.session.isLogged || !request.session.validated) {
+      response.status(403).end("Permission denied");
     } else {
       instDao.buscarUsuario(request.session.mail, async (err, res) => {
         if (err) {
