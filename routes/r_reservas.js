@@ -246,7 +246,7 @@ router.delete("/eliminar_reserva/:id", (request, response, next) => {
                                 j < cand_aux.length && no_solape;
                                 j++
                               ) {
-                                var candJ = candidatos[j];
+                                var candJ = cand_aux[j];
                                 if (candI === candJ) {
                                   no_solapes = false;
                                   break;

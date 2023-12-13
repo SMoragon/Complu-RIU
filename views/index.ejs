@@ -17,7 +17,7 @@
 
       <!-- If the user is logged, is not admin and its validated, a couple of buttons to check the bookings made and open a calendar to show all bookings (and even make some if wanted) will
       be displayed. -->
-      <%if (session.isLogged && !session.isAdmin && session.validated){%>
+      <%if (session.isLogged && !session.is_admin && session.validated){%>
       <button class="btn btn-secondary mx-3" type="button"
         data-bs-toggle="modal"
         data-bs-target="#book_inst_list_modal" id="list_all_books_but">
@@ -75,7 +75,7 @@
                   </div>
                 </div>
                 <!-- Watch details and book buttons, so that a logged user (again, external validation ensures this) can benefit from it. -->
-                <%if (session.isLogged && !session.isAdmin &&
+                <%if (session.isLogged && !session.is_admin &&
                 session.validated){%>
                 <div
                   class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">

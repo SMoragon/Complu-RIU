@@ -33,11 +33,13 @@ $('#send_email_submit_button').on('click', function (event) {
             success:function(data, textStatus, jqHXR){
                 $('#write_email').modal('hide')
                 $('#write_email_ok').modal('show').slideDown(700)
+                $("#send_mail_form")[0].reset();
             },
             // If there's an error, depending on what type of error it is, the user would see one alert or another. (Email does not exist in
             // the database, receiver faculty is not the same as emitter one and so on.)
             error: function(jqHXR, textStatus, errorThrown){
                 console.log(jqHXR.responseText)
+                $("#send_mail_form")[0].reset();
                 if(jqHXR.responseText==="No receiver found"){
                     $("#send_mail_error").text("El email introducido no corresponde a ningún usuario.").show();
                 }

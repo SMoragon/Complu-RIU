@@ -167,9 +167,11 @@ $("#reservar_instalacion_calendario").on("submit", function (event) {
             success: function(data, textStatus, jqHXR){
                 $("#reservar_instalacion_calendario").modal('hide');
                 $("#book_inst_ok").modal('show').slideDown(700);
+                $("#reservar_instalacion_calendario_form")[0].reset();
             },
             error: function(jqHXR, textStatus, errorThrown){
                 $("#reservar_instalacion_calendario").modal('hide');
+                $("#reservar_instalacion_calendario_form")[0].reset();
                 if(jqHXR.responseText==="Solape"){
                     $("#book_inst_ko").modal('show').slideDown(700);
                 }
