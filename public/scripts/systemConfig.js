@@ -19,13 +19,13 @@ $(document).ready((e) => {
                     $("#org_submit_button").attr("disabled", "disabled");
                 },
                 success: (message) => {
-                    alert(message['msg'])
+                    showMessage(message['msg'] + ". La pagina se refrescara automaticamente");
                     // reload the page
                     location.reload();
                     $("#org_submit_button").removeAttr("disabled");
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
-                    alert("Se ha producido un error: Intentelo mas tarde."+ errorThrown)
+                    showMessage("Se ha producido un error: Intentelo mas tarde. "+ errorThrown);
                 }
             });
         }
@@ -93,4 +93,13 @@ function checkImageProp(image) {
     var img_size_correct = img_size < 2097152
     
     return img_type_correct && img_size_correct;
+}
+
+function showMessage(msg){
+    setMessage(msg);
+    $("#modal_message").modal('show').slideDown(700);
+}
+
+function setMessage(msg){
+    $(".modal_message").html(msg);
 }

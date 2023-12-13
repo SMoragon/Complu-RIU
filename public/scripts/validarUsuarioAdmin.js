@@ -14,13 +14,14 @@ $(document).ready((e) => {
                 $("#"+event.target.id).attr("disabled", "disabled");
             },
             success: (message) => {
+                showMessage(message['msg'])
                 $("#"+event.target.id).removeAttr("disabled");
                 // update the view to remove the user validate
                 $("#validar_registro_" + id).remove()
                 $("#usuario_detalles_" + id).remove()
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde." + errorThrown)
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown)
                 $("#"+event.target.id).removeAttr("disabled");
             }
         });
@@ -40,15 +41,25 @@ $(document).ready((e) => {
                 $("#"+event.target.id).attr("disabled", "disabled");
             },
             success: (message) => {
+                showMessage(message['msg'])
                 $("#"+event.target.id).removeAttr("disabled");
                 // update the view, to delete the user in the view.
                 $("#validar_registro_"+id).remove()
                 $("#usuario_detalles_"+id).remove()
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde.")
+                showMessage("Se ha producido un error: Intentelo mas tarde." + errorThrown)
                 $("#"+event.target.id).removeAttr("disabled");
             }
         });
     })
 });
+
+function showMessage(msg){
+    setMessage(msg);
+    $("#modal_message").modal('show').slideDown(700);
+}
+
+function setMessage(msg){
+    $(".modal_message").html(msg);
+}

@@ -70,7 +70,7 @@ $(document).ready((e) => {
                 updateRowToTableUserList(id, datos);
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde.")
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown)
             }
         });
     });
@@ -89,7 +89,7 @@ $(document).ready((e) => {
                 updateRowToTableHistory(id, datos);
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde.")
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown);
             }
         });
     });
@@ -108,7 +108,7 @@ $(document).ready((e) => {
                 updateRowToTableHistory(id, datos);
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde.")
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown);
             }
         });
     });
@@ -119,16 +119,16 @@ $(document).ready((e) => {
         var id = event.target.id.split("_")[3]
         $.ajax({
             type: 'PATCH',
-            url: '/busqueda/hacer_admin/' + id,
+            url: '/admin/hacer_admin/' + id,
             contentType: false,
             cache: false,
             processData: false,
             success: (message) => {
-                alert(message["msg"]);
+                showMessage(message['msg']);
                 location.reload();
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde." + errorThrown + ", " + textStatus)
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown)
             }
         });
 
@@ -151,7 +151,7 @@ $(document).ready((e) => {
                 charts[id]=paintChart(id, datos, "Frecuencia de uso por instalacion");
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde.")
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown);
             }
         });
     });
@@ -173,7 +173,7 @@ $(document).ready((e) => {
                 charts[id]=paintChart(id, datos, "Frecuencia de uso por instalacion");
             },
             error: (jqXHR, textStatus, errorThrown) => {
-                alert("Se ha producido un error: Intentelo mas tarde.")
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown);
             }
         });
     });
@@ -404,4 +404,13 @@ function getListColor(length) {
         }
     }
     return color_list;
+}
+
+function showMessage(msg){
+    setMessage(msg);
+    $("#modal_message").modal('show').slideDown(700);
+}
+
+function setMessage(msg){
+    $(".modal_message").html(msg);
 }

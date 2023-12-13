@@ -20,15 +20,16 @@ $(document).ready((e) => {
                 },
                 success: (message) => {
                     // remove disabled option to the submit button and close the modal
-                    alert(message['msg'])
+                    showMessage(message['msg'])
                     $("#add_instalacion_submit_button").removeAttr("disabled");
-                    var modal = $("#add_instalaciones")
-                    modal.modal("hide")
-                    datos.reset()
+                    var modal = $("#add_instalaciones");
+                    modal.modal("hide");
+                    datos.reset();
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     // remove disabled option to the submit button and show the error alert
-                    alert("Se ha producido un error: Intentelo mas tarde.")
+                    showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown);
+                    alert("Se ha producido un error: Intentelo mas tarde.");
                     $("#add_instalacion_submit_button").removeAttr("disabled");
                 }
             });
@@ -59,7 +60,7 @@ $(document).ready((e) => {
                 },
                 success: (message) => {
                     // remove the disabled option to submit button and show an correct message
-                    alert(message['msg'])
+                    showMessage(message['msg'])
                     $("#modificar_instalacion_form_"+id+" .mod_instalacion_submit_button").removeAttr("disabled");
                     var modal = $("#instalaciones_modificar_"+id)
                     modal.modal("hide")
@@ -67,7 +68,8 @@ $(document).ready((e) => {
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     // remove the disabled option to submit button and show an error message
-                    alert("Se ha producido un error: Intentelo mas tarde."+ errorThrown)
+                    showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown);
+                    alert("Se ha producido un error: Intentelo mas tarde."+ errorThrown);
                     $("#modificar_instalacion_form_"+id+" .mod_instalacion_submit_button").removeAttr("disabled");
                 }
             });
@@ -85,15 +87,24 @@ $(document).ready((e) => {
             processData: false,
             success: (message) => {
                 // show success alert and remove the installation to the view
-                alert(message['msg'])
-                $("#instalacion_"+id).remove()
-                $("#instalacion_detalles_"+id).remove()
-                $("#instalaciones_modificar_"+id).remove()
+                showMessage(message['msg']);
+                $("#instalacion_"+id).remove();
+                $("#instalacion_detalles_"+id).remove();
+                $("#instalaciones_modificar_"+id).remove();
             },
             error: (jqXHR, textStatus, errorThrown) => {
                 // show the error alert
-                alert("Se ha producido un error: Intentelo mas tarde.")
+                showMessage("Se ha producido un error: Intentelo mas tarde. " + errorThrown);
             }
         });
     })
 });
+
+function showMessage(msg){
+    setMessage(msg);
+    $("#modal_message").modal('show').slideDown(700);
+}
+
+function setMessage(msg){
+    $(".modal_message").html(msg);
+}
