@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
 const querystring = require("querystring");
@@ -12,112 +12,113 @@ var instDao = new dao(instPool);
 
 // enrouting request to get list of users with the faculty id giving as params.
 router.get("/facultad_usuarios/:id", (request, response) => {
-    if (request.session.isLogged) {
-      if (request.session.is_admin) {
-        var id = request.params.id;
-        id = querystring.escape(id);
-        instDao.obtenerFacultadesListaUsuario(id, (err, result) => {
-          if (err) {
-            response.status(404).end();
-          } else {
-            response.status(200).json({ usuarios: result });
-          }
-        });
+  if (
+    request.session.isLogged &&
+    request.session.validated &&
+    request.session.is_admin
+  ) {
+    var id = request.params.id;
+    id = querystring.escape(id);
+    instDao.obtenerFacultadesListaUsuario(id, (err, result) => {
+      if (err) {
+        response.status(404).end();
       } else {
-        response.status(403).render("no_tienes_permiso.ejs");
+        response.status(200).json({ usuarios: result });
       }
-    } else {
-      response.status(403).render("must_be_login.ejs");
-    }
-  });
-  
-  // enrouting request to get a list of user history with user id as parameters.
-  router.get("/historial_usuario/:id", (request, response) => {
-    if (request.session.isLogged) {
-      if (request.session.is_admin) {
-        var id = request.params.id;
-        id = querystring.escape(id);
-        instDao.obtenerHistorialUsuario(id, (err, result) => {
-          if (err) {
-            response.status(404).end();
-          } else {
-            response.status(200).json({ historial: result });
-          }
-        });
+    });
+  } else {
+    response.status(403).end("Permission denied");
+  }
+});
+
+// enrouting request to get a list of user history with user id as parameters.
+router.get("/historial_usuario/:id", (request, response) => {
+  if (
+    request.session.isLogged &&
+    request.session.validated &&
+    request.session.is_admin
+  ) {
+    var id = request.params.id;
+    id = querystring.escape(id);
+    instDao.obtenerHistorialUsuario(id, (err, result) => {
+      if (err) {
+        response.status(404).end();
       } else {
-        response.status(403).render("no_tienes_permiso.ejs");
+        response.status(200).json({ historial: result });
       }
-    } else {
-      response.status(403).render("must_be_login.ejs");
-    }
-  });
-  
-  // enrouting request to get a list of reservation history by providing a facility id as parameters.
-  router.get("/historial_instalacion/:id", (request, response) => {
-    if (request.session.isLogged) {
-      if (request.session.is_admin) {
-        var id = request.params.id;
-        id = querystring.escape(id);
-        instDao.obtenerHistorialInstalacion(id, (err, result) => {
-          if (err) {
-            response.status(404).end();
-          } else {
-            response.status(200).json({ historial: result });
-          }
-        });
+    });
+  } else {
+    response.status(403).end("Permission denied");
+  }
+});
+
+// enrouting request to get a list of reservation history by providing a facility id as parameters.
+router.get("/historial_instalacion/:id", (request, response) => {
+  if (
+    request.session.isLogged &&
+    request.session.validated &&
+    request.session.is_admin
+  ) {
+    var id = request.params.id;
+    id = querystring.escape(id);
+    instDao.obtenerHistorialInstalacion(id, (err, result) => {
+      if (err) {
+        response.status(404).end();
       } else {
-        response.status(403).render("no_tienes_permiso.ejs");
+        response.status(200).json({ historial: result });
       }
-    } else {
-      response.status(403).render("must_be_login.ejs");
-    }
-  });
-  
-  // enrouting request to get user statistics providing user id as parameters.
-  router.get("/estadistica_usuario/:id", (request, response) => {
-    if (request.session.isLogged) {
-      if (request.session.is_admin) {
-        var id = request.params.id;
-        id = querystring.escape(id);
-        instDao.obtenerEstadisticaUsuario(id, (err, result) => {
-          if (err) {
-            response.status(404).end();
-          } else {
-            response.status(200).json({ estadistica: result });
-          }
-        });
+    });
+  } else {
+    response.status(403).end("Permission denied");
+  }
+});
+
+// enrouting request to get user statistics providing user id as parameters.
+router.get("/estadistica_usuario/:id", (request, response) => {
+  if (
+    request.session.isLogged &&
+    request.session.validated &&
+    request.session.is_admin
+  ) {
+    var id = request.params.id;
+    id = querystring.escape(id);
+    instDao.obtenerEstadisticaUsuario(id, (err, result) => {
+      if (err) {
+        response.status(404).end();
       } else {
-        response.status(403).render("no_tienes_permiso.ejs");
+        response.status(200).json({ estadistica: result });
       }
-    } else {
-      response.status(403).render("must_be_login.ejs");
-    }
-  });
-  
-  // enrouting request to get faculty statistics providing faculty id as parameters.
-  router.get("/estadistica_facultad/:id", (request, response) => {
-    if (request.session.isLogged) {
-      if (request.session.is_admin) {
-        var id = request.params.id;
-        id = querystring.escape(id);
-        instDao.obtenerEstadisticaFacultad(id, (err, result) => {
-          if (err) {
-            response.status(404).end();
-          } else {
-            response.status(200).json({ estadistica: result });
-          }
-        });
+    });
+  } else {
+    response.status(403).end("Permission denied");
+  }
+});
+
+// enrouting request to get faculty statistics providing faculty id as parameters.
+router.get("/estadistica_facultad/:id", (request, response) => {
+  if (
+    request.session.isLogged &&
+    request.session.validated &&
+    request.session.is_admin
+  ) {
+    var id = request.params.id;
+    id = querystring.escape(id);
+    instDao.obtenerEstadisticaFacultad(id, (err, result) => {
+      if (err) {
+        response.status(404).end();
       } else {
-        response.status(403).render("no_tienes_permiso.ejs");
+        response.status(200).json({ estadistica: result });
       }
-    } else {
-      response.status(403).render("must_be_login.ejs");
-    }
-  });
-  
-  // advanced search page enrouting.
-  router.get("/busquedaAvanzada", (request, response, next) => {
-    if (request.session.isLogged) {
+    });
+  } else {
+    response.status(403).end("Permission denied");
+  }
+});
+
+// advanced search page enrouting.
+router.get("/busquedaAvanzada", (request, response, next) => {
+  if (request.session.isLogged) {
+    if (request.session.validated) {
       if (request.session.is_admin) {
         // get search querys
         var tipo_busqueda = request.query["tipo_busqueda"];
@@ -164,7 +165,9 @@ router.get("/facultad_usuarios/:id", (request, response) => {
           } else {
             response
               .status(200)
-              .render("busquedaAvanzada.ejs", { instalaciones: res_instalacion });
+              .render("busquedaAvanzada.ejs", {
+                instalaciones: res_instalacion,
+              });
           }
         };
         //case of search
@@ -175,20 +178,29 @@ router.get("/facultad_usuarios/:id", (request, response) => {
                 instDao.obtenerListaUsuarioPorNombre(search, usuario_callback);
                 break;
               case "Apellido":
-                instDao.obtenerListaUsuarioPorApellido(search, usuario_callback);
+                instDao.obtenerListaUsuarioPorApellido(
+                  search,
+                  usuario_callback
+                );
                 break;
               case "Correo":
                 instDao.obtenerListaUsuarioPorCorreo(search, usuario_callback);
                 break;
               case "Facultad":
-                instDao.obtenerListaUsuarioPorFaculdad(search, usuario_callback);
+                instDao.obtenerListaUsuarioPorFaculdad(
+                  search,
+                  usuario_callback
+                );
                 break;
             }
             break;
           case "Reserva":
             switch (filtrar_por) {
               case "Nombre Usuario":
-                instDao.obtenerReservaPorNombreUsuario(search, reservas_callback);
+                instDao.obtenerReservaPorNombreUsuario(
+                  search,
+                  reservas_callback
+                );
                 break;
               case "Apellido Usuario":
                 instDao.obtenerReservaPorApellidoUsuario(
@@ -245,8 +257,11 @@ router.get("/facultad_usuarios/:id", (request, response) => {
         response.status(403).render("no_tienes_permiso.ejs");
       }
     } else {
-      response.status(403).render("must_be_login.ejs");
+      response.status(403).render("must_be_validated.ejs");
     }
-  });
-  
-  module.exports = router;
+  } else {
+    response.status(403).render("must_be_login.ejs");
+  }
+});
+
+module.exports = router;
