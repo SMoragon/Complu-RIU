@@ -25,7 +25,7 @@
                         <!-- buttons with see details, statistics, become admin if the user not are admin and history options -->
                         <div
                             class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
-                            <% if (element.es_admin===0) { %>
+                            <% if (element.es_admin===0 && element.validado===1) { %>
                                 <button type="button" class="btn btn-sm btn-success mt-sm-auto my-1 text-truncate"
                                     data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
                                         class="fa fa-eye" alt="Eye icon"></i> Detalles</button>
