@@ -676,6 +676,19 @@ class DAO {
     })
   }
 
+  eliminarSesion(id, callback){
+    this.pool.getConnection((err, connection)=>{
+      if (err) {
+        callback(err)
+      }
+      else {
+        const sql= "Delete from sessions Where session_id=?"
+        connection.query(sql, id, callback);
+        connection.release();
+      }
+    })
+  }
+
   // Función que cierra el pool de conexiones una vez se hyaa terminado de hacer consultas.
   terminarConexion(callback) {
     this.pool.end(callback);

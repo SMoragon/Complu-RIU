@@ -114,6 +114,7 @@ app.get("/", (request, response) => {
 });
 
 app.get("/index.html", (request, response) => {
+  console.log(request.sessionID)
   instDao.buscarInstalacion("", (err, res) => {
     if (err) {
       response.status(400).end();

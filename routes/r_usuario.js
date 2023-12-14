@@ -282,6 +282,11 @@ router.get("/inbox", (request, response, next) => {
     request.session.sinLeer = undefined;
     request.session.is_admin = undefined;
     request.session.validated=undefined;
+    instDao.eliminarSesion(request.sessionID, (err,res)=>{
+      if(err){
+        response.end(400);
+      }
+    })
     response.render("index.ejs");
   });
 
