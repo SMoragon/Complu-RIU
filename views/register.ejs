@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <%- include ('pieces/head')%>
+    </head>
+
+    <body>
+        <header>
+            <!-- Include pieces of header -->
+            <%- include ('pieces/header')%>
+        </header>
+
+        <main id="main">
+            <!-- Register Form -->
+            <div class="container">
+                <form id="register-form" method="POST" action="/usuario/register"
+                    enctype="multipart/form-data">
+
+                    <!-- Name field -->
+                    <div class="form-group row my-2">
+
+                        <label for="user_name"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Nombre: </label>
+
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <input type="text"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_name" id="user_name"
+                                value= <%=locals.body? body["user_name"]:""%>
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Surname field -->
+                    <div class="form-group row my-2">
+
+                        <label for="user_surname"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Apellidos: </label>
+
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <input type="text"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_surname" id="user_surname"
+                                value= <%=locals.body? body["user_surname"]:""%>>
+                        </div>
+                    </div>
+
+                    <!-- mail field -->
+                    <div class="form-group row my-2">
+
+                        <label for="user_email"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Correo electrónico: </label>
+
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <input type="mail"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_email" id="user_email"
+                                value= <%=locals.body? body["user_email"]:""%>>
+
+                            <span class="popup_form_error text-danger"
+                                id="mail_error">El
+                                email introducido no es correcto. El formato
+                                debe
+                                ser "abcde@ucm.es".</span>
+
+                            <% if (locals.errors && locals.errors["user_email"])
+                            { %>
+                            <span
+                                class="text-danger popup_form_error"
+                                style="display: inline-block;">
+                                <%= errors["user_email"] %>
+                            </span>
+                            <% } %>
+
+                        </div>
+                    </div>
+
+                    <!-- password field -->
+                    <div class="form-group row my-2">
+                        <label for="user_password"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Contraseña: </label>
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+                            <input type="password"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_password" id="user_password"
+                                value= <%=locals.body? body["user_password"]:""%>>
+                            <input type="checkbox" onclick="showPasswd()"
+                                class="my-2 mx-2">Mostrar Contraseña
+
+                            <% if (locals.errors && locals.errors["user_password"])
+                            { %>
+                            <span
+                                class="text-danger popup_form_error"
+                                style="display: inline-block;">
+                                <%= errors["user_password"] %>
+                            </span>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- password field agains to check users write the same password -->
+                    <div class="form-group row my-2">
+                        <label for="user_password_again"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Vuelva a introducir la contraseña: </label>
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <input type="password"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_password_again"
+                                id="user_password_again"
+                                value= <%=locals.body?
+                                body["user_password_again"]:""%>>
+
+                            <input type="checkbox" onclick="showAgainPasswd()"
+                                class="my-2 mx-2">Mostrar Contraseña
+
+                            <span class="popup_form_error text-danger"
+                                id="password_error">Las contraseñas no
+                                coinciden.</span>
+
+                        </div>
+                    </div>
+
+                    <!-- Faculty field -->
+                    <div class="form-group row my-2">
+
+                        <label for="user_faculty"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Facultad: </label>
+
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <select name="user_faculty" id="user_faculty"
+                                class="form-control form-control-sm reg_field reg_log_input text-center text-truncate">
+                                <option value="0">Seleccione una facultad</option>
+
+                                <%if (locals.facultades){ %>
+                                <% facultades.forEach((facultad)=>{ %>
+                                <option value=<%=facultad.id%> ><%=facultad.nombre%></option>
+                                <% });} %>
+
+                            </select>
+                            <span class="popup_form_error text-danger"
+                                id="faculty_error">Por favor, selecciona una
+                                facultad.</span>
+                        </div>
+                    </div>
+
+                    <!-- Course field -->
+                    <div class="form-group row my-2">
+
+                        <label for="user_course"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Curso: </label>
+
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <input onkeydown="return false" type="number"
+                                min="1" max="6"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_course" id="user_course"
+                                value= <%=locals.body? body["user_course"]:""%>>
+                        </div>
+                    </div>
+
+                    <!-- Group field -->
+                    <div class="form-group row my-2">
+
+                        <label for="user_group"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Grupo: </label>
+
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <input type="text"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_group" id="user_group"
+                                value= <%=locals.body? body["user_group"]:""%>>
+                        </div>
+                    </div>
+
+                    <!-- Profile Picture field -->
+                    <div class="form-group row my-2">
+
+                        <label for="user_profile"
+                            class="offset-md-1 col-md-4 offset-sm-2 offset-2 col-10 col-form-label reg_field">
+                            Imagen de perfil: </label>
+
+                        <div
+                            class="offset-md-0 col-md-6 offset-sm-1 col-sm-7 offset-1 col-10">
+
+                            <input type="file" accept=".jpg,.jpeg,.png"
+                                class="form-control form-control-sm reg_log_input"
+                                name="user_profile" id="user_profile">
+                            <span class="popup_form_error text-danger"
+                                id="empty_error">Todos
+                                los campos salvo la foto de perfil deben estar
+                                rellenos.</span>
+                            <span class="popup_form_error text-danger"
+                                id="profile_error">Erroorr</span>
+
+                            <% if (locals.errors) { %>
+                            <span
+                                class="text-danger popup_form_error"
+                                style="display: inline-block;">
+                                <%= errors %>
+                            </span>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="send_buttons_cont my-4">
+                        <!-- Submit form button -->
+                        <input class="send_but send_buttons" type="submit"
+                            value="ENVIAR"></input>
+                    <!-- Close form button and redirect to the main page -->
+                    <button class="send_buttons" type="button"
+                        onclick="closeAndRedirect('/')">
+                        CERRAR</button>
+                </div>
+
+            </div>
+        </main>
+
+        <footer>
+            <!-- Include pieces of footer -->
+            <%- include ('pieces/footer')%>
+        </footer>
+    </body>
+    <!-- Our JavaScripts validation -->
+    <script src="/scripts/registerValidation.js"></script>
+    <!-- A little JavaScripts that catch an submit event and validate on client, if the validation fails, then stop the submit -->
+    <script>
+    $("#register-form").on('submit', function (event) {
+
+        if (!validate()) {
+            event.preventDefault();
+        }
+    });
+
+</script>
+
+</html>

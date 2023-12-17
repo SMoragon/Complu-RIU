@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Bootstrap, stylesheets, WP title and favicon load to avoid copy and paster. -->
+<head>
+    <%- include ('pieces/head')%>
+</head>
+
+<body>
+    <!-- include header to avoid copy and paster. -->
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+        <!-- container with the message, images and button -->
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <p class="h1 text-danger text-truncate">Necesitas estar logeado</p>
+                </div>
+            </div>
+            <div class="row justify-content-center my-5">
+                <div class="col-md-6 col-sm-9 col-11">
+                    <img src="/images/must_be_login.png" alt="Image that says you must log in" class="img-fluid">
+                </div>
+            </div>
+            <div class="row justify-content-center my-3">
+                <div class="col-auto">
+                    <button class="border border-3 border-danger rounded-3 btn btn-lg bg-danger bg-opacity-25">
+                        <a href="/usuario/login" class="text-danger text-truncate">Ir a la pagina de login</a></button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- include footer to avoid copy and paster. -->
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+</html>

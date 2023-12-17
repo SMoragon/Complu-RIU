@@ -1,8 +1,413 @@
+/*General body, main and links style config*/
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: white;
+}
+
+main {
+  margin: 1em;
+  margin-bottom: 2em;
 }
 
 a {
-  color: #00B7FF;
+  text-decoration: none;
+  color: black;
+}
+
+/* Header display styles, including aspects such as login buttons and navbar items. */
+
+#header_cont {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: hsl(180, 33%, 66%);
+  justify-content: space-between;
+}
+
+#header_title {
+  font-size: calc(1.5em + 1.8vw);
+  font-family: "Comic Sans";
+  color: hsl(202, 73%, 31%);
+  text-align: center;
+}
+
+.account_but {
+  color: rgb(117, 40, 120);
+  font-size: calc(0.9em + 0.4vw);
+}
+
+#log_but {
+  padding-bottom: 0.5em;
+}
+
+#login_cont {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.login_buttons {
+  color: rgb(232, 184, 122);
+  background-color: rgba(97, 80, 35, 0.679);
+  font-weight: bold;
+}
+
+.login_text {
+  font-weight: bold;
+  color: rgb(51, 51, 176) !important;
+}
+
+.nav-item {
+  font-size: calc(0.8em + 0.75vw);
+  padding-left: calc(1em + 0.58vw);
+  padding-right: calc(1em + 0.5vw);
+  font-family: "Comic Sans";
+}
+
+.nav-item:hover {
+  background-color: hsl(28, 60%, 65%);
+  font-weight: bold;
+}
+
+.navbar-nav {
+  flex-direction: column;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+/* Footer configuration, with aspects such as the elements organization or the colours used, among others.*/
+
+#footer_cont {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  background-color: hsl(180, 33%, 66%);
+  padding: 2em 0em;
+}
+
+#footer_ul {
+  list-style-type: none;
+}
+
+.footer_icon {
+  width: 2em;
+  margin: 0.13em 1em;
+}
+
+img > footer {
+  margin-top: -1.5em;
+  max-width: 100%;
+}
+
+#footer_mail {
+  word-wrap: break-word;
+}
+/* User image config, to prevent it from being too big. */
+
+.user_img {
+  max-width: 4em;
+  max-height: 4em;
+  margin-right: 2em;
+}
+
+.instalacion_bgc{
+  background-color:  rgb(183, 216, 234) !important;
+}
+
+.list_usuario_bgc{
+  background-color:  rgb(188, 180, 231) !important;
+}
+
+.validar_usuario_bgc{
+  background-color:  rgb(188, 180, 231) !important;
+}
+
+/* Register style, mainly colours and a certain size that makes them responsive. */
+
+.reg_field, .login_field {
+  color: hsl(209, 50%, 32%);
+  font-weight: bold;
+}
+
+.reg_log_input {
+  color: rgb(125, 80, 151) !important;
+  background-color: rgb(188, 180, 231) !important;
+  font-weight: bold !important;
+}
+
+#register_hint{
+  color: hsl(209, 50%, 32%);
+  font-weight: bold;
+  font-size: 1.2em;
+  align-items: center;
+}
+
+/* Form errors config. */
+.popup_form_error, .book_form_error {
+  display: none;
+  font-weight: bold;
+  margin: 0.5em 0em;
+}
+
+.mail_form_error {
+  display: none;
+  font-weight: bold;
+}
+
+/* Mixed buttons styling. */
+.send_buttons_cont {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+.send_but {
+  margin-right: 5vw;
+}
+
+.send_buttons {
+  color: rgb(12, 31, 56);
+  background-color: rgba(133, 154, 224, 0.679);
+  font-weight: bold;
+}
+
+
+/* Inbox view sizing style, such as the badge where non-read messages are shown or the welcome message. */
+#hello_user {
+  margin-bottom: 0.5em;
+}
+
+#inbox_badge {
+  position: absolute;
+  margin: -1em 1em;
+}
+
+#a_inbox {
+  font-weight: bold;
+  color: rgb(25, 124, 98);
+}
+
+#inbox_container{
+  display: flex;
+  flex-direction: row;
+}
+
+.inbox_buts{
+  font-size: calc(0.7em + 0.5vw);
+}
+
+.search_text{
+  height: 2.5em;
+  width: calc(10em + 10vw);
+}
+
+.search_text_mine{
+  width: calc(7em + 8vw);
+}
+
+.register_ok_but{
+  font-weight: bold;
+  color: rgb(122, 61, 179);
+  font-size: calc(1em + 0.5vw);
+  border: solid 0.2rem;
+  border-color: blueviolet;
+  background-color: rgb(232, 213, 241);
+  padding:0.5rem;
+}
+
+#last_messages_container{
+  border:solid 0.20em rgb(128, 143, 181);
+  border-radius: 5%;
+  max-height: 40em;
+  display: flex;
+  flex-direction: column;
+}
+
+/* last messages custom scrollbar */
+#last_messages_container::-webkit-scrollbar{
+ width: 1.2em;
+}
+
+#last_messages_container::-webkit-scrollbar-track{
+  background-color: hsl(180, 24%, 55%);
+  border-radius: 1em;
+  margin-block:0.5em
+ }
+
+ #last_messages_container::-webkit-scrollbar-thumb{
+  background: linear-gradient(rgb(35, 172, 182),rgb(30, 126, 133));
+  border-radius: 1em;
+ }
+
+/* Inbox main content (the "focused mail" among selected in the "most recent" section. */
+#message_body_container{
+  border:solid 0.20em rgb(102, 172, 225);
+  border-radius: 5%;
+  background-color: hsla(205, 100%, 94%, 0.765);
+  line-height: 1.75em;
+}
+
+.send_mail_field{
+  font-weight: bold;
+}
+
+#focused_email_subject{
+  color: rgb(48, 111, 138);
+}
+
+#focused_email_info{
+  font-style: italic;
+  color: rgb(20, 118, 67);
+}
+
+.mail_card{
+  border:solid 0.3em  rgb(28, 139, 147);
+  border-radius: 5%;
+  background-color: rgb(233, 242, 249);
+}
+
+.remitent_text{
+  font-size: calc(0.7em + 1.1vw);
+  color: rgb(28, 139, 147);
+}
+
+.email_subject{
+  font-size: calc(0.7em + 0.4vw);
+  color: rgb(57, 117, 202);
+  font-weight: bold;
+}
+
+/* General dialog color settings. */
+#write_email_dialog, #write_email_ok_dialog,#book_inst_ok_dialog, #add_wait_list_ok_dialog  {
+  background-color:rgb(213, 235, 245);
+}
+
+#write_mail_but{
+  background-color:rgb(87, 203, 212);
+  color: rgb(57, 119, 118);
+  font-size: 1.2em;
+}
+
+.send_mail_input, .book_inst_input{
+  background-color:rgb(237, 252, 255)!important;
+}
+
+.remitent_img{
+  max-width: 3em;
+  max-height: 3em;
+}
+
+.book_inst_content{
+  background-color: rgb(12, 186, 186);
+}
+
+.card_book_inst_info{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: calc(0.9em + 0.2vw);;
+}
+
+/* Index installation cards' style. */
+.booking_cards_body{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.card_book{
+  display: flex;
+  flex-direction: column;
+  border: solid 0.2em hsl(160, 53%, 37%);
+  border-radius: 0.5em;
+  background-color: rgb(210, 152, 107);
+}
+
+#booking_cards_container{
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Cancel cook style. */
+#del_res_dialog{
+  background-color: rgb(113, 176, 147);;
+}
+
+/* User's bookings list style. */
+.book_inst_list_content{
+  background-color: transparent; 
+  border: none;
+}
+
+#no_books_msg{
+  display: none;
+  color: rgb(190, 196, 227);
+}
+
+/* Concrete media defined styles, to ensure an attractive design and responsiveness in our webpage. */
+@media (min-width: 768px) {
+  #navbar-list {
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+}
+
+@media (max-width:767.9px){
+  .search_text_mine{
+    width: 35vw !important;
+  }
+
+}
+
+@media (max-width: 575.9px) {
+
+  #inbox_container{
+    flex-direction: column;
+  }
+}
+
+
+@media (min-width: 577.1px) {
+
+  .instalacion_img{
+    height: 10em;
+    min-height: 10em;
+    max-height: 10em;
+  }
+
+  .list_usuario_img{
+    height: 10em;
+    min-height: 10em;
+    max-height: 10em;
+  }
+
+  #focused_email_subject{
+    word-break: break-all  !important;
+  }
+
+}
+
+@media (max-width: 577px) {
+
+  #last_messages_container{
+    flex-direction: row;
+    margin-bottom: 3em;
+  }
+  
+  #login_cont {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+  }
+}
+
+@media (max-width: 250px) {
+  #header_title {
+    font-size: calc(1.1em + 1.8vw);
+    word-wrap: break-word;
+  }
 }

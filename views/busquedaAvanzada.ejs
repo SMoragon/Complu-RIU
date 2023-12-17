@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
+<head>
+    <%- include ('pieces/head')%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Use of ejs to avoid copy-pasting the whole header. -->
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+        <div class="container-fluid" id="form_container">
+            <!-- search form -->
+            <form class="row justify-content-center col-12" method="get" action="/busqueda/busquedaAvanzada"
+                id="busqueda_avanzada">
+                <!-- types of search -->
+                <div class="form-group col-md-3 col-sm-5 col-10 d-inline-block m-md-1 m-2">
+                    <Select name="tipo_busqueda" id="tipo_busqueda"
+                        class="form-select form-select-sm rounded-4 text-center text-truncate">
+                        <option value="None">Buscar Por ...</option>
+                        <option value="Usuario">Usuario</option>
+                        <option value="Reserva">Reserva</option>
+                        <option value="Facultad">Facultad</option>
+                        <option value="Instalacion">Instalación</option>
+                    </Select>
+                </div>
+                <!-- search by some params like user name, range of date ...etc -->
+                <div class="form-group col-md-3 col-sm-5 col-10 d-inline-block m-md-1 m-2">
+                    <Select name="filtrar_por" id="filtrar_por"
+                        class="form-select form-select-sm rounded-4 text-center text-truncate">
+                        <option value="None">Filtrar Por ...</option>
+                    </Select>
+                </div>
+                <!-- input text to search -->
+                <div class="form-group col-md-4 col-10 d-inline-block m-md-1 m-2">
+                    <div class="col-auto offset-md-0 offset-2" id="search_box">
+                        <input class="search_text rounded-3 search_text_mine" type="text" placeholder="Search.."
+                            id="search_input" name="search">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- includes pieces, It´s depends on what the user search. -->
+        <% if (locals.facultades) { %>
+            <%- include ('pieces/busquedaAvanzada_facultad')%>
+        <% }else if (locals.usuarios) {%>
+            <%- include ('pieces/busquedaAvanzada_usuario')%>
+        <% }else if (locals.reservas) {%>
+            <%- include ('pieces/busquedaAvanzada_reserva')%>
+        <% }else if (locals.instalaciones) {%>
+            <%- include ('pieces/busquedaAvanzada_instalacion')%>
+        <% }; %>
+        <div class="modal top fade" id="modal_message"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body container text-center my-2 mx-auto p-3">
+                        <div><strong class="modal_message"></strong></div>
+                    <div>
+                    <button data-bs-dismiss="modal"
+                        class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Dynamically footer's inclusion. -->
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+<!-- script of the page -->
+<script src="/scripts/busquedaAvanzada.js"></script>
+</html>

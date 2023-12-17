@@ -1,0 +1,120 @@
+<!-- piece that it´s use on advanced search page -->
+<div class="container-fluid">
+    <!-- list of installations -->
+    <div class="row justify-content-center" id="instalacion_list">
+        <% instalaciones.forEach(element=> { %>
+            <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0" id="instalacion_<%=element.id%>">
+                <div class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4  instalacion_bgc">
+                    <div class="row justify-content-center mt-3">
+                        <%=element.nombre%>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-7 col-12 p-0">
+                            <div class=" col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
+                                <img src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
+                                    alt="Installation named <%=element.nombre%> picture"
+                                    class="img-fluid rounded-4 instalacion_img">
+                            </div>
+                        </div>
+                        <!-- buttons with the option to see details, history -->
+                        <div
+                            class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                            <button type="button" class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                                data-bs-toggle="modal" data-bs-target="#instalacion_detalles_<%=element.id%>"><i
+                                    class="fa fa-eye"></i> Detalles</button>
+                            <button type="button" id="historial_instalacion_btn_<%=element.id%>"
+                                class="btn btn-sm btn-warning mb-sm-auto my-3 text-truncate historial_instalacion"
+                                data-bs-toggle="modal" data-bs-target="#historial_instalacion_<%=element.id%>">
+                                <i class="fa fa-history"></i> Historial</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal that contains a installation details -->
+            <div class="modal top fade" id="instalacion_detalles_<%=element.id%>" data-bs-backdrop="static">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Detalles
+                        </div>
+                        <div class="modal-body container">
+                            <div class="row justify-content-center">
+                                <div class="col-sm-7 col-12 p-0">
+                                    <div class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
+                                        <img src="data:<%=element.imagen_tipo%>;base64,<%=element.imagen.toString('base64')%>"
+                                            alt="Installation named <%=element.nombre%> picture"
+                                            class="img-fluid rounded-4">
+                                    </div>
+                                </div>
+                                <div
+                                    class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                    <p><i class="fa fa-building"></i> Nombre
+                                        Instalación:
+                                        <%=element.nombre%>
+                                    </p>
+                                    <p><i class="fa fa-hourglass-1"></i> Apertura:
+                                        <%=element.horario_apertura%>
+                                    </p>
+                                    <p><i class="fa fa-hourglass-3"></i> Cierre:
+                                        <%=element.horario_cierre%>
+                                    </p>
+                                    <p><i class="fa fa-map-pin"></i> Tipo reserva:
+                                        <%=element.tipo_reserva%>
+                                    </p>
+                                    <p><i class="fa fa-group"></i> Aforo:
+                                        <%=element.aforo%>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="col-10 mx-sm-2 d-flex justify-content-end">
+                                <button type="button" class="btn btn-lg btn-outline-success text-truncate"
+                                    data-bs-dismiss="modal">Aceptar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal that contains an installation history -->
+            <div class="modal top fade" id="historial_instalacion_<%=element.id%>" data-bs-backdrop="static">
+                <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header text-truncate">
+                            Historial de Reservas del usuario: <%=element.nombre%>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 overflow-auto">
+                                        <table class="table table-responsive table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-truncate" scope="col">Usuario</th>
+                                                    <th class="text-truncate" scope="col">Fecha Reserva</th>
+                                                    <th class="text-truncate" scope="col">Hora Inicio</th>
+                                                    <th class="text-truncate" scope="col">Hora Fin</th>
+                                                    <th class="text-truncate" scope="col">Asistente</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="table_row_<%=element.id%>">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row justify-content-md-end">
+                                <div class="col-10 mx-sm-2">
+                                    <button type="button" class="btn btn-lg btn-outline-success text-truncate"
+                                        data-bs-dismiss="modal">Aceptar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%});%>
+    </div>
+</div>

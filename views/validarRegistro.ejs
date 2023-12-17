@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
+<head>
+    <%- include ('pieces/head')%>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!-- Use of ejs to avoid copy-pasting the whole header. -->
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+        <!-- tittle -->
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <h2 class="text-primary">Validación de usuarios</h2>
+                </div>
+            </div>
+        </div>
+        <!-- list of users that is non-validate -->
+        <% if (locals.datos) { %>
+            <div class="container-fluid">
+                <div class="row justify-content-center" id="instalacion_list">
+                    <% datos.forEach(element=> { %>
+                        <div class="col-md-4 col-sm-6 col-12 justify-content-center my-3 p-0"
+                            id="validar_registro_<%=element.id%>">
+                            <div
+                                class="offset-1 col-10 border border-3 border-info bg-lightyellow rounded-4  validar_usuario_bgc">
+                                <div class="row justify-content-center">
+                                    <div class="col-sm-7 col-11 p-0">
+                                        <div
+                                            class="img-thumbnail col-sm-10 col-11 my-3 mx-auto rounded-4 row justify-content-center">
+                                            <span class="row justify-content-center mb-2 mt-1">
+                                                <%=element.nombre%>
+                                            </span>
+                                            <% if (element.imagen_perfil===null) { %>
+                                                <img src="/images/default_picture.jpg"
+                                                    alt="Default user profile picture"
+                                                    class="img-fluid mb-2 list_usuario_img">
+                                                <%}else{ %>
+                                                    <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
+                                                        alt="User named <%=element.nombre%> profile picture"
+                                                        class="img-fluid mb-2 list_usuario_img">
+                                                    <%};%>
+                                        </div>
+                                    </div>
+                                    <!-- buttons -->
+                                    <div
+                                        class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                        <button type="button"
+                                            class="btn btn-sm btn-success mt-sm-auto mt-2 text-truncate"
+                                            data-bs-toggle="modal" data-bs-target="#usuario_detalles_<%=element.id%>"><i
+                                                class="fa fa-eye"></i> Detalles</button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-primary my-sm-auto my-2 text-truncate validar_usuario"
+                                            id="validar_usuario_<%=element.id%>"><i class="fa fa-check"></i>
+                                            Aceptar</button>
+                                        <button type="button"
+                                            class="btn btn-sm btn-danger mb-sm-auto mb-2 text-truncate eliminar_usuario"
+                                            id="eliminar_usuario_<%=element.id%>">
+                                            <i class="fa fa-trash"></i> Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- modals that contains user´s details -->
+                        <div class="modal top fade" id="usuario_detalles_<%=element.id%>" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content modal-destiny-container">
+                                    <div class="modal-header">
+                                        Detalles sobre <%=element.nombre%>
+                                    </div>
+                                    <div class="modal-body container">
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-7 col-12 p-0">
+                                                <div
+                                                    class="row col-sm-10 col-11 my-3 mx-auto rounded-4 justify-content-center">
+                                                    <% if (element.imagen_perfil===null) { %>
+                                                        <img src="/images/default_picture.jpg"
+                                                            alt="Default profile picture" class="img-fluid">
+                                                        <%}else{ %>
+                                                            <img src="data:img/png;base64,<%=element.imagen_perfil.toString('base64')%>"
+                                                                alt="User named <%=element.nombre%> profile picture"
+                                                                class="img-fluid">
+                                                            <%};%>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="col-sm-4 offset-sm-0 col-6 d-flex flex-column justify-content-center padding-left-0 my-2">
+                                                <p><i class="fa fa-user-secret"
+                                                        alt="Icon of a guy disguised as a secret agent"></i> Nombre:
+                                                    <%=element.nombre%>
+                                                </p>
+                                                <p><i class="fa fa-user-plus"
+                                                        alt="Icon of a person with a plus symbol"></i> Apellido:
+                                                    <%=element.apellidos%>
+                                                </p>
+                                                <p><i class="fa fa-envelope" alt="Envelope icon"></i> Correo:
+                                                    <%=element.correo%>
+                                                </p>
+                                                <p><i class="fa fa-building" alt="Building icon"></i> Facultad:
+                                                    <%=element.facultadUser%>
+                                                </p>
+                                                <p><i class="fa fa-book" alt="Book icon"></i> Curso: <%=element.curso%>
+                                                </p>
+                                                <p><i class="fa fa-group" alt="Group of people icon"></i> Grupo:
+                                                    <%=element.grupo%>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-lg btn-outline-success"
+                                            data-bs-dismiss="modal">Aceptar</button>
+                                        <button type="button" class="btn btn-lg btn-outline-info"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <%});%>
+                </div>
+            </div>
+            <% } %>
+        <div class="modal top fade" id="modal_message"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body container text-center my-2 mx-auto p-3">
+                        <div><strong class="modal_message"></strong></div>
+                    <div>
+                    <button data-bs-dismiss="modal"
+                        class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+    <!-- Dynamically footer's inclusion. -->
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+<script src="/scripts/validarUsuarioAdmin.js"></script>
+
+</html>

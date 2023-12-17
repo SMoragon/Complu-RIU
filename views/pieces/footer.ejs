@@ -1,0 +1,98 @@
+  <!-- Footer structure, in which the user would watch some company's information. -->
+<div id="footer_cont" class="container-fluid">
+    <div class="row container">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-8">
+            <!-- App's logo. -->
+            <% if (typeof session !=='undefined' && typeof session.sysConfig !=='undefined' && typeof
+                session.sysConfig['icono'] !=='undefined' ) { %>
+                <img class="footer-img col-12"
+                    src="data:<%=session.sysConfig['icono_type']%>;base64,<%=new Buffer(session.sysConfig['icono']).toString('base64')%>"
+                    alt="Organization's logo" />
+                <%}else {%>
+                    <img class="footer-img col-12" src="/Images/Image_not_available.png" alt="Organization's logo" />
+                <%};%>
+        </div>
+
+        <div class="d-flex align-items-center col-sm-8 col-12 offset-md-1">
+            <ul id="footer_ul">
+                <!-- Company's contact information and more. -->
+                <li class="my-0 my-2">
+                    <!-- Link to send an email to the company. -->
+                    <% if (typeof session !=='undefined' && typeof session.sysConfig !=='undefined' && typeof
+                        session.sysConfig['correo'] !=='undefined' ) { %>
+                        <a href="mailto:session.sysConfig['correo']">
+                            <img src="/Images/sobre.png" alt="Envelope icon" class="footer_icon" />
+                            <span id="footer_mail">
+                                <%= session.sysConfig['correo'] %>
+                            </span>
+                        </a>
+                        <%}else {%>
+                            <a href="#">
+                                <img src="/Images/sobre.png" alt="Envelope icon" class="footer_icon" />
+                                <span id="footer_mail">Something went wrong</span>
+                            </a>
+                        <%};%>
+                </li>
+
+                <li class="my-0 my-2">
+                    <!-- Link to watch the "company's Instagram". -->
+                    <% if (typeof session !=='undefined' ) { %>
+                        <% if (typeof session.sysConfig !=='undefined' && typeof session.sysConfig['url_instagram']
+                            !=='undefined' ) {%>
+                            <a href="<%=session.sysConfig['url_instagram']%>" target="_blank">
+                                <% }else{ %>
+                                    <a href="#"></a>
+                                    <%};%>
+                                        <!--Instagram's icon -->
+                                        <img src="/Images/instagram.png" alt="Instagram's icon" class="footer_icon" />
+                                        <% if (typeof session.sysConfig !=='undefined' && typeof session.sysConfig['nombre'] !=='undefined' ) {%>
+                                            <span>
+                                                <%= session.sysConfig['nombre']%>
+                                            </span>
+                                            <% }else{ %>
+                                                <span>Something went wrong</span>
+                                                <%};%>
+                            </a>
+                            <%}else {%>
+                                <a href="#" target="_blank">
+                                    <!--Instagram's icon -->
+                                    <img src="/Images/instagram.png" alt="Instagram's icon" class="footer_icon" />
+
+                                    <span>Something went wrong</span>
+                                </a>
+                            <%};%>
+
+
+                </li>
+
+                <li class="my-0 my-2">
+                    <a href="#">
+                        <!--Phone icon. -->
+                        <img src="/Images/phone.png" alt="Phone's icon" class="footer_icon" />
+                        <!--Company's phone. -->
+                        <span>631 13 63 61</span>
+                    </a>
+
+                <li class="my-0 my-2">
+                    <% if (typeof session !=='undefined' && typeof session.sysConfig !=='undefined' && typeof
+                        session.sysConfig['direccion'] !=='undefined' ) { %>
+                        <img src="/Images/dir.png" alt="Direction's icon" class="footer_icon" />
+                        <span id="footer_mail">
+                            <%= session.sysConfig['direccion'] %>
+                        </span>
+                    <%}else {%>
+                        <img src="/Images/dir.png" alt="Mail direction icon" class="footer_icon" />
+                        <span id="footer_mail"> Something went wrong</span>
+                    <%};%>
+
+                </li>
+                <li class="my-0 my-2">
+                    <!--Copyright icon. -->
+                    <img src="/Images/copyright.png" alt="Copyright icon" class="footer_icon" />
+                    <!--Copyright type. -->
+                    <span>Todos los derechos reservados</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

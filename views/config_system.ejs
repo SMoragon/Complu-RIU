@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Bootstrap, stylesheets, WP title and favicon load. -->
+
+<head>
+    <%- include ('pieces/head')%>
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <!-- Use of ejs to avoid copy-pasting the whole header. -->
+    <header>
+        <%- include ('pieces/header')%>
+    </header>
+    <main>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <!-- page tittle -->
+                <div class="col-auto">
+                    <h2 class="text-info">Configuracion del Sistema</h2>
+                </div>
+                <!-- form to update system configuration like name, instagram, mail etc... -->
+                <div class="col-md-9 col-sm-10 col-12 border border-3 border-success bg-success-subtle rounded-5">
+                    <form id="config_form" method="put" action="/system/update_system" class="my-3">
+                        <div class="container" id="config_form_body">
+                            <!-- Nombre Organizacion -->
+                            <div class="form-group row justify-content-center mb-1">
+                                <label for="org_name" class="col-md-3 col-10 col-form-label text-truncate">
+                                    Nombre Organizacion: </label>
+                                <div class="col-md-7 col-10">
+                                    <input type="text" class="form-control form-control-sm rounded-4 text-truncate"
+                                        placeholder="Nombre de la organizacion" name="org_name" id="org_name">
+                                </div>
+                            </div>
+                            <!-- Direccion -->
+                            <div class="form-group row justify-content-center my-1">
+                                <label for="org_dir" class="col-md-3 col-10 col-form-label text-truncate">
+                                    Direccion: </label>
+                                <div class="col-md-7 col-10">
+                                    <input type="text" class="form-control form-control-sm rounded-4 text-truncate"
+                                        placeholder="Direccion de la organizacion" name="org_dir" id="org_dir">
+                                </div>
+                            </div>
+                            <!-- Instagram. -->
+                            <div class="form-group row justify-content-center my-1">
+                                <label for="org_ig" class="col-md-3 col-10 col-form-label text-truncate">
+                                    Instagram: </label>
+                                <div class="col-md-7 col-10">
+                                    <input type="text" class="form-control form-control-sm rounded-4 text-truncate"
+                                        placeholder="URL Instagram de la organizacion" name="org_ig" id="org_ig">
+                                </div>
+                            </div>
+                            <!--  email. -->
+                            <div class="form-group row justify-content-center mb-md-1 mb-4">
+                                <label for="org_mail" class="col-md-3 col-10 col-form-label text-truncate">
+                                    Correo: </label>
+                                <div class="col-md-7 col-10">
+                                    <input type="text" class="form-control form-control-sm rounded-4 text-truncate"
+                                        placeholder="Email de la organizacion" name="org_mail" id="org_mail">
+                                </div>
+                            </div>
+                            <!-- Imagen. -->
+                            <div class="form-group row justify-content-center" id="put_org_img">
+                                <div class="col-10">
+                                    <input type="file" accept=".jpg,.jpeg,.png" name="org_img" id="org_img"
+                                        class="form-control form-control-sm border border-3 rounded-end-4"
+                                        alt="Organization's logo image submission.">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Submit/cancel buttons. -->
+                        <div class="row justify-content-center my-3">
+                            <div class="col-10 row justify-content-sm-end justify-content-center">
+                                <div class="col-auto mb-2">
+                                    <input type="submit" value=" Subir" class="btn btn-lg btn-outline-success"
+                                        id="org_submit_button"></input>
+                                </div>
+                                <div class="col-auto"><button type="reset"
+                                        class="btn btn-lg btn-outline-info">Reset</button></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal top fade" id="modal_message"
+            data-bs-backdrop="static">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body container text-center my-2 mx-auto p-3">
+                        <div><strong class="modal_message"></strong></div>
+                    <div>
+                    <button data-bs-dismiss="modal"
+                        class="btn btn-lg btn-outline-primary mt-4">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Dynamically footer's inclusion. -->
+    <footer>
+        <%- include ('pieces/footer')%>
+    </footer>
+</body>
+<!-- scripts of the page -->
+<script src="/scripts/systemConfig.js"></script>
+
+</html>

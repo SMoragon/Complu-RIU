@@ -1,0 +1,132 @@
+<!-- Header structure, in which the user would watch a navbar if its admin, the login and register buttons or the personal inbox; among others. -->
+<div class="top-page" id="cabecera">
+
+    <div id="header_cont" class="container-fluid col-12">
+
+        <div class="col-md-3 col-sm-4 col-6 my-3">
+            <!-- Company's logo. -->
+            <% if (typeof session !=='undefined' && typeof session.sysConfig !=='undefined' && typeof
+                session.sysConfig['icono'] !=='undefined' ) { %>
+                <img class="col-md-8 col-sm-11 col-12"
+                    src="data:<%=session.sysConfig['icono_type']%>;base64,<%=new Buffer(session.sysConfig['icono']).toString('base64')%>"
+                    alt="session.sysConfig['nombre'] logo picture" />
+                <%}else {%>
+                    <img class="col-md-8 col-sm-11 col-12" src="/images/Image_not_available.png"
+                        alt="Company´s logo not available picture" />
+                    <%};%>
+        </div>
+
+        <div class="col-md-3 col-sm-3 col-6">
+            <h1 id="header_title">
+                <!-- Company's name. -->
+                <% if (typeof session !=='undefined' && typeof session.sysConfig !=='undefined' && typeof
+                    session.sysConfig['nombre'] !=='undefined' ) { %>
+                    <a class="text-break" href="/index.html">
+                        <%= session.sysConfig['nombre'] %>
+                    </a>
+                    <%}else {%>
+                        <a class="text-break" href="/index.html"> Something went wrong</a>
+                        <%};%>
+
+            </h1>
+        </div>
+        <div class=" col-md-4 col-sm-4 ">
+            <div id="login_cont" class="mx-md-5">
+                <!-- JS code to show the login button only if user is not logged. Otherwise, a welcome text, the user profile picture and the inbox with the
+                 unread messages will be displayed. -->
+                <% if (typeof session !=='undefined' && session.isLogged) { %>
+
+                    <div class="d-flex flex-row mx-2 my-1">
+
+                        <div class="my-auto">
+
+                            <% if (session.defaultProfile) { %>
+                                <img class="user_img rounded-circle" src="<%= session.profile%>"
+                                    alt="Default profile image">
+                                <%} else{ %>
+                                    <img class="user_img rounded-circle"
+                                        src="data:image/*;base64, <%= new Buffer(session.profile).toString('base64'); %>"
+                                        alt="User custom profile picture">
+                                    <%} %>
+                        </div>
+
+                        <div class="d-flex flex-column align-middle">
+                            <p class="login_text text-break" id="hello_user">
+                                ¡Bienvenid@
+                                de nuevo, <%= session.user%>!
+                            </p>
+                            <a class="login_text" href="/usuario/logout">Logout</a>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-row justify-content-start my-3">
+
+                        <div class="d-flex flex-column mx-3">
+                            <% if(session.sinLeer && session.sinLeer>0){%>
+                                <span id="inbox_badge" class="badge bg-danger">
+                                    <%= session.sinLeer%>
+                                </span>
+                                <%}%>
+                                    <!-- Realmente solo se pondría si el nº de mensajes no leídos es mayor que 0-->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                                        class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                                        <path
+                                            d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z" />
+                                    </svg>
+                        </div>
+
+                        <div class="d-flex flex-column mx-3 px-1 justify-content-center ">
+                            <a id="a_inbox" href="/usuario/inbox">Bandeja de entrada</a>
+                        </div>
+                    </div>
+                    <% } else { %>
+
+                        <!-- Login and register buttons. -->
+                        <div class="offset-5" id="login_reg_disp_cont">
+
+                            <a class="account_but d-flex " id="log_but" href="/usuario/login">Login</a>
+                            <a class="account_but d-flex" href="/usuario/register">Registrarse</a>
+
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+        <!-- If the user is admin, a navbar with admin tools wil be displayed. -->
+        <% if (session.is_admin) { %>
+            <!-- Navigation bar. -->
+            <div class="container">
+                <div class="row justify-content-center">
+                    <nav class="navbar navbar-expand-md">
+                        <div class="container-fluid">
+                            <!-- Navigation bar toggler to show when screen size is too small to display all of its content (responsiveness aid). -->
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarNav">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse container-fluid" id="navbarNav">
+                                <!-- Navigation bar content (main pages of the app). -->
+                                <ul class="navbar-nav" id="navbar-list">
+                                    <li class="nav-item">
+                                        <a href="/index.html" class="nav-link" aria-current="page">Inicio</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/instalaciones/gestion_instalacion" class="nav-link">Gestion Instalación</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/admin/validar_registro" class="nav-link">Validacion Registro</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/busqueda/busquedaAvanzada" class="nav-link">Busqueda Avanzada</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/system/config_system" class="nav-link">Configuración Sistema</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <% }; %>
+    </div>
+</div>
